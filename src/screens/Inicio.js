@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react'
 import { Items } from '../database/database'
 import { paletaDeColores } from '../styles/colores'
 import { Entypo, FontAwesome } from '@expo/vector-icons';
+
+import ProductCard from '../components/ProductCard';
 const Inicio = ({ navigation }) => {
     const [products, setProducts] = useState([])
 
@@ -25,78 +27,13 @@ const Inicio = ({ navigation }) => {
         setProducts(productList)
     }
 
-    // Tarjeta de Producto
-    const ProductCard = ({ data }) => {
-        return (
-            <TouchableOpacity
-                onPress={() => navigation.navigate('ProductInfo', { productID: data.id })}
-                style={
-                    {
-                        width: '48%',
-                        marginVertical: 14,
-                    }
-                }
-            >
-                <View style={{
-                    width: '100%',
-                    height: 100,
-                    borderRadius: 10,
-                    backgroundColor: paletaDeColores.backgroundLight,
-                    position: 'relative',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginBottom: 8,
-                }}>
-                    <Image source={data.productImage} style={{
-                        width: '80%',
-                        height: '80%',
-                        resizeMode: 'contain',
-                    }}>
-
-                    </Image>
-                </View>
-                <Text style={{
-                    fontSize: 12,
-                    color: paletaDeColores.black,
-                    fontWeight: '600',
-                    marginBottom: 2,
-                }}>
-                    {data.productName}
-                </Text>
-                <View style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-around',
-                    alignItems: 'center',
-                }}>
-                    <Text style={{
-                        fontSize: 18,
-                    }}>
-                        L. {data.productPrice}
-                    </Text>
-                    <TouchableOpacity >
-                        <View style={{
-                            backgroundColor: paletaDeColores.green,
-                            borderRadius: 3,
-                        }}>
-                            <Entypo name='plus' style={{
-                                fontSize: 12,
-                                color: paletaDeColores.white,
-                                padding: 10,
-                            }} />
-                        </View>
-                    </TouchableOpacity>
-                </View>
-            </TouchableOpacity>
-        )
-    }
-
     return (
         <View style={styles.container}>
             <StatusBar backgroundColor={paletaDeColores.backgroundLight} />
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView showsVerticalScrollIndicator={false} overScrollMode="never">
                 <View style={styles.header}>
                     <TouchableOpacity>
-                        <Entypo name="shopping-bag" style={styles.shoppingBag} />
+                        <Entypo name="menu" style={styles.menu} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => navigation.navigate('MyCart')}>
                         <Entypo name="shopping-cart" style={styles.shoppingCart} />
@@ -107,50 +44,33 @@ const Inicio = ({ navigation }) => {
                         Buscar Productos
                     </Text>
                     <Text style={styles.titleParagraph}>
-                        Buscar por descripción (e.j. Hamburguesa).
+                        Buscar por descripción.
                     </Text>
                 </View>
-                
+                {/* BLOCK:: Buscador */}
                 <View style={styles.searchContainer}>
                         <FontAwesome name="search" style={styles.prependInput} />
-                        <TextInput style={{
-                            width: '90%',
-                            height: 40,
-                            borderRadius: 5,
-                            backgroundColor: paletaDeColores.backgroundLight,
-                            paddingHorizontal: 10,
-                        }}>
+                        <TextInput style={styles.searchInput} placeholder="e.j. Hamburguesa">
                         </TextInput>
                     </View>
+                {/* ENDBLOCK:: Buscador */}
+
+                <View style={styles.categoryContainer}>
+                    <View style={styles.category}>
+                        <Text style={styles.categoryText}>Productos</Text>
+                        <Text style={styles.categoryQty}>41</Text>
+                    </View>
+                </View>
                 <View style={{
-                    padding: 16,
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-around',
                 }}>
-
-                    <View style={styles.categoryContainer}>
-                        <View style={styles.category}>
-                            <Text style={styles.categoryText}>Products</Text>
-                            <Text style={styles.categoryQty}>41</Text>
-                        </View>
-                        <View>
-
-                        </View>
-
-                        <Text style={styles.seeAllText}>
-                            SeeAll
-                        </Text>
-                    </View>
-                    <View style={{
-                        flexDirection: 'row',
-                        flexWrap: 'wrap',
-                        justifyContent: 'space-around',
-                    }}>
-                        {
-                            products.map(data => {
-                                return <ProductCard data={data} key={data.id} />
-                            })
-                        }
-                    </View>
-
+                    {
+                        products.map(data => {
+                            return <ProductCard data={data} key={data.id} />
+                        })
+                    }
                 </View>
             </ScrollView>
         </View>
@@ -164,16 +84,17 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: paletaDeColores.white,        
         padding: 16,    
+        paddingBottom: 0,
     },
     header: {
         flex: 1,
         justifyContent: 'space-between',
         flexDirection: 'row',
     },
-    shoppingBag: {
-        fontSize: 18,
+    menu: {
+        fontSize: 22,
         color: paletaDeColores.backgroundMedium,
-        padding: 12,
+        padding: 8,
         borderRadius: 10,
         backgroundColor: paletaDeColores.backgroundLight,
     },
@@ -215,10 +136,19 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 5,
         color: paletaDeColores.white,
     },
+    searchInput: {
+        width: '90%',
+        height: 40,
+        borderRadius: 5,
+        backgroundColor: paletaDeColores.backgroundLight,
+        paddingHorizontal: 10,
+    },
     categoryContainer: {
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        paddingTop: 16,
     },
     category: {
         flexDirection: 'row',
@@ -237,9 +167,4 @@ const styles = StyleSheet.create({
         opacity: 0.5,
         marginLeft: 8,
     },
-    seeAllText: {
-        fontSize: 14,
-        color: paletaDeColores.blue,
-        fontWeight: '400',
-    }
 })
