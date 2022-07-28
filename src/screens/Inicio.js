@@ -31,10 +31,10 @@ const Inicio = ({ navigation }) => {
             <StatusBar backgroundColor={paletaDeColores.backgroundDark} />
             <ScrollView showsVerticalScrollIndicator={false} overScrollMode="never">
                 <View style={styles.header}>
-                    <TouchableOpacity onPress={() => navigation.navigate('FormTemplate')}>
+                    <TouchableOpacity onPress={() => navigation.openDrawer()}>
                         <Entypo name="menu" style={styles.menu} />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('MyCart')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('CarritoPedidoDetalle')}>
                         <Entypo name="shopping-cart" style={styles.shoppingCart} />
                     </TouchableOpacity>
                 </View>

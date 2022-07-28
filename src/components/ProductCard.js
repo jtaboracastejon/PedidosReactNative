@@ -1,25 +1,54 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Image,ToastAndroid } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { paletaDeColores } from '../styles/colores'
 import { Entypo } from '@expo/vector-icons';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ProductCard = ({ data }) => {
+    
+    const [product, setProduct] = useState(data)
+    
+    const addToCart = async(codigo) => {
+        let cart = await AsyncStorage.getItem('cart')
+        cart = JSON.parse(cart)
+        if (cart) {
+            let array = cart
+            array.push(codigo)
+
+            try {
+                await AsyncStorage.setItem('cart', JSON.stringify(array))
+                ToastAndroid.show('Añadido al Carrito', ToastAndroid.SHORT)
+                console.log(JSON.stringify(array))
+            } catch (error) {
+                return error
+            }
+        }else{
+            let array = []
+            array.push(codigo)
+
+            try {
+                await AsyncStorage.setItem('cart', JSON.stringify(array))
+                ToastAndroid.show('Added to cart', ToastAndroid.SHORT)
+            } catch (error) {
+                return error
+            }
+        }
+    }
+
     return (
-        <TouchableOpacity
-            onPress={() => navigation.navigate('ProductInfo', { productID: data.id })}
-            style={styles.cardContainer}
-        >
+        <View            
+            style={styles.cardContainer}>
             <View style={styles.cardBackground}>
-                <Image source={data.productImage} style={styles.imageCard}/>
+                <Image source={data.Imagen} style={styles.imageCard}/>
             </View>
             <Text style={styles.cartTitle}>
-                {data.productName}
+                {data.Nombre}
             </Text>
             <View style={styles.cardInfoContainer}>
                 <Text style={styles.cardInfoTitle}>
-                    L. {data.productPrice}
+                    L. {data.Precio}
                 </Text>
-                <TouchableOpacity >
+                <TouchableOpacity onPress={() => addToCart(product.codigo)}>
                     <View style={styles.cardInfoButton}>
                         <Entypo name='plus' style={{
                             fontSize: 12,
@@ -29,7 +58,7 @@ const ProductCard = ({ data }) => {
                     </View>
                 </TouchableOpacity>
             </View>
-        </TouchableOpacity>
+        </View>
     )
 }
 export default ProductCard
@@ -56,7 +85,7 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',    
     },
     cartTitle: {
-        fontSize: 12,
+        fontSize: 14,
         color: paletaDeColores.black,
         fontWeight: '600',
         marginBottom: 2,
