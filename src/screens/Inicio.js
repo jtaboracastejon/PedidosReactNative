@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, StatusBar, ScrollView, TouchableOpacity, Image, TextInput } from 'react-native'
+import { View, Text, StyleSheet, StatusBar, ScrollView, TouchableOpacity, TextInput } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { Items } from '../database/database'
 import { paletaDeColores } from '../styles/colores'
@@ -18,7 +18,6 @@ const Inicio = ({ navigation }) => {
 
     const getDataFromDb = () => {
         let productList = []
-        let accessoryList = []
         for (let index = 0; index < Items.length; index++) {
             const element = Items[index];
             productList.push(element)
@@ -29,10 +28,10 @@ const Inicio = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <StatusBar backgroundColor={paletaDeColores.backgroundLight} />
+            <StatusBar backgroundColor={paletaDeColores.backgroundDark} />
             <ScrollView showsVerticalScrollIndicator={false} overScrollMode="never">
                 <View style={styles.header}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate('FormTemplate')}>
                         <Entypo name="menu" style={styles.menu} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => navigation.navigate('MyCart')}>
@@ -68,7 +67,7 @@ const Inicio = ({ navigation }) => {
                 }}>
                     {
                         products.map(data => {
-                            return <ProductCard data={data} key={data.id} />
+                            return <ProductCard data={data} key={data.codigo} />
                         })
                     }
                 </View>
