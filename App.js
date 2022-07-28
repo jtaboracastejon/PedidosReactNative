@@ -7,8 +7,11 @@ import CarritoPedidoDetalle from './src/screens/carritoPedidoDetalle';
 import FormTemplate from './src/screens/formTemplate';
 import { Ionicons } from '@expo/vector-icons';
 // import SideMenu from './src/screens/sideMenu';
+import PedidosLlevar from "./src/screens/pedidosLlevar/pedidosLlevar";
+import EditarPedidosLlevarForm from "./src/screens/pedidosLlevar/editarPedidosLlevarForm";
 
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
+import {PedidosLlevarProvider} from "./src/context/pedidosLlevar/pedidosLlevarContext";
 const Drawer = createDrawerNavigator();
 function SideMenu() {
     return (
@@ -19,6 +22,7 @@ function SideMenu() {
         }}>
             <Drawer.Screen name="Inicio" component={Inicio} />
             <Drawer.Screen name="FormTemplate" component={FormTemplate} />
+            <Drawer.Screen name="PedidosLlevar" component={PedidosLlevar} />
         </Drawer.Navigator>
     )
 }
@@ -62,6 +66,19 @@ const CustomizeSideMenu =({navigation})=>{
                     }}>Plantilla Formulario</Text>
                 </View>
             </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('PedidosLlevar')}>
+                <View style={styles.sideMenuItem}>
+                    <Ionicons name="bookmark" size={24} color="#0043F9" />
+                    <Text style={{
+                        width: '90%',
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+
+                    }}>Pedidos Llevar</Text>
+                </View>
+            </TouchableOpacity>
+
         </DrawerContentScrollView>
     )
 }
@@ -71,6 +88,7 @@ export default function App() {
     const Stack = createNativeStackNavigator();
     return (
         <NavigationContainer>
+            <PedidosLlevarProvider>
             <Stack.Navigator
                 screenOptions={{
                     headerShown: false,
@@ -78,8 +96,10 @@ export default function App() {
             >
                 <Stack.Screen name="SideMenu" component={SideMenu} />
                 <Stack.Screen name="CarritoPedidoDetalle" component={CarritoPedidoDetalle} />
+                <Stack.Screen name="editarPedidosLlevarForm" component={EditarPedidosLlevarForm} />
                 {/* <Stack.Screen name="FormTemplate" component={FormTemplate} /> */}
             </Stack.Navigator>
+            </PedidosLlevarProvider>
         </NavigationContainer>
     );
 }

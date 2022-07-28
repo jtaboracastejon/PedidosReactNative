@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, StatusBar, Button, TextInput, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, StatusBar, TextInput, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import { paletaDeColores } from '../styles/colores'
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -14,13 +14,13 @@ const FormTemplate = ({navigation}) => {
 
     function showDatePicker() {
         setDatePicker(true);
-    };
+    }
 
 
     function onDateSelected(event, value) {
         setDate(value);
         setDatePicker(false);
-    };
+    }
 
     /* Necesario para drowpdown 👇 */
 
@@ -56,7 +56,6 @@ const FormTemplate = ({navigation}) => {
                     borderBottomWidth: 1,
                     borderRadius: 10,
                     borderColor: paletaDeColores.backgroundDark,
-                    marginBottom: 16,
                     marginTop: 16,
                     marginBottom: 20,
                 }}>
@@ -90,7 +89,6 @@ const FormTemplate = ({navigation}) => {
                     zIndex={3000}
                     zIndexInverse={1000}
                     placeholderStyle={{
-                        color: "grey",
                         color: paletaDeColores.backgroundMedium,
                     }}
                     style={{
@@ -125,7 +123,6 @@ const FormTemplate = ({navigation}) => {
                         borderColor: paletaDeColores.backgroundMedium,
                     }}
                     placeholderStyle={{
-                        color: "grey",
                         color: paletaDeColores.backgroundMedium,
                     }}
                     style={{
