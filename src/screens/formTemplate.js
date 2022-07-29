@@ -2,10 +2,11 @@ import { View, Text, StyleSheet, StatusBar, Button, TextInput, TouchableOpacity 
 import React, { useState } from 'react'
 import { paletaDeColores } from '../styles/colores'
 import DropDownPicker from 'react-native-dropdown-picker';
-import { Ionicons,Entypo } from '@expo/vector-icons';
+import { Ionicons, Entypo } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { ScrollView } from 'react-native-gesture-handler';
 
-const FormTemplate = ({navigation}) => {
+const FormTemplate = ({ navigation }) => {
     /* Necesario para dateTimePicker */
 
     const [datePicker, setDatePicker] = useState(false);
@@ -41,12 +42,34 @@ const FormTemplate = ({navigation}) => {
     ]);
     return (
         <View style={styles.container}>
+
+            <StatusBar backgroundColor={paletaDeColores.backgroundDark} />
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.navigate('Inicio')}>
                     <Entypo name="chevron-thin-left" style={styles.back} />
                 </TouchableOpacity>
             </View>
-            <StatusBar backgroundColor={paletaDeColores.backgroundDark} />
+            <View
+                style={{ height: 30 }}>
+                <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                >
+                    <TouchableOpacity style={{ padding: 5, borderRadius: 100, backgroundColor: paletaDeColores.blue + '10', borderColor: paletaDeColores.blue, borderWidth: 1, marginHorizontal: 10 }}>
+                        <Text style={{ color: paletaDeColores.black, marginHorizontal: 10, }}>Listar Elaborados</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }}>
+                        <Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Nuevo Elaborado</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }}>
+                        <Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Editar Elaborado</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }}>
+                        <Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Eliminar Elaborado</Text>
+                    </TouchableOpacity>
+
+                </ScrollView>
+            </View>
             {/* Titles */}
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <View style={{ width: '10%' }}>
@@ -177,6 +200,75 @@ const FormTemplate = ({navigation}) => {
 
 
             </View>
+            {/* Guardar */}
+            <View style={styles.buttonsContainer}>
+                <View style={{width: '50%'}}>
+                    <TouchableOpacity style={styles.botonGuardar}>
+                        <Ionicons name="save" style={{
+                            fontSize: 24,
+                            color: paletaDeColores.white,
+                            padding: 10,
+                        }} />
+                        <Text style={styles.botonTexto}>Guardar</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={{ width: '50%'}}>
+                    <TouchableOpacity style={styles.botonCancelar}>
+                        <Entypo name="circle-with-cross" style={{
+                            fontSize: 24,
+                            color: paletaDeColores.white,
+                            padding: 10,
+                        }} />
+                        <Text style={styles.botonTexto}>Cancelar</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+            {/* Editar */}
+            <View style={styles.buttonsContainer}>
+                <View style={{width: '50%'}}>
+                    <TouchableOpacity style={styles.botonEditar}>
+                        <Entypo name="edit" style={{
+                            fontSize: 24,
+                            color: paletaDeColores.white,
+                            padding: 10,
+                        }} />
+                        <Text style={styles.botonTexto}>Guardar cambios</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={{ width: '50%'}}>
+                    <TouchableOpacity style={styles.botonCancelar}>
+                        <Entypo name="circle-with-cross" style={{
+                            fontSize: 24,
+                            color: paletaDeColores.white,
+                            padding: 10,
+                        }} />
+                        <Text style={styles.botonTexto}>Cancelar</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+            {/* Eliminar */}
+            <View style={styles.buttonsContainer}>
+                <View style={{width: '50%'}}>
+                    <TouchableOpacity style={styles.botonEliminar}>
+                        <Entypo name="trash" style={{
+                            fontSize: 24,
+                            color: paletaDeColores.white,
+                            padding: 10,
+                        }} />
+                        <Text style={styles.botonTexto}>Eliminar</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={{ width: '50%'}}>
+                    <TouchableOpacity style={styles.botonCancelar}>
+                        <Entypo name="circle-with-cross" style={{
+                            fontSize: 24,
+                            color: paletaDeColores.white,
+                            padding: 10,
+                        }} />
+                        <Text style={styles.botonTexto}>Cancelar</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
         </View>
     )
 }
@@ -189,7 +281,7 @@ const styles = StyleSheet.create({
         backgroundColor: paletaDeColores.backgroundLight,
         padding: 16,
         paddingBottom: 0,
-    },header: {
+    }, header: {
         justifyContent: 'space-between',
         flexDirection: 'row',
     },
@@ -244,4 +336,53 @@ const styles = StyleSheet.create({
         height: 260,
         display: 'flex',
     },
+    buttonsContainer:{ 
+        width: '100%', 
+        flexDirection:'row',
+        marginTop: 10, 
+        justifyContent:'space-around'
+    },
+    botonCancelar:{
+        flexDirection: 'row', 
+        padding: 6, 
+        borderRadius: 20, 
+        borderColor: 'white', 
+        backgroundColor: paletaDeColores.backgroundDark, 
+        borderWidth: 1, 
+        alignItems: 'center' 
+    },
+    botonTexto:{ 
+        color: paletaDeColores.white, 
+        marginHorizontal: 10, 
+        fontWeight: '600', 
+        fontSize: 16 
+    },
+    botonEliminar:{ 
+        flexDirection: 'row', 
+        padding: 6, 
+        borderRadius: 20, 
+        borderColor: 'white', 
+        backgroundColor: 'crimson', 
+        borderWidth: 1, 
+        alignItems: 'center' 
+    },
+    botonGuardar:{ 
+        flexDirection: 'row', 
+        padding: 6, 
+        borderRadius: 20, 
+        borderColor: 'white', 
+        backgroundColor: 
+        paletaDeColores.green, 
+        borderWidth: 1, 
+        alignItems: 'center' 
+    },
+    botonEditar:{ 
+        flexDirection: 'row', 
+        padding: 6, 
+        borderRadius: 20, 
+        borderColor: 'white', 
+        backgroundColor: paletaDeColores.blue, 
+        borderWidth: 1, 
+        alignItems: 'center'
+    }
 })
