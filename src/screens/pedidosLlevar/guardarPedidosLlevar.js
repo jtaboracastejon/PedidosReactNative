@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, StatusBar, TouchableOpacity} from 'react-native'
+import {View, Text, StyleSheet, StatusBar, TouchableOpacity, ScrollView} from 'react-native'
 import React, {useState, useEffect} from 'react'
 import {paletaDeColores} from '../../styles/colores'
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -8,7 +8,7 @@ import Mensaje from "../../components/Mensaje";
 
 const GuardarPedidosLlevar = ({navigation}) => {
 	let textoMensaje = "";
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkwMzA3MTksImV4cCI6MTY1OTA2MDcxOX0.piR_oubO9PANGtwiOtKN9b5HSv2DQ7hUx6OtjGk7skk";
+	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkxMDYyMjMsImV4cCI6MTY1OTEzNjIyM30.cVRlDuZWYCdo-rVn7Lje9cfqrjodTqaM72tF5kWCv18";
 	const [pedidosOpen, setPedidosOpen] = useState(false);
 	const [clientesOpen, setClientesOpen] = useState(false);
 	const [pedidosValue, setPedidosValue] = useState(null);
@@ -101,6 +101,38 @@ const GuardarPedidosLlevar = ({navigation}) => {
 				</TouchableOpacity>
 			</View>
 			<StatusBar backgroundColor={paletaDeColores.backgroundDark}/>
+			<View
+				style={{ height: 30,
+					marginTop: 10,
+					marginBottom: 10}}>
+				<ScrollView
+					horizontal
+					showsHorizontalScrollIndicator={false}
+				>
+					<TouchableOpacity style={{ padding: 5, borderRadius: 100, backgroundColor: paletaDeColores.blue + '10', borderColor: paletaDeColores.blue, borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
+						navigation.navigate('PedidosLlevar', { screen:'Listar'})
+					}}>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10, }}>Listar Pedidos Llevar</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
+						navigation.navigate('PedidosLlevar', { screen:'Editar'})
+					}} >
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Editar Pedidos Llevar</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
+						navigation.navigate('PedidosLlevar', { screen:'Eliminar'})
+					}}>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Eliminar Pedidos Llevar</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
+						navigation.navigate('PedidosLlevar', { screen:'Guardar'})
+					}}
+					>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Agregar Pedidos Llevar</Text>
+					</TouchableOpacity>
+
+				</ScrollView>
+			</View>
 			{/* Titles */}
 			<View style={{flexDirection: 'row', alignItems: 'center'}}>
 				<View style={{width: '10%'}}>
@@ -195,13 +227,22 @@ const GuardarPedidosLlevar = ({navigation}) => {
 					/>
 
 				</View>
-				<TouchableOpacity
-					onPress={() => {
-						guardarPedidos();
-					}}
-				>
-					<Text style={styles.item}>Agregar Registro</Text>
+				<View style={{width: '50%', alignSelf: 'center'}}>
+				<TouchableOpacity style={styles.botonGuardar}
+								  onPress={() => {
+									  guardarPedidos();
+								  }}>
+					<Ionicons name="save" style={{
+						fontSize: 24,
+						color: paletaDeColores.white,
+						padding: 10,
+
+					}} />
+					<Text style={styles.botonTexto}>Guardar</Text>
 				</TouchableOpacity>
+				</View>
+
+
 			</View>
 
 
@@ -220,6 +261,22 @@ const styles = StyleSheet.create({
 	}, header: {
 		justifyContent: 'space-between',
 		flexDirection: 'row',
+	},
+	botonTexto:{
+		color: paletaDeColores.white,
+		marginHorizontal: 10,
+		fontWeight: '600',
+		fontSize: 16
+	},
+	botonGuardar:{
+		flexDirection: 'row',
+		padding: 6,
+		borderRadius: 20,
+		borderColor: 'white',
+		backgroundColor:
+		paletaDeColores.green,
+		borderWidth: 1,
+		alignItems: 'center'
 	},
 	back: {
 		fontSize: 22,
@@ -280,3 +337,5 @@ const styles = StyleSheet.create({
 		borderRadius: 10
 	}
 })
+
+

@@ -8,17 +8,32 @@ import EliminarPedidosLlevar from "./eliminarPedidosLlevar";
 import EditarPedidosLlevar from "./editarPedidosLlevar";
 import {Entypo} from "@expo/vector-icons";
 import {paletaDeColores} from "../../styles/colores";
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Tab = createMaterialTopTabNavigator();
+const Stack = createNativeStackNavigator();
+
+// function PedidosLlevar() {
+// 	return (
+// 		<Tab.Navigator tabContent>
+// 			<Tab.Screen name="Guardar" component={guardarPedidosLlevar} />
+// 			<Tab.Screen name="Listar" component={ListarPedidosLlevar} />
+// 			<Tab.Screen name="Eliminar" component={EliminarPedidosLlevar} />
+// 			<Tab.Screen name="Editar" component={EditarPedidosLlevar} />
+// 		</Tab.Navigator>
+// 	);
+// }
 
 function PedidosLlevar() {
 	return (
-		<Tab.Navigator tabContent>
-			<Tab.Screen name="Guardar" component={guardarPedidosLlevar} />
-			<Tab.Screen name="Listar" component={ListarPedidosLlevar} />
-			<Tab.Screen name="Eliminar" component={EliminarPedidosLlevar} />
-			<Tab.Screen name="Editar" component={EditarPedidosLlevar} />
-		</Tab.Navigator>
+		<Stack.Navigator screenOptions={{
+			headerShown: false
+		}}>
+			<Stack.Screen name="Guardar" component={guardarPedidosLlevar} />
+			<Stack.Screen name="Listar" component={ListarPedidosLlevar} />
+			<Stack.Screen name="Eliminar" component={EliminarPedidosLlevar} />
+			<Stack.Screen name="Editar" component={EditarPedidosLlevar} />
+		</Stack.Navigator>
 	);
 }
 

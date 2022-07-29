@@ -10,7 +10,7 @@ import {PedidosLlevarContext} from "../../context/pedidosLlevar/pedidosLlevarCon
 const EditarPedidosLlevarForm = ({navigation}) => {
 
 	let textoMensaje = "";
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkwMzA3MTksImV4cCI6MTY1OTA2MDcxOX0.piR_oubO9PANGtwiOtKN9b5HSv2DQ7hUx6OtjGk7skk";
+	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkxMDYyMjMsImV4cCI6MTY1OTEzNjIyM30.cVRlDuZWYCdo-rVn7Lje9cfqrjodTqaM72tF5kWCv18";
 	const {idRegistro} = useContext(PedidosLlevarContext)
 	const [pedidosOpen, setPedidosOpen] = useState(false);
 	const [clientesOpen, setClientesOpen] = useState(false);
@@ -241,13 +241,19 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 					/>
 
 				</View>
-				<TouchableOpacity
-					onPress={() => {
-						editarPedidosLlevar();
-					}}
-				>
-					<Text style={styles.item}>Editar Registro</Text>
-				</TouchableOpacity>
+				<View style={{width: '65%', alignSelf: 'center'}}>
+					<TouchableOpacity style={styles.botonEditar}
+									  onPress={() => {
+										  editarPedidosLlevar();
+									  }}>
+						<Entypo name="edit" style={{
+							fontSize: 24,
+							color: paletaDeColores.white,
+							padding: 10,
+						}} />
+						<Text style={styles.botonTexto}>Guardar cambios</Text>
+					</TouchableOpacity>
+				</View>
 			</View>
 
 
@@ -266,6 +272,21 @@ const styles = StyleSheet.create({
 	}, header: {
 		justifyContent: 'space-between',
 		flexDirection: 'row',
+	},
+	botonEditar:{
+		flexDirection: 'row',
+		padding: 6,
+		borderRadius: 20,
+		borderColor: 'white',
+		backgroundColor: paletaDeColores.blue,
+		borderWidth: 1,
+		alignItems: 'center'
+	},
+	botonTexto:{
+		color: paletaDeColores.white,
+		marginHorizontal: 10,
+		fontWeight: '600',
+		fontSize: 16
 	},
 	back: {
 		fontSize: 22,
