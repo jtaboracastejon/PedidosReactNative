@@ -78,6 +78,7 @@ const ListarPedidosLlevar = ({navigation}) => {
 				</TouchableOpacity>
 			</View>
 			<StatusBar backgroundColor={paletaDeColores.backgroundDark}/>
+			{/*Menu Pedidos*/}
 			<View
 				style={{ height: 30,
 					marginTop: 10,

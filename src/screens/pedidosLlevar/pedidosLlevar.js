@@ -9,6 +9,7 @@ import EditarPedidosLlevar from "./editarPedidosLlevar";
 import {Entypo} from "@expo/vector-icons";
 import {paletaDeColores} from "../../styles/colores";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import EditarPedidosLlevarForm from "./editarPedidosLlevarForm";
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -33,6 +34,7 @@ function PedidosLlevar() {
 			<Stack.Screen name="Listar" component={ListarPedidosLlevar} />
 			<Stack.Screen name="Eliminar" component={EliminarPedidosLlevar} />
 			<Stack.Screen name="Editar" component={EditarPedidosLlevar} />
+			<Stack.Screen name="editarPedidosLlevarForm" component={EditarPedidosLlevarForm} />
 		</Stack.Navigator>
 	);
 }

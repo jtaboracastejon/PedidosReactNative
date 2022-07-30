@@ -142,7 +142,7 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
-				<TouchableOpacity onPress={() => navigation.navigate('Inicio')}>
+				<TouchableOpacity onPress={() => navigation.goBack()}>
 					<Entypo name="chevron-thin-left" style={styles.back}/>
 				</TouchableOpacity>
 			</View>

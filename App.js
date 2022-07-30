@@ -1,4 +1,3 @@
-import { StatusBar,  } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator, } from '@react-navigation/native-stack';
@@ -78,7 +77,6 @@ const CustomizeSideMenu =({navigation})=>{
                     }}>Pedidos Llevar</Text>
                 </View>
             </TouchableOpacity>
-
         </DrawerContentScrollView>
     )
 }
@@ -96,7 +94,7 @@ export default function App() {
             >
                 <Stack.Screen name="SideMenu" component={SideMenu} />
                 <Stack.Screen name="CarritoPedidoDetalle" component={CarritoPedidoDetalle} />
-                <Stack.Screen name="editarPedidosLlevarForm" component={EditarPedidosLlevarForm} />
+
                 {/* <Stack.Screen name="FormTemplate" component={FormTemplate} /> */}
             </Stack.Navigator>
             </PedidosLlevarProvider>

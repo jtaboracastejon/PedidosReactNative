@@ -49,7 +49,7 @@ const EditarPedidosLlevar = ({navigation}) => {
 	const pressHandler = (key) => {
 		console.log(key);
 		setIdRegistro(key);
-		navigation.navigate('editarPedidosLlevarForm');
+		navigation.navigate('PedidosLlevar', { screen:'editarPedidosLlevarForm'});
 	};
 
 

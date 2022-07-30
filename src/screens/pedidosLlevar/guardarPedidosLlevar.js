@@ -19,6 +19,7 @@ const GuardarPedidosLlevar = ({navigation}) => {
 	const [clientesList, setClientesList] = useState([{label: 1, value: 1},
 		{label: 2, value: 2}]);
 	const [pedidosList, setPedidosList] = useState([]);
+	const [detallePedidosList, setDetallePedidoList] = useState([]);
 
 
 	useEffect(() => {
