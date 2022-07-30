@@ -1,14 +1,15 @@
 import {View, Text, StyleSheet, StatusBar, TouchableOpacity, ScrollView} from 'react-native'
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import {paletaDeColores} from '../../styles/colores'
 import DropDownPicker from 'react-native-dropdown-picker';
 import {Ionicons, Entypo} from '@expo/vector-icons';
 import Axios from "../../components/Axios";
 import Mensaje from "../../components/Mensaje";
+import UsuarioContext from "../../context/UsuarioContext";
 
 const GuardarPedidosLlevar = ({navigation}) => {
 	let textoMensaje = "";
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkxMDYyMjMsImV4cCI6MTY1OTEzNjIyM30.cVRlDuZWYCdo-rVn7Lje9cfqrjodTqaM72tF5kWCv18";
+	const { token } = useContext(UsuarioContext);
 	const [pedidosOpen, setPedidosOpen] = useState(false);
 	const [clientesOpen, setClientesOpen] = useState(false);
 	const [pedidosValue, setPedidosValue] = useState(null);

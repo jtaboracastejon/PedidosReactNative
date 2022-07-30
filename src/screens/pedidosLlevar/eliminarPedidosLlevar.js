@@ -14,11 +14,12 @@ import {
 import {Entypo, Ionicons} from "@expo/vector-icons";
 import {paletaDeColores} from "../../styles/colores";
 import Mensaje from "../../components/Mensaje";
-import Axios from "../../components/Axios"
+import Axios from "../../components/Axios";
+import UsuarioContext from "../../context/UsuarioContext";
 
 const EliminarPedidosLlevar = ({navigation}) => {
 	let textoMensaje = "";
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkxMDYyMjMsImV4cCI6MTY1OTEzNjIyM30.cVRlDuZWYCdo-rVn7Lje9cfqrjodTqaM72tF5kWCv18";
+	const { token } = useContext(UsuarioContext);
 	const [lista, setLista] = useState([]);
 	const [filtro, setFiltro] = useState("");
 

@@ -52,19 +52,20 @@ const UsuarioState = (props) => {
 			var textoMensaje = "";
 			var usuario = null;
 			var token = "";
-			await Axios.post('/autenticacion/iniciosesion', {
+			await Axios.post('pedidos/autenticacion/login', {
 				usuario: data.usuario,
 				contrasena: data.contrasena
 			})
 				.then(async(data) => {
 					const json = data.data;
+					console.log(json);
 					if (json.errores.length == 0) {
-						usuario = json.datos.usuario;
+						usuario = json.datos.usuario.LoginUsuario;
 						token = json.datos.token;
 						await AsyncStorage.setItem('toke_almacenado', String(token));
 						const u = JSON.stringify(usuario);
 						await AsyncStorage.setItem('usuario_almacenado', u);
-						textoMensaje = 'Bienvenido ' + usuario.nombre + ' ' + usuario.apellido;
+						textoMensaje = 'Bienvenido ' + usuario;
 					}
 					else {
 						textoMensaje = '';

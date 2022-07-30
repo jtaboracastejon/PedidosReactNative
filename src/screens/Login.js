@@ -66,7 +66,7 @@ const Login = ({navigation}) => {
 							<View style={styles.boton}>
 								<Button title="Iniciar Sesión"
 										onPress={iniciarSesion}
-										color={colores.naranja500}
+										color={'orange'}
 								></Button>
 							</View>
 							<View style={styles.boton}>
@@ -128,28 +128,28 @@ const styles = StyleSheet.create({
 		justifyContent:"center",
 		borderWidth: 1,
 		borderColor: "#dedede",
-		borderRadius: sizes.radiusContenedor,
-		backgroundColor:colores.blanco,
+		borderRadius: 1,
+		backgroundColor:'white',
 		padding:10,
 	},
 	sombraControles: {
-		shadowColor: colores.gris800,
+		shadowColor: 'gray',
 		shadowOffset: {width: -2, height: 4},
 		shadowOpacity: 0.2,
 		shadowRadius: 5,
 	},
 	tituloLogin: {
-		color: colores.textoTitulo ,
-		fontSize: sizes.fontTitulo,
+		color: 'black' ,
+		fontSize: 20,
 		fontWeight: "500",
 	},
 	controles:{
 		flex:4,
 		//backgroundColor: "#29291f",
-		marginBottom: sizes.margin1,
-		paddingTop:sizes.padding1,
-		paddingLeft:sizes.padding1,
-		paddingRight:sizes.padding1,
+		marginBottom: 2,
+		paddingTop:2,
+		paddingLeft:2,
+		paddingRight:2,
 	},
 	contenedorBotones:{
 		flex:1,
