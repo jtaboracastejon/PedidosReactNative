@@ -27,7 +27,7 @@ const ListarPedidosLlevar = ({navigation}) => {
 
 	function changeHandler(text) {
 		setLista((prevLista) => {
-			return prevLista.filter((item) => item.idregistro == text);
+			return prevLista.filter((item) => item.idregistro.toString().indexOf(text.toString()) >= 0);
 		});
 		if (text == "") {
 			buscarPedidosLlevar();

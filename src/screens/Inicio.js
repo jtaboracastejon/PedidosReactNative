@@ -18,7 +18,7 @@ const Inicio = ({ navigation }) => {
 
     function cambiarBusqueda(text) {
 		setProducts((prevProducts) => {
-			return prevProducts.filter((item) => item.Nombre.toLowerCase().indexOf(text) >= 0);
+			return prevProducts.filter((item) => item.Nombre.toLowerCase().indexOf(text.toLowerCase()) >= 0);
 		});
 		if (text == "") {
 			getDataFromDb()
@@ -115,8 +115,7 @@ const styles = StyleSheet.create({
         borderColor: paletaDeColores.backgroundLight,
     },
     titleContainer: {
-        marginBottom: 16,
-        marginTop: 16,  
+        marginTop: 16,
         marginBottom: 10,
     },
     titleText: {
