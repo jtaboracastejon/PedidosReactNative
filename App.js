@@ -10,7 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 import PedidosLlevar from "./src/screens/pedidosLlevar/pedidosLlevar";
 import EditarPedidosLlevarForm from "./src/screens/pedidosLlevar/editarPedidosLlevarForm";
 
-import PedidosElaborados from './src/screens/pedidoselaborados/pedidoselaborados';
+import PedidosElaborados from "./src/screens/pedidosElaborados/pedidoselaborados";
 
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import {PedidosLlevarProvider} from "./src/context/pedidosLlevar/pedidosLlevarContext";

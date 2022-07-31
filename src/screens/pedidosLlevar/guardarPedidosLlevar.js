@@ -8,7 +8,7 @@ import Mensaje from "../../components/Mensaje";
 
 const GuardarPedidosLlevar = ({navigation}) => {
 	let textoMensaje = "";
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkyMTU4MzMsImV4cCI6MTY1OTI0NTgzM30.moPJKEDoTdSGLBxeQymKxqGvrewDnD2K1sYnLIVhC20";
+	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkzMDMzMDgsImV4cCI6MTY1OTYwMzMwOH0.SoVnZMSF0ve4B1XaQVyAoNcIypfJ_1VrKXA1LMU4OOQ";
 	const [pedidosOpen, setPedidosOpen] = useState(false);
 	const [clientesOpen, setClientesOpen] = useState(false);
 	const [pedidosValue, setPedidosValue] = useState(null);

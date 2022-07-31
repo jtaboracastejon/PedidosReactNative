@@ -17,29 +17,24 @@ import Axios from "../../components/Axios"
 
 const PedidosElaboradosListar = ({navigation}) =>{
     let textoMensaje = "";
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkyOTg1ODYsImV4cCI6MTY1OTMyODU4Nn0.uoev8XGPFVHmfLC2bX0X0XeOgzzCxCXIDjcr6RupTlY";
+	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkzMDMzMDgsImV4cCI6MTY1OTYwMzMwOH0.SoVnZMSF0ve4B1XaQVyAoNcIypfJ_1VrKXA1LMU4OOQ";
 	const [lista, setLista] = useState([]);
 	const [filtro, setFiltro] = useState("");
 
-    useEffect(() => {
+	useEffect(() => {
 		BuscarPedidosElaborados();
-	}, [setLista]);
+	}, []);
 
 	function changeHandler(text) {
-		setFiltro(text);
+		setLista((prevLista) => {
+			 		return prevLista.filter((item) => item.iddetallepedido == text);
+		});
 		if (text == "") {
 			BuscarPedidosElaborados();
 		}
 	}
 
-	const onPressHandler = () => {
-		if (filtro == "") {
-			BuscarPedidosElaborados();
-		}
-		setLista((prevLista) => {
-			return prevLista.filter((item) => item.iddetallepedido == filtro);
-		});
-	};
+
 
     const BuscarPedidosElaborados = async () => {
 		try {
@@ -50,8 +45,7 @@ const PedidosElaboradosListar = ({navigation}) =>{
 			})
 				.then((data) => {
 					setLista(data.data);
-					console.log(lista);
-
+					console.log(lista)
 				})
 
 				.catch((error) => {
@@ -64,6 +58,10 @@ const PedidosElaboradosListar = ({navigation}) =>{
 			Mensaje({ titulo: 'Error registro', msj: error });
 		}
 	};
+
+
+
+
 
     return (
 		<TouchableWithoutFeedback
@@ -142,11 +140,7 @@ const PedidosElaboradosListar = ({navigation}) =>{
 
 					></TextInput>
 				</View>
-				<TouchableOpacity
-					onPress={onPressHandler}
-				>
-					<Text style={styles.item}>Filtrar</Text>
-				</TouchableOpacity>
+
 			</View>
 			{/* DropDowns */}
 				<View>

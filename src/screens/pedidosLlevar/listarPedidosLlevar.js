@@ -17,7 +17,7 @@ import Axios from "../../components/Axios"
 
 const ListarPedidosLlevar = ({navigation}) => {
 	let textoMensaje = "";
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkyMTU4MzMsImV4cCI6MTY1OTI0NTgzM30.moPJKEDoTdSGLBxeQymKxqGvrewDnD2K1sYnLIVhC20";
+	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkzMDMzMDgsImV4cCI6MTY1OTYwMzMwOH0.SoVnZMSF0ve4B1XaQVyAoNcIypfJ_1VrKXA1LMU4OOQ";
 	const [lista, setLista] = useState([]);
 	const [filtro, setFiltro] = useState("");
 

@@ -5,10 +5,11 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import {Ionicons, Entypo} from '@expo/vector-icons';
 import Axios from "../../components/Axios";
 import Mensaje from "../../components/Mensaje";
+import text from "react-native-web/dist/exports/Text";
 
 const PedidosElaboradosGuardar = ({navigation}) => {
     let textoMensaje = "";
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkyOTg1ODYsImV4cCI6MTY1OTMyODU4Nn0.uoev8XGPFVHmfLC2bX0X0XeOgzzCxCXIDjcr6RupTlY";    
+	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkzMDMzMDgsImV4cCI6MTY1OTYwMzMwOH0.SoVnZMSF0ve4B1XaQVyAoNcIypfJ_1VrKXA1LMU4OOQ";
     
     const [detallepedidoOpen, setdetallepedidoOpen] = useState(false);
     const [usuarioOpen, setusuarioOpen] = useState(false);
@@ -20,15 +21,15 @@ const PedidosElaboradosGuardar = ({navigation}) => {
     const [idusuario, setidusuario] = useState("");
 
 	const [detallepedidoList, setdetallepedidoList] = useState([]);
-    const [usuariosList, setusuariosList] = useState([]);
+    const [usuariosList, setusuariosList] = useState([{label: 1, value:1}]);
 
     useEffect(() => {
 		Buscardetallepedido();
 	}, [setdetallepedidoList]);
 
-    useEffect(() => {
-		Buscarusuarios();
-	}, [setusuariosList]);
+    // useEffect(() => {
+	// 	Buscarusuarios();
+	// }, [setusuariosList]);
 
     const Buscardetallepedido = async () =>{
         try {
@@ -95,7 +96,7 @@ const PedidosElaboradosGuardar = ({navigation}) => {
     const GuardarPedido = async () => {
 		console.log(iddetallepedido)
 		console.log(idusuario)
-		var json1;
+		var textoMensaje = ""
         if (!token) {
 			textoMensaje = "Debe iniciar sesion";
 			//console.log(token);
@@ -110,31 +111,34 @@ const PedidosElaboradosGuardar = ({navigation}) => {
 			};
 			await Axios.post("/pedidos/pedidoselaborados/guardar", bodyParameters, config)
 				.then((data) => {
-					json1 = data.data;
-					console.log(json1)
-					if (json1.errores.length == 0) {
+					const json = data.data;
+					// console.log(json)
+					if (json.errores.length == 0) {
 						console.log("Solicitud Realizada");
 						Mensaje({
 							titulo: "Registro Pedidos Elaborados",
 							msj: "Su Pedido Elaborado fue guardado con exito",
 						});
 					} else {
-						textoMensaje = "";
-						json1.errores.forEach((element) => {
-							textoMensaje += element.mensaje + ". ";
-							Mensaje({ titulo: "Error en el registro", msj: textoMensaje });
-						});
+						const json = data.data;
+						console.log(json.errores)
+							Mensaje({
+								titulo: "No se pudo realizar la operacion",
+								msj: json.errores,
+							});
+
+
 					}
 				})
 				.catch((error) => {
 					//textoMensaje = error;
 					//Mensaje({ titulo: "Error en el registro", msj: textoMensaje });
 					textoMensaje = "";
-					console.log(json1)
-						json1.errores.forEach((element) => {
-							textoMensaje += element.mensaje + ". ";
-							Mensaje({ titulo: "Error en el registro", msj: textoMensaje });
-						});
+					// console.log(json1)
+					// 	json1.errores.forEach((element) => {
+					// 		textoMensaje += element.mensaje + ". ";
+					// 		Mensaje({ titulo: "Error en el registro", msj: textoMensaje });
+					// 	});
 				});
 		}
 		console.log(textoMensaje);
