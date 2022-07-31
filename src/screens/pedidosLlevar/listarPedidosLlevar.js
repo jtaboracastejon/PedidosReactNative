@@ -20,27 +20,19 @@ const ListarPedidosLlevar = ({navigation}) => {
 	let textoMensaje = "";
 	const { token } = useContext(UsuarioContext);
 	const [lista, setLista] = useState([]);
-	const [filtro, setFiltro] = useState("");
 
 	useEffect(() => {
 		buscarPedidosLlevar();
 	}, [setLista]);
 
 	function changeHandler(text) {
-		setFiltro(text);
+		setLista((prevLista) => {
+			return prevLista.filter((item) => item.idregistro == text);
+		});
 		if (text == "") {
 			buscarPedidosLlevar();
 		}
 	}
-
-	const onPressHandler = () => {
-		if (filtro == "") {
-			buscarPedidosLlevar();
-		}
-		setLista((prevLista) => {
-			return prevLista.filter((item) => item.idregistro == filtro);
-		});
-	};
 
 	const buscarPedidosLlevar = async () => {
 		try {
@@ -51,7 +43,6 @@ const ListarPedidosLlevar = ({navigation}) => {
 			})
 				.then((data) => {
 					setLista(data.data);
-					console.log(lista);
 
 				})
 
@@ -143,11 +134,6 @@ const ListarPedidosLlevar = ({navigation}) => {
 
 					></TextInput>
 				</View>
-				<TouchableOpacity
-					onPress={onPressHandler}
-				>
-					<Text style={styles.item}>Filtrar</Text>
-				</TouchableOpacity>
 			</View>
 			{/* DropDowns */}
 				<View>

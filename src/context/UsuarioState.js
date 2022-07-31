@@ -81,7 +81,6 @@ const UsuarioState = (props) => {
 			textoMensaje = error;
 			console.log(error);
 		}
-		Mensaje({titulo: "Inicio de sesión", msj: textoMensaje});
 		dispath({
 			datos: {
 				usuario: usuario,
