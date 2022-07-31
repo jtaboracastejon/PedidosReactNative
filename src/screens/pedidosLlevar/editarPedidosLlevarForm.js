@@ -10,7 +10,7 @@ import {PedidosLlevarContext} from "../../context/pedidosLlevar/pedidosLlevarCon
 const EditarPedidosLlevarForm = ({navigation}) => {
 
 	let textoMensaje = "";
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkxMDYyMjMsImV4cCI6MTY1OTEzNjIyM30.cVRlDuZWYCdo-rVn7Lje9cfqrjodTqaM72tF5kWCv18";
+	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkyMTU4MzMsImV4cCI6MTY1OTI0NTgzM30.moPJKEDoTdSGLBxeQymKxqGvrewDnD2K1sYnLIVhC20";
 	const {idRegistro} = useContext(PedidosLlevarContext)
 	const [pedidosOpen, setPedidosOpen] = useState(false);
 	const [clientesOpen, setClientesOpen] = useState(false);

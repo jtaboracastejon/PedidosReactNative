@@ -10,6 +10,8 @@ import { Ionicons } from '@expo/vector-icons';
 import PedidosLlevar from "./src/screens/pedidosLlevar/pedidosLlevar";
 import EditarPedidosLlevarForm from "./src/screens/pedidosLlevar/editarPedidosLlevarForm";
 
+import PedidosElaborados from './src/screens/pedidoselaborados/pedidoselaborados';
+
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import {PedidosLlevarProvider} from "./src/context/pedidosLlevar/pedidosLlevarContext";
 const Drawer = createDrawerNavigator();
@@ -23,6 +25,8 @@ function SideMenu() {
             <Drawer.Screen name="Inicio" component={Inicio} />
             <Drawer.Screen name="FormTemplate" component={FormTemplate} />
             <Drawer.Screen name="PedidosLlevar" component={PedidosLlevar} />
+            <Drawer.Screen name="PedidosElaborados" component={PedidosElaborados} />
+            
         </Drawer.Navigator>
     )
 }
@@ -76,6 +80,19 @@ const CustomizeSideMenu =({navigation})=>{
                         textAlign: 'center',
 
                     }}>Pedidos Llevar</Text>
+                </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => navigation.navigate('PedidosElaborados')}>
+                <View style={styles.sideMenuItem}>
+                    <Ionicons name="folder" size={24} color="#0043F9" />
+                    <Text style={{
+                        width: '90%',
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+
+                    }}>Pedidos Elaborados</Text>
                 </View>
             </TouchableOpacity>
 

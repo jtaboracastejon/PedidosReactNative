@@ -15,35 +15,35 @@ import {paletaDeColores} from "../../styles/colores";
 import Mensaje from "../../components/Mensaje";
 import Axios from "../../components/Axios"
 
-const ListarPedidosLlevar = ({navigation}) => {
-	let textoMensaje = "";
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkyMTU4MzMsImV4cCI6MTY1OTI0NTgzM30.moPJKEDoTdSGLBxeQymKxqGvrewDnD2K1sYnLIVhC20";
+const PedidosElaboradosListar = ({navigation}) =>{
+    let textoMensaje = "";
+	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkyOTg1ODYsImV4cCI6MTY1OTMyODU4Nn0.uoev8XGPFVHmfLC2bX0X0XeOgzzCxCXIDjcr6RupTlY";
 	const [lista, setLista] = useState([]);
 	const [filtro, setFiltro] = useState("");
 
-	useEffect(() => {
-		buscarPedidosLlevar();
+    useEffect(() => {
+		BuscarPedidosElaborados();
 	}, [setLista]);
 
 	function changeHandler(text) {
 		setFiltro(text);
 		if (text == "") {
-			buscarPedidosLlevar();
+			BuscarPedidosElaborados();
 		}
 	}
 
 	const onPressHandler = () => {
 		if (filtro == "") {
-			buscarPedidosLlevar();
+			BuscarPedidosElaborados();
 		}
 		setLista((prevLista) => {
-			return prevLista.filter((item) => item.idregistro == filtro);
+			return prevLista.filter((item) => item.iddetallepedido == filtro);
 		});
 	};
 
-	const buscarPedidosLlevar = async () => {
+    const BuscarPedidosElaborados = async () => {
 		try {
-			await Axios.get("/pedidos/pedidosllevar/listar", {
+			await Axios.get("/pedidos/pedidoselaborados/listar", {
 				headers: {
 					Authorization: "Bearer " + token,
 				},
@@ -65,7 +65,7 @@ const ListarPedidosLlevar = ({navigation}) => {
 		}
 	};
 
-	return (
+    return (
 		<TouchableWithoutFeedback
 			onPress={() => {
 				Keyboard.dismiss();
@@ -87,33 +87,34 @@ const ListarPedidosLlevar = ({navigation}) => {
 					showsHorizontalScrollIndicator={false}
 				>
 					<TouchableOpacity style={{ padding: 5, borderRadius: 100, backgroundColor: paletaDeColores.blue + '10', borderColor: paletaDeColores.blue, borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Listar'})
+						navigation.navigate('PedidosElaborados', { screen:'Listar'})
 					}}>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10, }}>Listar Pedidos Llevar</Text>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10, }}>Listar Pedidos Elaborados</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Editar'})
-					}} >
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Editar Pedidos Llevar</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Eliminar'})
-					}}>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Eliminar Pedidos Llevar</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Guardar'})
+                    <TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
+						navigation.navigate('PedidosElaborados', { screen:'Guardar'})
 					}}
 					>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Agregar Pedidos Llevar</Text>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Agregar Pedidos Elaborados</Text>
 					</TouchableOpacity>
+					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
+						navigation.navigate('PedidosElaborados', { screen:'Editar'})
+					}} >
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Editar Pedidos Elaborados</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
+						navigation.navigate('PedidosElaborados', { screen:'Eliminar'})
+					}}>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Eliminar Pedidos Elaborados</Text>
+					</TouchableOpacity>
+					
 
 				</ScrollView>
 			</View>
 			{/* Titles */}
 			<View style={{flexDirection: 'row', alignItems: 'center'}}>
 				<View style={{width: '10%'}}>
-					<Ionicons name="checkmark-done-circle-sharp" size={24} color="black"/>
+					<Entypo name="login" size={24} color="black"/>
 				</View>
 				<View style={{
 					borderBottomWidth: 1,
@@ -128,7 +129,7 @@ const ListarPedidosLlevar = ({navigation}) => {
 						fontWeight: '600',
 						letterSpacing: 1,
 					}}>
-						Lista de Pedidos Llevar
+						Lista de Pedidos Elaborados
 					</Text>
 				</View>
 			</View>
@@ -150,11 +151,11 @@ const ListarPedidosLlevar = ({navigation}) => {
 			{/* DropDowns */}
 				<View>
 					{lista.map((item) => (
-						<View key={item.idregistro}>
+						<View key={item.iddetallepedido}>
 							<View style={styles.itemList}>
-								<Text>Id de Registro: {item.idregistro}</Text>
-								<Text>Id de Pedido {item.idpedido}</Text>
-								<Text>Id del Cliente {item.idcliente}</Text>
+								<Text>Id de Detalle Pedido: {item.iddetallepedido}</Text>
+								<Text>Id de Usuario: {item.idusuario}</Text>
+								<Text>Fecha Hora: {item.fechahora}</Text>
 							</View>
 						</View>
 					))}
@@ -163,9 +164,11 @@ const ListarPedidosLlevar = ({navigation}) => {
 		</ScrollView>
 		</TouchableWithoutFeedback>
 	);
+
 };
 
-export default ListarPedidosLlevar;
+
+export default PedidosElaboradosListar;
 
 const styles = StyleSheet.create({
 	container: {
@@ -246,4 +249,3 @@ const styles = StyleSheet.create({
 		borderRadius: 10
 	},
 })
-
