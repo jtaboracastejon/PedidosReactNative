@@ -1,18 +1,22 @@
-import { StatusBar,  } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import React, { useState, useContext, useEffect } from "react";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator, } from '@react-navigation/native-stack';
 import Inicio from './src/screens/Inicio';
 import CarritoPedidoDetalle from './src/screens/carritoPedidoDetalle';
 import FormTemplate from './src/screens/formTemplate';
 import { Ionicons } from '@expo/vector-icons';
-// import SideMenu from './src/screens/sideMenu';
+import UsuarioContext from './src/context/UsuarioContext';
+import Cargando from './src/components/Cargando';
 import PedidosLlevar from "./src/screens/pedidosLlevar/pedidosLlevar";
-import EditarPedidosLlevarForm from "./src/screens/pedidosLlevar/editarPedidosLlevarForm";
+import Login from "./src/screens/Login";
+import PedidosMesa from "./src/screens/pedidosMesa/pedidosMesa";
 
 import PedidosElaborados from "./src/screens/pedidoselaborados/pedidoselaborados";
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import {PedidosLlevarProvider} from "./src/context/pedidosLlevar/pedidosLlevarContext";
+import UsuarioState from "./src/context/UsuarioState";
+
 const Drawer = createDrawerNavigator();
 function SideMenu() {
     return (
@@ -25,7 +29,7 @@ function SideMenu() {
             <Drawer.Screen name="FormTemplate" component={FormTemplate} />
             <Drawer.Screen name="PedidosLlevar" component={PedidosLlevar} />
             <Drawer.Screen name="PedidosElaborados" component={PedidosElaborados} />
-            
+            <Drawer.Screen name="PedidosMesa" component={PedidosMesa} />
         </Drawer.Navigator>
     )
 }
@@ -81,6 +85,14 @@ const CustomizeSideMenu =({navigation})=>{
                     }}>Pedidos Llevar</Text>
                 </View>
             </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('PedidosMesa')}>
+                <View style={styles.sideMenuItem}>
+                    <Ionicons name="bookmark" size={24} color="#0043F9" />
+                    <Text style={{
+                        width: '90%',
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        textAlign: 'center',
 
             <TouchableOpacity onPress={() => navigation.navigate('PedidosElaborados')}>
                 <View style={styles.sideMenuItem}>
@@ -94,28 +106,58 @@ const CustomizeSideMenu =({navigation})=>{
                     }}>Pedidos Elaborados</Text>
                 </View>
             </TouchableOpacity>
-
+                    }}>Pedidos Mesa</Text>
+                </View>
+            </TouchableOpacity>
         </DrawerContentScrollView>
+
     )
+}
+const Stack = createNativeStackNavigator();
+
+function MenuNavigator(){
+    const { token, setDatos, sesionIniciada, tokenValidado } = React.useContext(UsuarioContext);
+    const [inciarAplicacion, setIniciarAplicacion] = React.useState(false);
+
+    React.useEffect(() => {
+        setDatos();
+        setIniciarAplicacion(true);
+    }, [])
+    if (inciarAplicacion) {
+        return (
+            <PedidosLlevarProvider>
+                <Stack.Navigator
+                    screenOptions={{
+                        headerShown: false,
+                    }}
+                >
+                    {sesionIniciada ? (
+                        <>
+                            <Stack.Screen name="SideMenu" component={SideMenu}/>
+                            <Stack.Screen name="CarritoPedidoDetalle" component={CarritoPedidoDetalle}/>
+                        </>
+                    ) : (
+                        <>
+                            <Stack.Screen name="Login" component={Login}/>
+                        </>
+                    )
+                    }
+                    {/* <Stack.Screen name="FormTemplate" component={FormTemplate} /> */}
+                </Stack.Navigator>
+            </PedidosLlevarProvider>
+
+        )}
+        else {
+        return <Cargando texto="Cargando aplicación"/>;
+        }
 }
 
 export default function App() {
-
-    const Stack = createNativeStackNavigator();
     return (
         <NavigationContainer>
-            <PedidosLlevarProvider>
-            <Stack.Navigator
-                screenOptions={{
-                    headerShown: false,
-                }}
-            >
-                <Stack.Screen name="SideMenu" component={SideMenu} />
-                <Stack.Screen name="CarritoPedidoDetalle" component={CarritoPedidoDetalle} />
-                <Stack.Screen name="editarPedidosLlevarForm" component={EditarPedidosLlevarForm} />
-                {/* <Stack.Screen name="FormTemplate" component={FormTemplate} /> */}
-            </Stack.Navigator>
-            </PedidosLlevarProvider>
+        <UsuarioState>
+            <MenuNavigator></MenuNavigator>
+        </UsuarioState>
         </NavigationContainer>
     );
 }

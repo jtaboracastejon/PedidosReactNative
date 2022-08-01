@@ -15,83 +15,47 @@ import {Entypo, Ionicons} from "@expo/vector-icons";
 import {paletaDeColores} from "../../styles/colores";
 import Mensaje from "../../components/Mensaje";
 import Axios from "../../components/Axios";
+import {PedidosLlevarContext} from "../../context/pedidosLlevar/pedidosLlevarContext";
 import UsuarioContext from "../../context/UsuarioContext";
 import {useIsFocused} from "@react-navigation/native";
 
-const EliminarPedidosLlevar = ({navigation}) => {
+const EditarPedidosMesa = ({navigation}) => {
+	const isFocused= useIsFocused()
 	let textoMensaje = "";
 	const { token } = useContext(UsuarioContext);
 	const [lista, setLista] = useState([]);
 	const [filtro, setFiltro] = useState("");
+	const {
+		setIdRegistroMesa
+	} = useContext(PedidosLlevarContext);
 
-	useEffect(() => {
-		buscarPedidosLlevar();
-	}, [setLista]);
-
-	const isFocused= useIsFocused()
 	useEffect(() => {
 		if(isFocused){
-			buscarPedidosLlevar();
+			buscarPedidosMesa();
 		}
 	}, [isFocused]);
+
+
 
 	function changeHandler(text) {
 		setLista((prevLista) => {
 			return prevLista.filter((item) => item.idregistro.toString().indexOf(text.toString()) >= 0);
 		});
 		if (text == "") {
-			buscarPedidosLlevar();
+			buscarPedidosMesa();
 		}
 	}
 
 	const pressHandler = (key) => {
-		const cambiarDecision = () => {
-			try {
-				console.log(key);
-				var textoMensaje = null;
-				Axios.delete("pedidos/pedidosLlevar/eliminar?id=" + key, {
-					headers: {
-						Authorization: "Bearer " + token,
-					},
-				})
-					.then((data) => {
-						const json = data.data;
-						if (json.errores.length == 0) {
-							console.log("Eliminado con exito el registro");
-							buscarPedidosLlevar();
-						} else {
-							textoMensaje = "";
-							json.errores.forEach((element) => {
-								textoMensaje += element.mensaje + ". ";
-							});
-						}
-					})
-					.catch((error) => {
-						textoMensaje = error;
-					});
-			} catch (error) {
-				textoMensaje = error;
-				console.log(error);
-			}
-		}
-
-		Alert.alert("Eliminar Registro", "Desea eliminar el registro", [
-			{
-				text: "Cancelar",
-				onPress: () => console.log("Cancel Pressed"),
-				style: "cancel",
-			},
-			{
-				text: "OK",
-				onPress: () => cambiarDecision()
-			},
-		]);
+		console.log(key);
+		setIdRegistroMesa(key);
+		navigation.navigate('PedidosMesa', { screen:'EditarPedidosMesaForm'});
 	};
 
 
-	const buscarPedidosLlevar = async () => {
+	const buscarPedidosMesa = async () => {
 		try {
-			await Axios.get("/pedidos/pedidosllevar/listar", {
+			await Axios.get("/pedidos/pedidosmesa/listar", {
 				headers: {
 					Authorization: "Bearer " + token,
 				},
@@ -124,32 +88,32 @@ const EliminarPedidosLlevar = ({navigation}) => {
 				<StatusBar backgroundColor={paletaDeColores.backgroundDark}/>
 				<View
 					style={{ height: 30,
-						marginTop: 10,
-						marginBottom: 10}}>
+					marginTop: 10,
+					marginBottom: 10}}>
 					<ScrollView
 						horizontal
 						showsHorizontalScrollIndicator={false}
 					>
 						<TouchableOpacity style={{ padding: 5, borderRadius: 100, backgroundColor: paletaDeColores.blue + '10', borderColor: paletaDeColores.blue, borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-							navigation.navigate('PedidosLlevar', { screen:'Listar'})
+							navigation.navigate('PedidosMesa', { screen:'Listar'})
 						}}>
-							<Text style={{ color: paletaDeColores.black, marginHorizontal: 10, }}>Listar Pedidos Llevar</Text>
+							<Text style={{ color: paletaDeColores.black, marginHorizontal: 10, }}>Listar Pedidos Mesa</Text>
 						</TouchableOpacity>
 						<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-							navigation.navigate('PedidosLlevar', { screen:'Editar'})
+							navigation.navigate('PedidosMesa', { screen:'Editar'})
 						}} >
-							<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Editar Pedidos Llevar</Text>
+							<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Editar Pedidos Mesa</Text>
 						</TouchableOpacity>
 						<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-							navigation.navigate('PedidosLlevar', { screen:'Eliminar'})
+							navigation.navigate('PedidosMesa', { screen:'Eliminar'})
 						}}>
-							<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Eliminar Pedidos Llevar</Text>
+							<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Eliminar Pedidos Mesa</Text>
 						</TouchableOpacity>
 						<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-							navigation.navigate('PedidosLlevar', { screen:'Guardar'})
+							navigation.navigate('PedidosMesa', { screen:'Guardar'})
 						}}
 						>
-							<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Agregar Pedidos Llevar</Text>
+							<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Agregar Pedidos Mesa</Text>
 						</TouchableOpacity>
 
 					</ScrollView>
@@ -172,7 +136,7 @@ const EliminarPedidosLlevar = ({navigation}) => {
 							fontWeight: '600',
 							letterSpacing: 1,
 						}}>
-							Eliminar Pedidos Llevar
+							Editar Pedidos Mesa
 						</Text>
 					</View>
 				</View>
@@ -184,7 +148,6 @@ const EliminarPedidosLlevar = ({navigation}) => {
 
 						></TextInput>
 					</View>
-
 				</View>
 				{/* DropDowns */}
 				<View>
@@ -192,8 +155,10 @@ const EliminarPedidosLlevar = ({navigation}) => {
 						<View key={item.idregistro}>
 							<TouchableOpacity style={styles.itemList} onPress={()=>pressHandler(item.idregistro, item.idpedido, item.idcliente)}>
 								<Text>Id de Registro: {item.idregistro}</Text>
-								<Text>Id de Pedido {item.idpedido}</Text>
-								<Text>Id del Cliente {item.idcliente}</Text>
+								<Text>Id de Pedido: {item.idpedido}</Text>
+								<Text>Id de Mesa: {item.idmesa}</Text>
+								<Text>Cuenta: {item.cuenta}</Text>
+								<Text>Nombre de Cuenta: {item.nombrecuenta}</Text>
 							</TouchableOpacity>
 						</View>
 					))}
@@ -203,7 +168,7 @@ const EliminarPedidosLlevar = ({navigation}) => {
 	);
 };
 
-export default EliminarPedidosLlevar;
+export default EditarPedidosMesa;
 
 const styles = StyleSheet.create({
 	container: {

@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, StatusBar, TouchableOpacity, ScrollView} from 'react-native'
+import {View, Text, StyleSheet, StatusBar, TouchableOpacity, ScrollView, TextInput, Keyboard} from 'react-native'
 import React, {useState, useEffect, useContext} from 'react'
 import {paletaDeColores} from '../../styles/colores'
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -7,21 +7,18 @@ import Axios from "../../components/Axios";
 import Mensaje from "../../components/Mensaje";
 import UsuarioContext from "../../context/UsuarioContext";
 
-const GuardarPedidosLlevar = ({navigation}) => {
+const GuardarPedidosMesa = ({navigation}) => {
 	let textoMensaje = "";
 	const { token } = useContext(UsuarioContext);
 	const [pedidosOpen, setPedidosOpen] = useState(false);
-	const [clientesOpen, setClientesOpen] = useState(false);
 	const [pedidosValue, setPedidosValue] = useState(null);
-	const [clientesValue, setClientesValue] = useState(null);
 	const [idpedido, setIdpedido] = useState("");
-	const [idcliente, setIdcliente] = useState("");
+	const [idmesa, setIdMesa] = useState("");
+	const [cuenta, setCuenta] = useState("");
+	const [nombrecuenta, setNombrecuenta] = useState("");
 
-	const [clientesList, setClientesList] = useState([
-		{label: 1, value: 1},
-		{label: 2, value: 2}]
-	);
-
+	const [clientesList, setClientesList] = useState([{label: 1, value: 1},
+		{label: 2, value: 2}]);
 	const [pedidosList, setPedidosList] = useState([]);
 	const [detallePedidosList, setDetallePedidoList] = useState([]);
 
@@ -69,18 +66,21 @@ const GuardarPedidosLlevar = ({navigation}) => {
 			console.log(token);
 			const bodyParameters = {
 				idpedido: idpedido,
-				idcliente: idcliente,
+				idpedidomesa: idmesa,
+				cuenta: cuenta,
+				nombrecuenta: nombrecuenta
+
 			};
 			const config = {
 				headers: { Authorization: `Bearer ${token}` },
 			};
-			await Axios.post("/pedidos/pedidosllevar/guardar", bodyParameters, config)
+			await Axios.post("/pedidos/pedidosmesa/guardar", bodyParameters, config)
 				.then((data) => {
 					const json = data.data;
 					if (json.errores.length == 0) {
 						console.log("Solicitud Realizada");
 						Mensaje({
-							titulo: "Registro Pedidos Llevar",
+							titulo: "Registro Pedidos Mesa",
 							msj: "Su registro fue guardado con exito",
 						});
 					} else {
@@ -115,25 +115,25 @@ const GuardarPedidosLlevar = ({navigation}) => {
 					showsHorizontalScrollIndicator={false}
 				>
 					<TouchableOpacity style={{ padding: 5, borderRadius: 100, backgroundColor: paletaDeColores.blue + '10', borderColor: paletaDeColores.blue, borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Listar'})
+						navigation.navigate('PedidosMesa', { screen:'Listar'})
 					}}>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10, }}>Listar Pedidos Llevar</Text>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10, }}>Listar Pedidos Mesa</Text>
 					</TouchableOpacity>
 					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Editar'})
+						navigation.navigate('PedidosMesa', { screen:'Editar'})
 					}} >
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Editar Pedidos Llevar</Text>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Editar Pedidos Mesa</Text>
 					</TouchableOpacity>
 					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Eliminar'})
+						navigation.navigate('PedidosMesa', { screen:'Eliminar'})
 					}}>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Eliminar Pedidos Llevar</Text>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Eliminar Pedidos Mesa</Text>
 					</TouchableOpacity>
 					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Guardar'})
+						navigation.navigate('PedidosMesa', { screen:'Guardar'})
 					}}
 					>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Agregar Pedidos Llevar</Text>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Agregar Pedidos Mesa</Text>
 					</TouchableOpacity>
 
 				</ScrollView>
@@ -156,7 +156,7 @@ const GuardarPedidosLlevar = ({navigation}) => {
 						fontWeight: '600',
 						letterSpacing: 1,
 					}}>
-						Registro de Pedidos Llevar
+						Registro de Pedidos Mesa
 					</Text>
 				</View>
 			</View>
@@ -198,39 +198,16 @@ const GuardarPedidosLlevar = ({navigation}) => {
 					/>
 				</View>
 				<View>
-					<Text style={styles.label}>
-						Id Cliente
-					</Text>
-					<DropDownPicker
-						placeholder='Seleccione una opción'
-						zIndex={1}
-						searchable={true}
-						onChangeValue={(value) => {
-							setIdcliente(value);
-						}}
-						searchPlaceholder="Buscar..."
-						searchTextInputStyle={{
-							borderWidth: 1,
-							borderColor: paletaDeColores.backgroundMedium,
-						}}
-						placeholderStyle={{
-							color: paletaDeColores.backgroundMedium,
-						}}
-						style={{
-							backgroundColor: paletaDeColores.white,
-							borderWidth: 0,
-						}}
-						dropDownContainerStyle={{
-							borderWidth: 0,
-						}}
-						open={clientesOpen}
-						value={clientesValue}
-						items={clientesList}
-						setOpen={setClientesOpen}
-						setValue={setClientesValue}
-						setItems={setClientesList}
-					/>
-
+					<Text style={styles.label}>Id Mesa</Text>
+					<TextInput style={styles.input} onChangeText={setIdMesa} keyboardType={'numeric'} placeholder='e.j. 1234' selectionColor="#777777"></TextInput>
+				</View>
+				<View>
+					<Text style={styles.label}>Cuenta</Text>
+					<TextInput style={styles.input} onChangeText={setCuenta}  keyboardType={'numeric'} placeholder='e.j. 1234' selectionColor="#777777"></TextInput>
+				</View>
+				<View>
+					<Text style={styles.label}>Nombre</Text>
+					<TextInput style={styles.input} onChangeText={setNombrecuenta} keyboardType={'numeric'} placeholder='e.j. Mario' selectionColor="#777777"></TextInput>
 				</View>
 				<View style={{width: '50%', alignSelf: 'center'}}>
 				<TouchableOpacity style={styles.botonGuardar}
@@ -255,7 +232,7 @@ const GuardarPedidosLlevar = ({navigation}) => {
 	)
 }
 
-export default GuardarPedidosLlevar
+export default GuardarPedidosMesa
 
 const styles = StyleSheet.create({
 	container: {

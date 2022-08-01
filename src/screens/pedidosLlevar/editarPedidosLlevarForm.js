@@ -6,11 +6,12 @@ import {Ionicons, Entypo} from '@expo/vector-icons';
 import Axios from "../../components/Axios";
 import Mensaje from "../../components/Mensaje";
 import {PedidosLlevarContext} from "../../context/pedidosLlevar/pedidosLlevarContext";
+import UsuarioContext from "../../context/UsuarioContext";
 
 const EditarPedidosLlevarForm = ({navigation}) => {
 
 	let textoMensaje = "";
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkyMTU4MzMsImV4cCI6MTY1OTI0NTgzM30.moPJKEDoTdSGLBxeQymKxqGvrewDnD2K1sYnLIVhC20";
+	const { token } = useContext(UsuarioContext);
 	const {idRegistro} = useContext(PedidosLlevarContext)
 	const [pedidosOpen, setPedidosOpen] = useState(false);
 	const [clientesOpen, setClientesOpen] = useState(false);
@@ -54,7 +55,9 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 							titulo: "Registro Pedidos Llevar",
 							msj: "Su registro fue editado con exito",
 						});
-						navigation.goBack();
+						navigation.navigate('PedidosLlevar', { screen:'Editar'})
+
+
 					} else {
 						textoMensaje = "";
 						json.errores.forEach((element) => {
@@ -142,7 +145,7 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
-				<TouchableOpacity onPress={() => navigation.navigate('Inicio')}>
+				<TouchableOpacity onPress={() =>navigation.navigate('PedidosLlevar', { screen:'Editar'})}>
 					<Entypo name="chevron-thin-left" style={styles.back}/>
 				</TouchableOpacity>
 			</View>
