@@ -1,15 +1,16 @@
 import {View, Text, StyleSheet, StatusBar, TouchableOpacity, ScrollView} from 'react-native'
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import {paletaDeColores} from '../../styles/colores'
 import DropDownPicker from 'react-native-dropdown-picker';
 import {Ionicons, Entypo} from '@expo/vector-icons';
 import Axios from "../../components/Axios";
 import Mensaje from "../../components/Mensaje";
 import text from "react-native-web/dist/exports/Text";
+import UsuarioContext from "../../context/UsuarioContext";
 
 const PedidosElaboradosGuardar = ({navigation}) => {
     let textoMensaje = "";
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkzODE4MzAsImV4cCI6MTY1OTY4MTgzMH0.ksJbvQHOm4h9UbOJXzOaDHj-dMG1UFgCFzJYrT91KKs";
+	const {token} = useContext(UsuarioContext);
     
     const [detallepedidoOpen, setdetallepedidoOpen] = useState(false);
     const [usuarioOpen, setusuarioOpen] = useState(false);

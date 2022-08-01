@@ -15,10 +15,11 @@ import {paletaDeColores} from "../../styles/colores";
 import Mensaje from "../../components/Mensaje";
 import Axios from "../../components/Axios"
 import {useIsFocused} from "@react-navigation/native";
+import UsuarioContext from "../../context/UsuarioContext";
 
 const PedidosElaboradosListar = ({navigation}) =>{
     let textoMensaje = "";
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkzODE4MzAsImV4cCI6MTY1OTY4MTgzMH0.ksJbvQHOm4h9UbOJXzOaDHj-dMG1UFgCFzJYrT91KKs";
+	const {token} = useContext(UsuarioContext);
 	const [lista, setLista] = useState([]);
 	const [filtro, setFiltro] = useState("");
 

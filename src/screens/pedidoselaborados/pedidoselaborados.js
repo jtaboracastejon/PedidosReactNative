@@ -20,10 +20,6 @@ function PedidosElaborados() {
 		<Stack.Navigator screenOptions={{
 			headerShown: false
 		}}>
-			{/*  />
-			
-			<Stack.Screen name="Eliminar" component={EliminarPedidosLlevar} />
-			<Stack.Screen name="Editar" component={EditarPedidosLlevar} /> */}
             <Stack.Screen name="Guardar" component={PedidosElaboradosGuardar} />
 			<Stack.Screen name="Listar" component={PedidosElaboradosListar} />
 			<Stack.Screen name="Eliminar" component={pedidoselaboradoseliminar} />

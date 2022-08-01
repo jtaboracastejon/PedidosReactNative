@@ -94,6 +94,10 @@ const CustomizeSideMenu =({navigation})=>{
                         fontWeight: 'bold',
                         textAlign: 'center',
 
+                    }}>Pedidos Mesa</Text>
+                </View>
+            </TouchableOpacity>
+
             <TouchableOpacity onPress={() => navigation.navigate('PedidosElaborados')}>
                 <View style={styles.sideMenuItem}>
                     <Ionicons name="folder" size={24} color="#0043F9" />
@@ -106,10 +110,8 @@ const CustomizeSideMenu =({navigation})=>{
                     }}>Pedidos Elaborados</Text>
                 </View>
             </TouchableOpacity>
-                    }}>Pedidos Mesa</Text>
-                </View>
-            </TouchableOpacity>
         </DrawerContentScrollView>
+
 
     )
 }

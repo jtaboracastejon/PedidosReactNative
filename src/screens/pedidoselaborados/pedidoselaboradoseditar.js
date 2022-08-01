@@ -17,13 +17,12 @@ import {paletaDeColores} from "../../styles/colores";
 import Mensaje from "../../components/Mensaje";
 import Axios from "../../components/Axios";
 import {PedidosLlevarContext} from "../../context/pedidosLlevar/pedidosLlevarContext";
-// import UsuarioContext from "../../context/UsuarioContext";
+import UsuarioContext from "../../context/UsuarioContext";
 
 const EditarPedidosElaborados = ({navigation}) => {
 	const isFocused= useIsFocused()
 	let textoMensaje = "";
-	// const { token } = useContext(UsuarioContext);
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkzODE4MzAsImV4cCI6MTY1OTY4MTgzMH0.ksJbvQHOm4h9UbOJXzOaDHj-dMG1UFgCFzJYrT91KKs";
+	const { token } = useContext(UsuarioContext);
 	const [lista, setLista] = useState([]);
 	const {
 		setIdRegistroElaborados

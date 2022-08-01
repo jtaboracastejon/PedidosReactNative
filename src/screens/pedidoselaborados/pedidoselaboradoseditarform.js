@@ -7,12 +7,12 @@ import Axios from "../../components/Axios";
 import Mensaje from "../../components/Mensaje";
 import {PedidosLlevarContext} from "../../context/pedidosLlevar/pedidosLlevarContext";
 import {useIsFocused} from "@react-navigation/native";
-// import UsuarioContext from "../../context/UsuarioContext";
+import UsuarioContext from "../../context/UsuarioContext";
 
 const EditarPedidosLlevarForm = ({navigation}) => {
 
 	let textoMensaje = "";
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkzODE4MzAsImV4cCI6MTY1OTY4MTgzMH0.ksJbvQHOm4h9UbOJXzOaDHj-dMG1UFgCFzJYrT91KKs";
+	const {token} = useContext(UsuarioContext);
 	const {idRegistroElaborados} = useContext(PedidosLlevarContext)
 
 
