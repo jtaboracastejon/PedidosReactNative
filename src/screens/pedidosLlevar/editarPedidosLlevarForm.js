@@ -55,7 +55,9 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 							titulo: "Registro Pedidos Llevar",
 							msj: "Su registro fue editado con exito",
 						});
-						navigation.goBack();
+						navigation.navigate('PedidosLlevar', { screen:'Editar'})
+
+
 					} else {
 						textoMensaje = "";
 						json.errores.forEach((element) => {
@@ -143,7 +145,7 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
-				<TouchableOpacity onPress={() => navigation.goBack()}>
+				<TouchableOpacity onPress={() =>navigation.navigate('PedidosLlevar', { screen:'Editar'})}>
 					<Entypo name="chevron-thin-left" style={styles.back}/>
 				</TouchableOpacity>
 			</View>

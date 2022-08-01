@@ -16,6 +16,7 @@ import {paletaDeColores} from "../../styles/colores";
 import Mensaje from "../../components/Mensaje";
 import Axios from "../../components/Axios";
 import UsuarioContext from "../../context/UsuarioContext";
+import {useIsFocused} from "@react-navigation/native";
 
 const EliminarPedidosLlevar = ({navigation}) => {
 	let textoMensaje = "";
@@ -27,21 +28,21 @@ const EliminarPedidosLlevar = ({navigation}) => {
 		buscarPedidosLlevar();
 	}, [setLista]);
 
+	const isFocused= useIsFocused()
+	useEffect(() => {
+		if(isFocused){
+			buscarPedidosLlevar();
+		}
+	}, [isFocused]);
+
 	function changeHandler(text) {
-		setFiltro(text);
+		setLista((prevLista) => {
+			return prevLista.filter((item) => item.idregistro.toString().indexOf(text.toString()) >= 0);
+		});
 		if (text == "") {
 			buscarPedidosLlevar();
 		}
 	}
-
-	const onPressHandler = () => {
-		if (filtro == "") {
-			buscarPedidosLlevar();
-		}
-		setLista((prevLista) => {
-			return prevLista.filter((item) => item.idregistro == filtro);
-		});
-	};
 
 	const pressHandler = (key) => {
 		const cambiarDecision = () => {
@@ -183,11 +184,7 @@ const EliminarPedidosLlevar = ({navigation}) => {
 
 						></TextInput>
 					</View>
-					<TouchableOpacity
-						onPress={onPressHandler}
-					>
-						<Text style={styles.item}>Filtrar</Text>
-					</TouchableOpacity>
+
 				</View>
 				{/* DropDowns */}
 				<View>

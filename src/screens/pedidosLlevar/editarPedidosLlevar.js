@@ -10,6 +10,7 @@ import {
 	ScrollView, StatusBar,
 	Alert
 } from "react-native";
+import {useIsFocused} from "@react-navigation/native";
 
 import {Entypo, Ionicons} from "@expo/vector-icons";
 import {paletaDeColores} from "../../styles/colores";
@@ -19,39 +20,37 @@ import {PedidosLlevarContext} from "../../context/pedidosLlevar/pedidosLlevarCon
 import UsuarioContext from "../../context/UsuarioContext";
 
 const EditarPedidosLlevar = ({navigation}) => {
+	const isFocused= useIsFocused()
 	let textoMensaje = "";
 	const { token } = useContext(UsuarioContext);
 	const [lista, setLista] = useState([]);
-	const [filtro, setFiltro] = useState("");
 	const {
 		setIdRegistro
 	} = useContext(PedidosLlevarContext);
 
 	useEffect(() => {
-		buscarPedidosLlevar();
-	}, []);
+		if(isFocused){
+			buscarPedidosLlevar();
+		}
+	}, [isFocused]);
 
 	function changeHandler(text) {
-		setFiltro(text);
+		setLista((prevLista) => {
+			return prevLista.filter((item) => item.idregistro.toString().indexOf(text.toString()) >= 0);
+		});
 		if (text == "") {
 			buscarPedidosLlevar();
 		}
 	}
 
-	const onPressHandler = () => {
-		if (filtro == "") {
-			buscarPedidosLlevar();
-		}
-		setLista((prevLista) => {
-			return prevLista.filter((item) => item.idregistro == filtro);
-		});
-	};
 
-	const pressHandler = (key) => {
+
+	const pressHandler = async (key) =>{
 		console.log(key);
 		setIdRegistro(key);
 		navigation.navigate('PedidosLlevar', { screen:'editarPedidosLlevarForm'});
-	};
+		buscarPedidosLlevar();
+	}
 
 
 	const buscarPedidosLlevar = async () => {
@@ -149,17 +148,14 @@ const EditarPedidosLlevar = ({navigation}) => {
 
 						></TextInput>
 					</View>
-					<TouchableOpacity
-						onPress={onPressHandler}
-					>
-						<Text style={styles.item}>Filtrar</Text>
-					</TouchableOpacity>
+
 				</View>
 				{/* DropDowns */}
 				<View>
 					{lista.map((item) => (
 						<View key={item.idregistro}>
-							<TouchableOpacity style={styles.itemList} onPress={()=>pressHandler(item.idregistro, item.idpedido, item.idcliente)}>
+							<TouchableOpacity style={styles.itemList}
+											  onPress={async ()=>pressHandler(item.idregistro, item.idpedido, item.idcliente)}>
 								<Text>Id de Registro: {item.idregistro}</Text>
 								<Text>Id de Pedido {item.idpedido}</Text>
 								<Text>Id del Cliente {item.idcliente}</Text>

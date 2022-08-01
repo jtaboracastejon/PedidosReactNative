@@ -15,8 +15,10 @@ import {paletaDeColores} from "../../styles/colores";
 import Mensaje from "../../components/Mensaje";
 import Axios from "../../components/Axios";
 import UsuarioContext from "../../context/UsuarioContext";
+import {useIsFocused} from "@react-navigation/native";
 
 const ListarPedidosMesas = ({navigation}) => {
+
 	let textoMensaje = "";
 	const { token } = useContext(UsuarioContext);
 	const [lista, setLista] = useState([]);
@@ -24,10 +26,12 @@ const ListarPedidosMesas = ({navigation}) => {
 	useEffect(() => {
 		buscarPedidosMesa();
 	}, [setLista]);
-
+	const isFocused= useIsFocused()
 	useEffect(() => {
-		buscarPedidosMesa();
-	}, []);
+		if(isFocused){
+			buscarPedidosMesa();
+		}
+	}, [isFocused]);
 
 	function changeHandler(text) {
 		setLista((prevLista) => {

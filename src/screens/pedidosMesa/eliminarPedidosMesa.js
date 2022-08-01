@@ -26,6 +26,7 @@ const EliminarPedidosMesa = ({navigation}) => {
 	useEffect(() => {
 		buscarPedidosMesa();
 	}, [setLista]);
+
 	useEffect(() => {
 		buscarPedidosMesa();
 	}, []);

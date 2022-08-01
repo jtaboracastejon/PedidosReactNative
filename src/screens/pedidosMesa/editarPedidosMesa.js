@@ -17,8 +17,10 @@ import Mensaje from "../../components/Mensaje";
 import Axios from "../../components/Axios";
 import {PedidosLlevarContext} from "../../context/pedidosLlevar/pedidosLlevarContext";
 import UsuarioContext from "../../context/UsuarioContext";
+import {useIsFocused} from "@react-navigation/native";
 
 const EditarPedidosMesa = ({navigation}) => {
+	const isFocused= useIsFocused()
 	let textoMensaje = "";
 	const { token } = useContext(UsuarioContext);
 	const [lista, setLista] = useState([]);
@@ -28,12 +30,12 @@ const EditarPedidosMesa = ({navigation}) => {
 	} = useContext(PedidosLlevarContext);
 
 	useEffect(() => {
-		buscarPedidosMesa();
-	}, [setLista]);
+		if(isFocused){
+			buscarPedidosMesa();
+		}
+	}, [isFocused]);
 
-	useEffect(() => {
-		buscarPedidosMesa();
-	}, []);
+
 
 	function changeHandler(text) {
 		setLista((prevLista) => {

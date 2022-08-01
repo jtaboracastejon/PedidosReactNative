@@ -93,7 +93,7 @@ const CustomizeSideMenu =({navigation})=>{
                         fontWeight: 'bold',
                         textAlign: 'center',
 
-                    }}>Pedidos Llevar</Text>
+                    }}>Pedidos Mesa</Text>
                 </View>
             </TouchableOpacity>
         </DrawerContentScrollView>
