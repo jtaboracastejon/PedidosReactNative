@@ -13,46 +13,46 @@ import {
 import {Entypo, Ionicons} from "@expo/vector-icons";
 import {paletaDeColores} from "../../styles/colores";
 import Mensaje from "../../components/Mensaje";
-import Axios from "../../components/Axios";
-import UsuarioContext from "../../context/UsuarioContext";
+import Axios from "../../components/Axios"
 import {useIsFocused} from "@react-navigation/native";
 
-const ListarPedidosLlevar = ({navigation}) => {
-	let textoMensaje = "";
-	const { token } = useContext(UsuarioContext);
+const PedidosElaboradosListar = ({navigation}) =>{
+    let textoMensaje = "";
+	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkzODE4MzAsImV4cCI6MTY1OTY4MTgzMH0.ksJbvQHOm4h9UbOJXzOaDHj-dMG1UFgCFzJYrT91KKs";
 	const [lista, setLista] = useState([]);
+	const [filtro, setFiltro] = useState("");
 
 	useEffect(() => {
-		buscarPedidosLlevar();
-	}, [setLista]);
+		BuscarPedidosElaborados();
+	}, []);
 
 	const isFocused= useIsFocused()
 	useEffect(() => {
 		if(isFocused){
-			buscarPedidosLlevar();
+			BuscarPedidosElaborados();
 		}
 	}, [isFocused]);
 
 	function changeHandler(text) {
 		setLista((prevLista) => {
-			return prevLista.filter((item) => item.idregistro.toString().indexOf(text.toString()) >= 0);
+			return prevLista.filter((item) => item.iddetallepedido.toString().indexOf(text.toString()) >= 0);
 		});
-
 		if (text == "") {
-			buscarPedidosLlevar();
+			BuscarPedidosElaborados();
 		}
 	}
 
-	const buscarPedidosLlevar = async () => {
+
+    const BuscarPedidosElaborados = async () => {
 		try {
-			await Axios.get("/pedidos/pedidosllevar/listar", {
+			await Axios.get("/pedidos/pedidoselaborados/listar", {
 				headers: {
 					Authorization: "Bearer " + token,
 				},
 			})
 				.then((data) => {
 					setLista(data.data);
-
+					console.log(lista)
 				})
 
 				.catch((error) => {
@@ -66,7 +66,11 @@ const ListarPedidosLlevar = ({navigation}) => {
 		}
 	};
 
-	return (
+
+
+
+
+    return (
 		<TouchableWithoutFeedback
 			onPress={() => {
 				Keyboard.dismiss();
@@ -79,7 +83,6 @@ const ListarPedidosLlevar = ({navigation}) => {
 				</TouchableOpacity>
 			</View>
 			<StatusBar backgroundColor={paletaDeColores.backgroundDark}/>
-			{/*Menu Pedidos*/}
 			<View
 				style={{ height: 30,
 					marginTop: 10,
@@ -89,33 +92,34 @@ const ListarPedidosLlevar = ({navigation}) => {
 					showsHorizontalScrollIndicator={false}
 				>
 					<TouchableOpacity style={{ padding: 5, borderRadius: 100, backgroundColor: paletaDeColores.blue + '10', borderColor: paletaDeColores.blue, borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Listar'})
+						navigation.navigate('PedidosElaborados', { screen:'Listar'})
 					}}>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10, }}>Listar Pedidos Llevar</Text>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10, }}>Listar Pedidos Elaborados</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Editar'})
-					}} >
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Editar Pedidos Llevar</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Eliminar'})
-					}}>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Eliminar Pedidos Llevar</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Guardar'})
+                    <TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
+						navigation.navigate('PedidosElaborados', { screen:'Guardar'})
 					}}
 					>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Agregar Pedidos Llevar</Text>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Agregar Pedidos Elaborados</Text>
 					</TouchableOpacity>
+					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
+						navigation.navigate('PedidosElaborados', { screen:'Editar'})
+					}} >
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Editar Pedidos Elaborados</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
+						navigation.navigate('PedidosElaborados', { screen:'Eliminar'})
+					}}>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Eliminar Pedidos Elaborados</Text>
+					</TouchableOpacity>
+					
 
 				</ScrollView>
 			</View>
 			{/* Titles */}
 			<View style={{flexDirection: 'row', alignItems: 'center'}}>
 				<View style={{width: '10%'}}>
-					<Ionicons name="checkmark-done-circle-sharp" size={24} color="black"/>
+					<Entypo name="login" size={24} color="black"/>
 				</View>
 				<View style={{
 					borderBottomWidth: 1,
@@ -130,7 +134,7 @@ const ListarPedidosLlevar = ({navigation}) => {
 						fontWeight: '600',
 						letterSpacing: 1,
 					}}>
-						Lista de Pedidos Llevar
+						Lista de Pedidos Elaborados
 					</Text>
 				</View>
 			</View>
@@ -143,15 +147,16 @@ const ListarPedidosLlevar = ({navigation}) => {
 
 					></TextInput>
 				</View>
+
 			</View>
 			{/* DropDowns */}
 				<View>
 					{lista.map((item) => (
-						<View key={item.idregistro}>
+						<View key={item.iddetallepedido}>
 							<View style={styles.itemList}>
-								<Text>Id de Registro: {item.idregistro}</Text>
-								<Text>Id de Pedido {item.idpedido}</Text>
-								<Text>Id del Cliente {item.idcliente}</Text>
+								<Text>Id de Detalle Pedido: {item.iddetallepedido}</Text>
+								<Text>Id de Usuario: {item.idusuario}</Text>
+								<Text>Fecha Hora: {item.fechahora}</Text>
 							</View>
 						</View>
 					))}
@@ -160,9 +165,11 @@ const ListarPedidosLlevar = ({navigation}) => {
 		</ScrollView>
 		</TouchableWithoutFeedback>
 	);
+
 };
 
-export default ListarPedidosLlevar;
+
+export default PedidosElaboradosListar;
 
 const styles = StyleSheet.create({
 	container: {
@@ -243,4 +250,3 @@ const styles = StyleSheet.create({
 		borderRadius: 10
 	},
 })
-

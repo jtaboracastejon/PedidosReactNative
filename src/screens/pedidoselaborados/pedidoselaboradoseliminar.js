@@ -10,25 +10,24 @@ import {
 	ScrollView, StatusBar,
 	Alert
 } from "react-native";
-import {useIsFocused} from "@react-navigation/native";
 
 import {Entypo, Ionicons} from "@expo/vector-icons";
 import {paletaDeColores} from "../../styles/colores";
 import Mensaje from "../../components/Mensaje";
 import Axios from "../../components/Axios";
-import {PedidosLlevarContext} from "../../context/pedidosLlevar/pedidosLlevarContext";
-import UsuarioContext from "../../context/UsuarioContext";
+import {useIsFocused} from "@react-navigation/native";
 
-const EditarPedidosLlevar = ({navigation}) => {
-	const isFocused= useIsFocused()
+const EliminarPedidosElaborados = ({navigation}) => {
 	let textoMensaje = "";
-	const { token } = useContext(UsuarioContext);
-
+	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkzODE4MzAsImV4cCI6MTY1OTY4MTgzMH0.ksJbvQHOm4h9UbOJXzOaDHj-dMG1UFgCFzJYrT91KKs";
 	const [lista, setLista] = useState([]);
-	const {
-		setIdRegistro
-	} = useContext(PedidosLlevarContext);
+	const [filtro, setFiltro] = useState("");
 
+	useEffect(() => {
+		buscarPedidosLlevar();
+	}, [setLista]);
+
+	const isFocused= useIsFocused()
 	useEffect(() => {
 		if(isFocused){
 			buscarPedidosLlevar();
@@ -37,26 +36,61 @@ const EditarPedidosLlevar = ({navigation}) => {
 
 	function changeHandler(text) {
 		setLista((prevLista) => {
-			return prevLista.filter((item) => item.idregistro.toString().indexOf(text.toString()) >= 0);
+			return prevLista.filter((item) => item.iddetallepedido.toString().indexOf(text.toString()) >= 0);
 		});
 		if (text == "") {
 			buscarPedidosLlevar();
 		}
 	}
 
+	const pressHandler = (key) => {
+		const cambiarDecision = () => {
+			try {
+				console.log(key);
+				var textoMensaje = null;
+				Axios.delete("pedidos/pedidoselaborados/eliminar?id=" + key, {
+					headers: {
+						Authorization: "Bearer " + token,
+					},
+				})
+					.then((data) => {
+						const json = data.data;
+						if (json.errores.length == 0) {
+							console.log("Eliminado con exito el registro");
+							buscarPedidosLlevar();
+						} else {
+							textoMensaje = "";
+							json.errores.forEach((element) => {
+								textoMensaje += element.mensaje + ". ";
+							});
+						}
+					})
+					.catch((error) => {
+						textoMensaje = error;
+					});
+			} catch (error) {
+				textoMensaje = error;
+				console.log(error);
+			}
+		}
 
-
-	const pressHandler = async (key) =>{
-		console.log(key);
-		setIdRegistro(key);
-		navigation.navigate('PedidosLlevar', { screen:'editarPedidosLlevarForm'});
-		buscarPedidosLlevar();
-	}
+		Alert.alert("Eliminar Registro", "Desea eliminar el registro", [
+			{
+				text: "Cancelar",
+				onPress: () => console.log("Cancel Pressed"),
+				style: "cancel",
+			},
+			{
+				text: "OK",
+				onPress: () => cambiarDecision()
+			},
+		]);
+	};
 
 
 	const buscarPedidosLlevar = async () => {
 		try {
-			await Axios.get("/pedidos/pedidosllevar/listar", {
+			await Axios.get("/pedidos/pedidoselaborados/listar", {
 				headers: {
 					Authorization: "Bearer " + token,
 				},
@@ -89,32 +123,32 @@ const EditarPedidosLlevar = ({navigation}) => {
 				<StatusBar backgroundColor={paletaDeColores.backgroundDark}/>
 				<View
 					style={{ height: 30,
-					marginTop: 10,
-					marginBottom: 10}}>
+						marginTop: 10,
+						marginBottom: 10}}>
 					<ScrollView
 						horizontal
 						showsHorizontalScrollIndicator={false}
 					>
 						<TouchableOpacity style={{ padding: 5, borderRadius: 100, backgroundColor: paletaDeColores.blue + '10', borderColor: paletaDeColores.blue, borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-							navigation.navigate('PedidosLlevar', { screen:'Listar'})
+							navigation.navigate('PedidosElaborados', { screen:'Listar'})
 						}}>
-							<Text style={{ color: paletaDeColores.black, marginHorizontal: 10, }}>Listar Pedidos Llevar</Text>
+							<Text style={{ color: paletaDeColores.black, marginHorizontal: 10, }}>Listar Pedidos Elaborados</Text>
 						</TouchableOpacity>
 						<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-							navigation.navigate('PedidosLlevar', { screen:'Editar'})
+							navigation.navigate('PedidosElaborados', { screen:'Editar'})
 						}} >
-							<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Editar Pedidos Llevar</Text>
+							<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Editar Pedidos Elaborados</Text>
 						</TouchableOpacity>
 						<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-							navigation.navigate('PedidosLlevar', { screen:'Eliminar'})
+							navigation.navigate('PedidosElaborados', { screen:'Eliminar'})
 						}}>
-							<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Eliminar Pedidos Llevar</Text>
+							<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Eliminar Pedidos Elaborados</Text>
 						</TouchableOpacity>
 						<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-							navigation.navigate('PedidosLlevar', { screen:'Guardar'})
+							navigation.navigate('PedidosElaborados', { screen:'Guardar'})
 						}}
 						>
-							<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Agregar Pedidos Llevar</Text>
+							<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Agregar Pedidos Elaborados</Text>
 						</TouchableOpacity>
 
 					</ScrollView>
@@ -137,7 +171,7 @@ const EditarPedidosLlevar = ({navigation}) => {
 							fontWeight: '600',
 							letterSpacing: 1,
 						}}>
-							Editar Pedidos Llevar
+							Eliminar Pedidos Elaborados
 						</Text>
 					</View>
 				</View>
@@ -154,12 +188,11 @@ const EditarPedidosLlevar = ({navigation}) => {
 				{/* DropDowns */}
 				<View>
 					{lista.map((item) => (
-						<View key={item.idregistro}>
-							<TouchableOpacity style={styles.itemList}
-											  onPress={async ()=>pressHandler(item.idregistro, item.idpedido, item.idcliente)}>
-								<Text>Id de Registro: {item.idregistro}</Text>
-								<Text>Id de Pedido {item.idpedido}</Text>
-								<Text>Id del Cliente {item.idcliente}</Text>
+						<View key={item.iddetallepedido}>
+							<TouchableOpacity style={styles.itemList} onPress={()=>pressHandler(item.iddetallepedido, item.idusuario)}>
+								<Text>Id de Detalle Pedido: {item.iddetallepedido}</Text>
+								<Text>Id de Usuario: {item.idusuario}</Text>
+								<Text>Fecha Hora: {item.fechahora}</Text>
 							</TouchableOpacity>
 						</View>
 					))}
@@ -169,7 +202,7 @@ const EditarPedidosLlevar = ({navigation}) => {
 	);
 };
 
-export default EditarPedidosLlevar;
+export default EliminarPedidosElaborados;
 
 const styles = StyleSheet.create({
 	container: {

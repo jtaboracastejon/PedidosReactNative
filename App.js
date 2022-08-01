@@ -12,6 +12,7 @@ import PedidosLlevar from "./src/screens/pedidosLlevar/pedidosLlevar";
 import Login from "./src/screens/Login";
 import PedidosMesa from "./src/screens/pedidosMesa/pedidosMesa";
 
+import PedidosElaborados from "./src/screens/pedidoselaborados/pedidoselaborados";
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import {PedidosLlevarProvider} from "./src/context/pedidosLlevar/pedidosLlevarContext";
 import UsuarioState from "./src/context/UsuarioState";
@@ -27,8 +28,8 @@ function SideMenu() {
             <Drawer.Screen name="Inicio" component={Inicio} />
             <Drawer.Screen name="FormTemplate" component={FormTemplate} />
             <Drawer.Screen name="PedidosLlevar" component={PedidosLlevar} />
+            <Drawer.Screen name="PedidosElaborados" component={PedidosElaborados} />
             <Drawer.Screen name="PedidosMesa" component={PedidosMesa} />
-
         </Drawer.Navigator>
     )
 }
@@ -93,6 +94,18 @@ const CustomizeSideMenu =({navigation})=>{
                         fontWeight: 'bold',
                         textAlign: 'center',
 
+            <TouchableOpacity onPress={() => navigation.navigate('PedidosElaborados')}>
+                <View style={styles.sideMenuItem}>
+                    <Ionicons name="folder" size={24} color="#0043F9" />
+                    <Text style={{
+                        width: '90%',
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+
+                    }}>Pedidos Elaborados</Text>
+                </View>
+            </TouchableOpacity>
                     }}>Pedidos Mesa</Text>
                 </View>
             </TouchableOpacity>
