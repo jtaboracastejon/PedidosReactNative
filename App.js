@@ -10,6 +10,7 @@ import UsuarioContext from './src/context/UsuarioContext';
 import Cargando from './src/components/Cargando';
 import PedidosLlevar from "./src/screens/pedidosLlevar/pedidosLlevar";
 import Login from "./src/screens/Login";
+import PedidosMesa from "./src/screens/pedidosMesa/pedidosMesa";
 
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import {PedidosLlevarProvider} from "./src/context/pedidosLlevar/pedidosLlevarContext";
@@ -26,6 +27,8 @@ function SideMenu() {
             <Drawer.Screen name="Inicio" component={Inicio} />
             <Drawer.Screen name="FormTemplate" component={FormTemplate} />
             <Drawer.Screen name="PedidosLlevar" component={PedidosLlevar} />
+            <Drawer.Screen name="PedidosMesa" component={PedidosMesa} />
+
         </Drawer.Navigator>
     )
 }
@@ -81,7 +84,20 @@ const CustomizeSideMenu =({navigation})=>{
                     }}>Pedidos Llevar</Text>
                 </View>
             </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('PedidosMesa')}>
+                <View style={styles.sideMenuItem}>
+                    <Ionicons name="bookmark" size={24} color="#0043F9" />
+                    <Text style={{
+                        width: '90%',
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+
+                    }}>Pedidos Llevar</Text>
+                </View>
+            </TouchableOpacity>
         </DrawerContentScrollView>
+
     )
 }
 const Stack = createNativeStackNavigator();
