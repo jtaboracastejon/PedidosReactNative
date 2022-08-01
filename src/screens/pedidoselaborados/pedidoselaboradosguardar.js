@@ -9,7 +9,7 @@ import text from "react-native-web/dist/exports/Text";
 
 const PedidosElaboradosGuardar = ({navigation}) => {
     let textoMensaje = "";
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkzMDMzMDgsImV4cCI6MTY1OTYwMzMwOH0.SoVnZMSF0ve4B1XaQVyAoNcIypfJ_1VrKXA1LMU4OOQ";
+	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkzODE4MzAsImV4cCI6MTY1OTY4MTgzMH0.ksJbvQHOm4h9UbOJXzOaDHj-dMG1UFgCFzJYrT91KKs";
     
     const [detallepedidoOpen, setdetallepedidoOpen] = useState(false);
     const [usuarioOpen, setusuarioOpen] = useState(false);
@@ -119,6 +119,7 @@ const PedidosElaboradosGuardar = ({navigation}) => {
 							titulo: "Registro Pedidos Elaborados",
 							msj: "Su Pedido Elaborado fue guardado con exito",
 						});
+						navigation.navigate('PedidosElaborados', { screen:'Guardar'})
 					} else {
 						const json = data.data;
 						console.log(json.errores)

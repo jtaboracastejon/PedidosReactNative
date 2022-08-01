@@ -14,10 +14,11 @@ import {Entypo, Ionicons} from "@expo/vector-icons";
 import {paletaDeColores} from "../../styles/colores";
 import Mensaje from "../../components/Mensaje";
 import Axios from "../../components/Axios"
+import {useIsFocused} from "@react-navigation/native";
 
 const PedidosElaboradosListar = ({navigation}) =>{
     let textoMensaje = "";
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkzMDMzMDgsImV4cCI6MTY1OTYwMzMwOH0.SoVnZMSF0ve4B1XaQVyAoNcIypfJ_1VrKXA1LMU4OOQ";
+	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTkzODE4MzAsImV4cCI6MTY1OTY4MTgzMH0.ksJbvQHOm4h9UbOJXzOaDHj-dMG1UFgCFzJYrT91KKs";
 	const [lista, setLista] = useState([]);
 	const [filtro, setFiltro] = useState("");
 
@@ -25,15 +26,21 @@ const PedidosElaboradosListar = ({navigation}) =>{
 		BuscarPedidosElaborados();
 	}, []);
 
+	const isFocused= useIsFocused()
+	useEffect(() => {
+		if(isFocused){
+			BuscarPedidosElaborados();
+		}
+	}, [isFocused]);
+
 	function changeHandler(text) {
 		setLista((prevLista) => {
-			 		return prevLista.filter((item) => item.iddetallepedido == text);
+			return prevLista.filter((item) => item.iddetallepedido.toString().indexOf(text.toString()) >= 0);
 		});
 		if (text == "") {
 			BuscarPedidosElaborados();
 		}
 	}
-
 
 
     const BuscarPedidosElaborados = async () => {
