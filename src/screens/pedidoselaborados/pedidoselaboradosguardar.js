@@ -5,38 +5,36 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import {Ionicons, Entypo} from '@expo/vector-icons';
 import Axios from "../../components/Axios";
 import Mensaje from "../../components/Mensaje";
+import text from "react-native-web/dist/exports/Text";
 import UsuarioContext from "../../context/UsuarioContext";
-import {useIsFocused} from "@react-navigation/native";
 
-const GuardarPedidosLlevar = ({navigation}) => {
-	let textoMensaje = "";
-	const { token } = useContext(UsuarioContext);
-	const [pedidosOpen, setPedidosOpen] = useState(false);
-	const [clientesOpen, setClientesOpen] = useState(false);
-	const [pedidosValue, setPedidosValue] = useState(null);
-	const [clientesValue, setClientesValue] = useState(null);
-	const [idpedido, setIdpedido] = useState("");
-	const [idcliente, setIdcliente] = useState("");
+const PedidosElaboradosGuardar = ({navigation}) => {
+    let textoMensaje = "";
+	const {token} = useContext(UsuarioContext);
+    
+    const [detallepedidoOpen, setdetallepedidoOpen] = useState(false);
+    const [usuarioOpen, setusuarioOpen] = useState(false);
 
-	const [clientesList, setClientesList] = useState([
-		{label: 1, value: 1},
-		{label: 2, value: 2}]
-	);
+    const [detallepedidoValue, setdetallepedidoValue] = useState(null);
+    const [usuarioValue, setusuarioValue] = useState(null);
 
-	const isFocused= useIsFocused()
-	useEffect(() => {
-		if(isFocused){
-			BuscarPedidos();
-		}
-	}, [isFocused]);
+    const [iddetallepedido, setiddetalle] = useState("");
+    const [idusuario, setidusuario] = useState("");
 
+	const [detallepedidoList, setdetallepedidoList] = useState([]);
+    const [usuariosList, setusuariosList] = useState([{label: 1, value:1}]);
 
-	const [pedidosList, setPedidosList] = useState([]);
-	const [detallePedidosList, setDetallePedidoList] = useState([]);
+    useEffect(() => {
+		Buscardetallepedido();
+	}, [setdetallepedidoList]);
 
-	const BuscarPedidos = async () => {
-		try {
-			await Axios.get("/pedidos/pedidos/listar", {
+    // useEffect(() => {
+	// 	Buscarusuarios();
+	// }, [setusuariosList]);
+
+    const Buscardetallepedido = async () =>{
+        try {
+			await Axios.get("/pedidos/detallepedidos/listar", {
 				headers: {
 					Authorization: "Bearer " + token,
 				},
@@ -47,12 +45,12 @@ const GuardarPedidosLlevar = ({navigation}) => {
 					console.log(json[1]);
 					json.forEach((element) => {
 						jsonitems.push({
-							label: element.NumeroPedido.toString(),
-							value: element.NumeroPedido.toString(),
+							label: element.idregistro.toString(),
+							value: element.idregistro.toString(),
 						});
 						console.log(typeof element.NumeroPedido.toString());
 					});
-					setPedidosList(jsonitems);
+					setdetallepedidoList(jsonitems);
 				})
 				.catch((error) => {
 					textoMensaje = error;
@@ -63,49 +61,94 @@ const GuardarPedidosLlevar = ({navigation}) => {
 			console.log(error);
 			Mensaje({titulo: "Error registro", msj: error});
 		}
-	};
+    }
 
-	const guardarPedidos = async () => {
-		if (!token) {
+    const Buscarusuarios = async () =>{
+        try {
+			await Axios.get("/pedidos/pedidoselaborados/listarusuarios", {
+				headers: {
+					Authorization: "Bearer " + token,
+				},
+			})
+				.then((data) => {
+					const json = data.data;
+					let jsonitems = [];
+					console.log(json[1]);
+					json.forEach((element) => {
+						jsonitems.push({
+							label: element.LoginUsuario.toString(),
+							value: element.idregistro.toString(),
+						});
+						//console.log(typeof element.NumeroPedido.toString());
+					});
+					setusuariosList(jsonitems);
+
+				})
+				.catch((error) => {
+					textoMensaje = error;
+					Mensaje({titulo: "Error registro", msj: textoMensaje});
+				});
+		} catch (error) {
+			textoMensaje = error;
+			console.log(error);
+			Mensaje({titulo: "Error registro", msj: error});
+		}
+    }
+
+    const GuardarPedido = async () => {
+		console.log(iddetallepedido)
+		console.log(idusuario)
+		var textoMensaje = ""
+        if (!token) {
 			textoMensaje = "Debe iniciar sesion";
-			console.log(token);
+			//console.log(token);
 		} else {
-			console.log(token);
+			//console.log(token);
 			const bodyParameters = {
-				idpedido: idpedido,
-				idcliente: idcliente,
+				iddetallepedido: iddetallepedido,
+				idusuario: idusuario,
 			};
 			const config = {
 				headers: { Authorization: `Bearer ${token}` },
 			};
-			await Axios.post("/pedidos/pedidosllevar/guardar", bodyParameters, config)
+			await Axios.post("/pedidos/pedidoselaborados/guardar", bodyParameters, config)
 				.then((data) => {
 					const json = data.data;
+					// console.log(json)
 					if (json.errores.length == 0) {
 						console.log("Solicitud Realizada");
 						Mensaje({
-							titulo: "Registro Pedidos Llevar",
-							msj: "Su registro fue guardado con exito",
+							titulo: "Registro Pedidos Elaborados",
+							msj: "Su Pedido Elaborado fue guardado con exito",
 						});
-						setClientesValue(null);
-						setPedidosValue(null);
+						setdetallepedidoValue(null);
+						setusuarioValue(null);
 					} else {
-						textoMensaje = "";
+						const json = data.data;
 						console.log(json.errores)
-						json.errores.forEach((element) => {
-							textoMensaje = element.mensaje;
-							Mensaje({ titulo: "Error en el registro", msj: textoMensaje });
-						});
+							Mensaje({
+								titulo: "No se pudo realizar la operacion",
+								msj: json.errores,
+							});
+
+
 					}
 				})
 				.catch((error) => {
-					textoMensaje = error;
+					//textoMensaje = error;
+					//Mensaje({ titulo: "Error en el registro", msj: textoMensaje });
+					textoMensaje = "";
+					// console.log(json1)
+					// 	json1.errores.forEach((element) => {
+					// 		textoMensaje += element.mensaje + ". ";
+					// 		Mensaje({ titulo: "Error en el registro", msj: textoMensaje });
+					// 	});
 				});
 		}
-		// console.log(textoMensaje);
-	};
+		console.log(textoMensaje);
+    }
 
-	return (
+    return (
 		<View style={styles.container}>
 			<View style={styles.header}>
 				<TouchableOpacity onPress={() => navigation.navigate('Inicio')}>
@@ -122,26 +165,27 @@ const GuardarPedidosLlevar = ({navigation}) => {
 					showsHorizontalScrollIndicator={false}
 				>
 					<TouchableOpacity style={{ padding: 5, borderRadius: 100, backgroundColor: paletaDeColores.blue + '10', borderColor: paletaDeColores.blue, borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Listar'})
+						navigation.navigate('PedidosElaborados', { screen:'Listar'})
 					}}>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10, }}>Listar Pedidos Llevar</Text>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10, }}>Listar Pedidos Elaborados</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Editar'})
-					}} >
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Editar Pedidos Llevar</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Eliminar'})
-					}}>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Eliminar Pedidos Llevar</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Guardar'})
+                    <TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
+						navigation.navigate('PedidosElaborados', { screen:'Guardar'})
 					}}
 					>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Agregar Pedidos Llevar</Text>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Agregar Pedidos Elaborados</Text>
 					</TouchableOpacity>
+					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
+						navigation.navigate('PedidosElaborados', { screen:'Editar'})
+					}} >
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Editar Pedidos Elaborados</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
+						navigation.navigate('PedidosElaborados', { screen:'Eliminar'})
+					}}>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Eliminar Pedidos Elaborados</Text>
+					</TouchableOpacity>
+					
 
 				</ScrollView>
 			</View>
@@ -163,7 +207,7 @@ const GuardarPedidosLlevar = ({navigation}) => {
 						fontWeight: '600',
 						letterSpacing: 1,
 					}}>
-						Registro de Pedidos Llevar
+						Registro de Pedidos Elaborados
 					</Text>
 				</View>
 			</View>
@@ -178,13 +222,13 @@ const GuardarPedidosLlevar = ({navigation}) => {
 			<View style={{justifyContent: 'space-around', height: '80%',}}>
 				<View>
 					<Text style={styles.label}>
-						Id Pedido
+						ID Detalle
 					</Text>
 					<DropDownPicker
 						placeholder='Seleccione una opción'
 						zIndex={10}
 						onChangeValue={(value) => {
-							setIdpedido(value);
+							setiddetalle(value);
 						}}
 						placeholderStyle={{
 							color: paletaDeColores.backgroundMedium,
@@ -196,24 +240,24 @@ const GuardarPedidosLlevar = ({navigation}) => {
 						dropDownContainerStyle={{
 							borderWidth: 0,
 						}}
-						open={pedidosOpen}
-						value={pedidosValue}
-						items={pedidosList}
-						setOpen={setPedidosOpen}
-						setValue={setPedidosValue}
-						setItems={setPedidosList}
+						open={detallepedidoOpen}
+						value={detallepedidoValue}
+						items={detallepedidoList}
+						setOpen={setdetallepedidoOpen}
+						setValue={setdetallepedidoValue}
+						setItems={setdetallepedidoList}
 					/>
 				</View>
 				<View>
 					<Text style={styles.label}>
-						Id Cliente
+						Usuario
 					</Text>
 					<DropDownPicker
 						placeholder='Seleccione una opción'
 						zIndex={1}
 						searchable={true}
 						onChangeValue={(value) => {
-							setIdcliente(value);
+							setidusuario(value);
 						}}
 						searchPlaceholder="Buscar..."
 						searchTextInputStyle={{
@@ -230,19 +274,19 @@ const GuardarPedidosLlevar = ({navigation}) => {
 						dropDownContainerStyle={{
 							borderWidth: 0,
 						}}
-						open={clientesOpen}
-						value={clientesValue}
-						items={clientesList}
-						setOpen={setClientesOpen}
-						setValue={setClientesValue}
-						setItems={setClientesList}
+					    open={usuarioOpen}
+					    value={usuarioValue}
+					    items={usuariosList}
+					    setOpen={setusuarioOpen}
+					    setValue={setusuarioValue}
+					    setItems={setusuariosList}
 					/>
 
 				</View>
 				<View style={{width: '50%', alignSelf: 'center'}}>
 				<TouchableOpacity style={styles.botonGuardar}
 								  onPress={() => {
-									  guardarPedidos();
+									  GuardarPedido();
 								  }}>
 					<Ionicons name="save" style={{
 						fontSize: 24,
@@ -250,7 +294,7 @@ const GuardarPedidosLlevar = ({navigation}) => {
 						padding: 10,
 
 					}} />
-					<Text style={styles.botonTexto}>Guardar</Text>
+					<Text style={styles.botonTexto}>Guardar Pedido</Text>
 				</TouchableOpacity>
 				</View>
 
@@ -262,7 +306,7 @@ const GuardarPedidosLlevar = ({navigation}) => {
 	)
 }
 
-export default GuardarPedidosLlevar
+export default PedidosElaboradosGuardar
 
 const styles = StyleSheet.create({
 	container: {
@@ -349,5 +393,3 @@ const styles = StyleSheet.create({
 		borderRadius: 10
 	}
 })
-
-

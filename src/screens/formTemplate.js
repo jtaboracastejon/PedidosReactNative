@@ -1,12 +1,15 @@
-import { View, Text, StyleSheet, StatusBar, TextInput, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, StyleSheet, StatusBar, TextInput, TouchableOpacity, Button} from 'react-native'
+import React, { useState, useContext } from 'react'
+import UsuarioContext from "../context/UsuarioContext";
 import { paletaDeColores } from '../styles/colores'
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Ionicons,Entypo } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import serverContainer from "@react-navigation/native/src/ServerContainer";
 
 const FormTemplate = ({navigation}) => {
     /* Necesario para dateTimePicker */
+    const { setCerrarSesion } = useContext(UsuarioContext);
 
     const [datePicker, setDatePicker] = useState(false);
 
@@ -170,6 +173,10 @@ const FormTemplate = ({navigation}) => {
                             }} />
                         </TouchableOpacity>
                     )}
+                    <Button title={'CerrarSesion'} onPress={async () => {
+                        await setCerrarSesion();
+                    }}>
+                    </Button>
                 </View>
 
 

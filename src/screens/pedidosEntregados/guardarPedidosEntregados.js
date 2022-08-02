@@ -1,81 +1,42 @@
-import {View, Text, StyleSheet, StatusBar, TouchableOpacity} from 'react-native'
+import {View, Text, StyleSheet, StatusBar, TouchableOpacity, ScrollView, TextInput} from 'react-native'
 import React, {useState, useEffect, useContext} from 'react'
 import {paletaDeColores} from '../../styles/colores'
 import DropDownPicker from 'react-native-dropdown-picker';
 import {Ionicons, Entypo} from '@expo/vector-icons';
 import Axios from "../../components/Axios";
 import Mensaje from "../../components/Mensaje";
-import {PedidosLlevarContext} from "../../context/pedidosLlevar/pedidosLlevarContext";
 import UsuarioContext from "../../context/UsuarioContext";
+import {useIsFocused} from "@react-navigation/native";
 
-const EditarPedidosLlevarForm = ({navigation}) => {
+const GuardarPedidosEntregados = ({navigation}) => {
 	let textoMensaje = "";
-	const { token } = useContext(UsuarioContext);
-	const {idDetallePedido, setIdDetallePedido, idCliente, setIdCliente, idRegistro} = useContext(PedidosLlevarContext)
+	const {token} = useContext(UsuarioContext);
 	const [pedidosOpen, setPedidosOpen] = useState(false);
 	const [clientesOpen, setClientesOpen] = useState(false);
 	const [pedidosValue, setPedidosValue] = useState(null);
 	const [clientesValue, setClientesValue] = useState(null);
 	const [idpedido, setIdpedido] = useState("");
 	const [idcliente, setIdcliente] = useState("");
-	const [clientesList, setClientesList] = useState([{label: "Maria Jose Arita", value: 1},
-		{label: 'Samantha Ruiz', value: 2}]);
-	const [pedidosList, setPedidosList] = useState([]);
+	const [identrega, setIdentrega] = useState("");
 
+	const [clientesList, setClientesList] = useState([
+		{label: 1, value: 1},
+		{label: 2, value: 2}]
+	);
+
+	const isFocused = useIsFocused()
 	useEffect(() => {
-		BuscarPedidos();
-	}, [setPedidosList]);
-
-	console.log('Id registro '+ idRegistro)
-	const editarPedidosLlevar = async () => {
-		if (!token) {
-			textoMensaje = "Debe iniciar sesion";
-			console.log(token);
-		} else {
-			console.log(token);
-			const bodyParameters = {
-				idpedido: idDetallePedido,
-				idcliente: idCliente,
-			};
-			const config = {
-				headers: { Authorization: `Bearer ${token}` },
-			};
-			await Axios.put(
-				"/pedidos/pedidosLlevar/editar?id=" + idRegistro,
-				bodyParameters,
-				config
-			)
-				.then((data) => {
-					const json = data.data;
-					if (json.errores.length == 0) {
-						console.log("Solicitud Realizada");
-						Mensaje({
-							titulo: "Registro Pedidos Llevar",
-							msj: "Su registro fue editado con exito",
-						});
-						navigation.navigate('PedidosLlevar', { screen:'Editar'})
-
-
-					} else {
-						textoMensaje = "";
-						json.errores.forEach((element) => {
-							textoMensaje += element.mensaje + ". ";
-							Mensaje({ titulo: "Error en el registro", msj: textoMensaje });
-						});
-					}
-				})
-				.catch((error) => {
-					textoMensaje = error;
-				});
+		if (isFocused) {
+			BuscarPedidos();
 		}
-		console.log(textoMensaje);
+	}, [isFocused]);
 
-	};
-
+	const [pedidosList, setPedidosList] = useState([]);
+	const [detallePedidosList, setDetallePedidoList] = useState([]);
 
 	const BuscarPedidos = async () => {
 		try {
-			await Axios.get("/pedidos/pedidos/listar", {
+			await Axios.get("/pedidos/detallepedidos/listar", {
 				headers: {
 					Authorization: "Bearer " + token,
 				},
@@ -86,10 +47,9 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 					console.log(json[1]);
 					json.forEach((element) => {
 						jsonitems.push({
-							label: element.NumeroPedido.toString(),
-							value: element.NumeroPedido.toString(),
+							label: element.idregistro.toString(),
+							value: element.idregistro.toString(),
 						});
-						console.log(typeof element.NumeroPedido.toString());
 					});
 					setPedidosList(jsonitems);
 				})
@@ -104,14 +64,119 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 		}
 	};
 
+	const guardarPedidos = async () => {
+		if (!token) {
+			textoMensaje = "Debe iniciar sesion";
+			console.log(token);
+		} else {
+			console.log(token);
+			const bodyParameters = {
+				iddetalle_pedido: idpedido,
+				usuario: idcliente,
+				identrega: identrega
+			};
+			const config = {
+				headers: {Authorization: `Bearer ${token}`},
+			};
+			await Axios.post("/pedidos/entregapedido/guardar", bodyParameters, config)
+				.then((data) => {
+					const json = data.data;
+					if (json.errores.length == 0) {
+						console.log("Solicitud Realizada");
+						Mensaje({
+							titulo: "Registro Pedidos Llevar",
+							msj: "Su registro fue guardado con exito",
+						});
+						setPedidosValue(null);
+						setClientesValue(null);
+						setIdentrega(null);
+					} else {
+						json.errores.forEach((element) => {
+							textoMensaje = element.mensaje;
+							Mensaje({titulo: "Error en el registro", msj: textoMensaje});
+						});
+
+					}
+				})
+				.catch((error) => {
+					textoMensaje = error;
+					console.log(error)
+					Mensaje({titulo: "Error en el registro", msj: 'Ya existe un campo con ese id'});
+				});
+		}
+
+	};
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
-				<TouchableOpacity onPress={() =>navigation.navigate('PedidosLlevar', { screen:'Editar'})}>
+				<TouchableOpacity onPress={() => navigation.navigate('Inicio')}>
 					<Entypo name="chevron-thin-left" style={styles.back}/>
 				</TouchableOpacity>
 			</View>
 			<StatusBar backgroundColor={paletaDeColores.backgroundDark}/>
+			<View
+				style={{
+					height: 30,
+					marginTop: 10,
+					marginBottom: 10
+				}}>
+				<ScrollView
+					horizontal
+					showsHorizontalScrollIndicator={false}
+				>
+					<TouchableOpacity style={{
+						padding: 5,
+						borderRadius: 100,
+						backgroundColor: paletaDeColores.blue + '10',
+						borderColor: paletaDeColores.blue,
+						borderWidth: 1,
+						marginHorizontal: 10
+					}} onPress={() => {
+						navigation.navigate('PedidosEntregados', {screen: 'Listar'})
+					}}>
+						<Text style={{color: paletaDeColores.black, marginHorizontal: 10,}}>Listar Pedidos
+							Entregados</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={{
+						padding: 5,
+						borderRadius: 100,
+						borderColor: 'coral',
+						borderWidth: 1,
+						marginHorizontal: 10
+					}} onPress={() => {
+						navigation.navigate('PedidosEntregados', {screen: 'Editar'})
+					}}>
+						<Text style={{color: paletaDeColores.black, marginHorizontal: 10}}>Editar Pedidos
+							Entregados</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={{
+						padding: 5,
+						borderRadius: 100,
+						borderColor: 'coral',
+						borderWidth: 1,
+						marginHorizontal: 10
+					}} onPress={() => {
+						navigation.navigate('PedidosEntregados', {screen: 'Eliminar'})
+					}}>
+						<Text style={{color: paletaDeColores.black, marginHorizontal: 10}}>Eliminar Pedidos
+							Entregados</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={{
+						padding: 5,
+						borderRadius: 100,
+						borderColor: 'coral',
+						borderWidth: 1,
+						marginHorizontal: 10
+					}} onPress={() => {
+						navigation.navigate('PedidosEntregados', {screen: 'Guardar'})
+					}}
+					>
+						<Text style={{color: paletaDeColores.black, marginHorizontal: 10}}>Agregar Pedidos
+							Entregados</Text>
+					</TouchableOpacity>
+				</ScrollView>
+			</View>
 			{/* Titles */}
 			<View style={{flexDirection: 'row', alignItems: 'center'}}>
 				<View style={{width: '10%'}}>
@@ -130,7 +195,7 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 						fontWeight: '600',
 						letterSpacing: 1,
 					}}>
-						Editar Pedidos Llevar
+						Registro de Pedidos Entregados
 					</Text>
 				</View>
 			</View>
@@ -164,16 +229,16 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 							borderWidth: 0,
 						}}
 						open={pedidosOpen}
-						value={idDetallePedido.toString()}
+						value={pedidosValue}
 						items={pedidosList}
 						setOpen={setPedidosOpen}
-						setValue={setIdDetallePedido}
+						setValue={setPedidosValue}
 						setItems={setPedidosList}
 					/>
 				</View>
 				<View>
 					<Text style={styles.label}>
-						Id Cliente
+						Id Usuario
 					</Text>
 					<DropDownPicker
 						placeholder='Seleccione una opción'
@@ -198,27 +263,36 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 							borderWidth: 0,
 						}}
 						open={clientesOpen}
-						value={idCliente}
+						value={clientesValue}
 						items={clientesList}
 						setOpen={setClientesOpen}
-						setValue={setIdCliente}
+						setValue={setClientesValue}
 						setItems={setClientesList}
 					/>
 
 				</View>
-				<View style={{width: '65%', alignSelf: 'center'}}>
-					<TouchableOpacity style={styles.botonEditar}
+				<View>
+					<Text style={styles.label}>
+						Id Entrega
+					</Text>
+					<TextInput style={styles.input} keyboardType={"numeric"} onChangeText={setIdentrega} value={identrega} placeholder='e.j. 1234' selectionColor="#777777"></TextInput>
+				</View>
+				<View style={{width: '50%', alignSelf: 'center'}}>
+					<TouchableOpacity style={styles.botonGuardar}
 									  onPress={() => {
-										  editarPedidosLlevar();
+										  guardarPedidos();
 									  }}>
-						<Entypo name="edit" style={{
+						<Ionicons name="save" style={{
 							fontSize: 24,
 							color: paletaDeColores.white,
 							padding: 10,
-						}} />
-						<Text style={styles.botonTexto}>Guardar cambios</Text>
+
+						}}/>
+						<Text style={styles.botonTexto}>Guardar</Text>
 					</TouchableOpacity>
 				</View>
+
+
 			</View>
 
 
@@ -226,7 +300,7 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 	)
 }
 
-export default EditarPedidosLlevarForm
+export default GuardarPedidosEntregados
 
 const styles = StyleSheet.create({
 	container: {
@@ -238,20 +312,21 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		flexDirection: 'row',
 	},
-	botonEditar:{
-		flexDirection: 'row',
-		padding: 6,
-		borderRadius: 20,
-		borderColor: 'white',
-		backgroundColor: paletaDeColores.blue,
-		borderWidth: 1,
-		alignItems: 'center'
-	},
-	botonTexto:{
+	botonTexto: {
 		color: paletaDeColores.white,
 		marginHorizontal: 10,
 		fontWeight: '600',
 		fontSize: 16
+	},
+	botonGuardar: {
+		flexDirection: 'row',
+		padding: 6,
+		borderRadius: 20,
+		borderColor: 'white',
+		backgroundColor:
+		paletaDeColores.green,
+		borderWidth: 1,
+		alignItems: 'center'
 	},
 	back: {
 		fontSize: 22,
@@ -312,3 +387,5 @@ const styles = StyleSheet.create({
 		borderRadius: 10
 	}
 })
+
+

@@ -16,6 +16,15 @@ const Inicio = ({ navigation }) => {
         return unsubscribe
     }, [navigation])
 
+    function cambiarBusqueda(text) {
+		setProducts((prevProducts) => {
+        return prevProducts.filter((item) => item.Nombre.toLowerCase().indexOf(text.toLowerCase()) >= 0);
+		});
+		if (text == "") {
+			getDataFromDb()
+		}
+	}
+
     const getDataFromDb = () => {
         let productList = []
         for (let index = 0; index < Items.length; index++) {
@@ -49,7 +58,7 @@ const Inicio = ({ navigation }) => {
                 {/* BLOCK:: Buscador */}
                 <View style={styles.searchContainer}>
                         <FontAwesome name="search" style={styles.prependInput} />
-                        <TextInput style={styles.searchInput} placeholder="e.j. Hamburguesa">
+                        <TextInput style={styles.searchInput} placeholder="e.j. Hamburguesa" onChangeText={cambiarBusqueda}>
                         </TextInput>
                     </View>
                 {/* ENDBLOCK:: Buscador */}
@@ -106,8 +115,7 @@ const styles = StyleSheet.create({
         borderColor: paletaDeColores.backgroundLight,
     },
     titleContainer: {
-        marginBottom: 16,
-        marginTop: 16,  
+        marginTop: 16,
         marginBottom: 10,
     },
     titleText: {

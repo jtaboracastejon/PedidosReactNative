@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, StatusBar, TouchableOpacity} from 'react-native'
+import {View, Text, StyleSheet, StatusBar, TouchableOpacity, TextInput} from 'react-native'
 import React, {useState, useEffect, useContext} from 'react'
 import {paletaDeColores} from '../../styles/colores'
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -8,40 +8,49 @@ import Mensaje from "../../components/Mensaje";
 import {PedidosLlevarContext} from "../../context/pedidosLlevar/pedidosLlevarContext";
 import UsuarioContext from "../../context/UsuarioContext";
 
-const EditarPedidosLlevarForm = ({navigation}) => {
+const EditarPedidosMesaForm = ({navigation}) => {
+
 	let textoMensaje = "";
 	const { token } = useContext(UsuarioContext);
-	const {idDetallePedido, setIdDetallePedido, idCliente, setIdCliente, idRegistro} = useContext(PedidosLlevarContext)
 	const [pedidosOpen, setPedidosOpen] = useState(false);
 	const [clientesOpen, setClientesOpen] = useState(false);
 	const [pedidosValue, setPedidosValue] = useState(null);
 	const [clientesValue, setClientesValue] = useState(null);
-	const [idpedido, setIdpedido] = useState("");
-	const [idcliente, setIdcliente] = useState("");
-	const [clientesList, setClientesList] = useState([{label: "Maria Jose Arita", value: 1},
-		{label: 'Samantha Ruiz', value: 2}]);
+	const [clientesList, setClientesList] = useState([{label: 1, value: 1},
+		{label: 2, value: 2}]);
+	const {
+		idRegistroMesa,
+		setIdPedidoMesa, idPedidoMesa,
+		idMesa, setIdMesa,
+		cuenta, setCuenta,
+		nombreCuenta, setNombreCuenta
+	} = useContext(PedidosLlevarContext);
 	const [pedidosList, setPedidosList] = useState([]);
 
 	useEffect(() => {
 		BuscarPedidos();
 	}, [setPedidosList]);
+	useEffect(() => {
+		BuscarPedidos();
+	}, []);
 
-	console.log('Id registro '+ idRegistro)
-	const editarPedidosLlevar = async () => {
+	const editarPedidosMesa = async () => {
 		if (!token) {
 			textoMensaje = "Debe iniciar sesion";
 			console.log(token);
 		} else {
 			console.log(token);
 			const bodyParameters = {
-				idpedido: idDetallePedido,
-				idcliente: idCliente,
+				idpedido: idPedidoMesa,
+				idpedidomesa: idPedidoMesa,
+				cuenta: cuenta,
+				nombrecuenta: nombreCuenta
 			};
 			const config = {
 				headers: { Authorization: `Bearer ${token}` },
 			};
 			await Axios.put(
-				"/pedidos/pedidosLlevar/editar?id=" + idRegistro,
+				"/pedidos/pedidosmesa/editar?id=" + idRegistroMesa,
 				bodyParameters,
 				config
 			)
@@ -53,9 +62,7 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 							titulo: "Registro Pedidos Llevar",
 							msj: "Su registro fue editado con exito",
 						});
-						navigation.navigate('PedidosLlevar', { screen:'Editar'})
-
-
+						navigation.goBack();
 					} else {
 						textoMensaje = "";
 						json.errores.forEach((element) => {
@@ -107,7 +114,7 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
-				<TouchableOpacity onPress={() =>navigation.navigate('PedidosLlevar', { screen:'Editar'})}>
+				<TouchableOpacity onPress={() => navigation.goBack()}>
 					<Entypo name="chevron-thin-left" style={styles.back}/>
 				</TouchableOpacity>
 			</View>
@@ -130,7 +137,7 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 						fontWeight: '600',
 						letterSpacing: 1,
 					}}>
-						Editar Pedidos Llevar
+						Editar Pedidos Mesa
 					</Text>
 				</View>
 			</View>
@@ -150,9 +157,9 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 					<DropDownPicker
 						placeholder='Seleccione una opción'
 						zIndex={10}
-						onChangeValue={(value) => {
-							setIdpedido(value);
-						}}
+						// onChangeValue={(value) => {
+						// 	setIdpedido(value);
+						// }}
 						placeholderStyle={{
 							color: paletaDeColores.backgroundMedium,
 						}}
@@ -164,52 +171,29 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 							borderWidth: 0,
 						}}
 						open={pedidosOpen}
-						value={idDetallePedido.toString()}
+						value={idPedidoMesa.toString()}
 						items={pedidosList}
 						setOpen={setPedidosOpen}
-						setValue={setIdDetallePedido}
+						setValue={setIdPedidoMesa}
 						setItems={setPedidosList}
 					/>
 				</View>
 				<View>
-					<Text style={styles.label}>
-						Id Cliente
-					</Text>
-					<DropDownPicker
-						placeholder='Seleccione una opción'
-						zIndex={1}
-						searchable={true}
-						onChangeValue={(value) => {
-							setIdcliente(value);
-						}}
-						searchPlaceholder="Buscar..."
-						searchTextInputStyle={{
-							borderWidth: 1,
-							borderColor: paletaDeColores.backgroundMedium,
-						}}
-						placeholderStyle={{
-							color: paletaDeColores.backgroundMedium,
-						}}
-						style={{
-							backgroundColor: paletaDeColores.white,
-							borderWidth: 0,
-						}}
-						dropDownContainerStyle={{
-							borderWidth: 0,
-						}}
-						open={clientesOpen}
-						value={idCliente}
-						items={clientesList}
-						setOpen={setClientesOpen}
-						setValue={setIdCliente}
-						setItems={setClientesList}
-					/>
-
+					<Text style={styles.label}>Id Mesa</Text>
+					<TextInput style={styles.input} onChangeText={setIdMesa} value={idMesa.toString()} keyboardType={'numeric'} placeholder='e.j. 1234' selectionColor="#777777"></TextInput>
+				</View>
+				<View>
+					<Text style={styles.label}>Cuenta</Text>
+					<TextInput style={styles.input} onChangeText={setCuenta} value={cuenta.toString()} keyboardType={'numeric'} placeholder='e.j. 1234' selectionColor="#777777"></TextInput>
+				</View>
+				<View>
+					<Text style={styles.label}>Nombre</Text>
+					<TextInput style={styles.input} onChangeText={setNombreCuenta} value={nombreCuenta} keyboardType={'numeric'} placeholder='e.j. Mario' selectionColor="#777777"></TextInput>
 				</View>
 				<View style={{width: '65%', alignSelf: 'center'}}>
 					<TouchableOpacity style={styles.botonEditar}
 									  onPress={() => {
-										  editarPedidosLlevar();
+										  editarPedidosMesa();
 									  }}>
 						<Entypo name="edit" style={{
 							fontSize: 24,
@@ -226,7 +210,7 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 	)
 }
 
-export default EditarPedidosLlevarForm
+export default EditarPedidosMesaForm
 
 const styles = StyleSheet.create({
 	container: {
