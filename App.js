@@ -5,7 +5,6 @@ import { createNativeStackNavigator, } from '@react-navigation/native-stack';
 import Inicio from './src/screens/Inicio';
 import CarritoPedidoDetalle from './src/screens/carritoPedidoDetalle';
 import FormTemplate from './src/screens/formTemplate';
-
 import { Ionicons,MaterialCommunityIcons, FontAwesome5} from '@expo/vector-icons';
 
 import UsuarioContext from './src/context/UsuarioContext';
@@ -177,7 +176,20 @@ const CustomizeSideMenu =({navigation})=>{
 
     )
 }
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+
+function MyTabs() {
+    return (
+        <Tab.Navigator screenOptions={{
+            headerShown: false
+        }}>
+            <Tab.Screen name="Inicio" component={SideMenu} />
+
+        </Tab.Navigator>
+    );
+}
 
 function MenuNavigator(){
     const { token, setDatos, sesionIniciada, tokenValidado } = React.useContext(UsuarioContext);
@@ -197,7 +209,8 @@ function MenuNavigator(){
                 >
                     {sesionIniciada ? (
                         <>
-                            <Stack.Screen name="SideMenu" component={SideMenu}/>
+                            {/*<Stack.Screen name="SideMenu" component={SideMenu}/>*/}
+                            <Stack.Screen name="TabsBottom" component={MyTabs}/>
                             <Stack.Screen name="CarritoPedidoDetalle" component={CarritoPedidoDetalle}/>
                         </>
                     ) : (
