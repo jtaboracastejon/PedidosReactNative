@@ -8,36 +8,40 @@ import Mensaje from "../../components/Mensaje";
 import UsuarioContext from "../../context/UsuarioContext";
 import {useIsFocused} from "@react-navigation/native";
 
-const GuardarPedidosLlevar = ({navigation}) => {
-	let textoMensaje = "";
-
+const GuardarPedidosCancelados = ({navigation}) =>{
+    let textoMensaje = "";
 	const { token } = useContext(UsuarioContext);
-	const [pedidosOpen, setPedidosOpen] = useState(false);
-	const [clientesOpen, setClientesOpen] = useState(false);
-	const [pedidosValue, setPedidosValue] = useState(null);
-	const [clientesValue, setClientesValue] = useState(null);
-	const [idpedido, setIdpedido] = useState("");
-	const [idcliente, setIdcliente] = useState("");
+	const [usuarioOpen, setUsuarioOpen] = useState(false);
+	const [numeropedidoOpen, setNumeropedidoOpen] = useState(false);
 
-	const [clientesList, setClientesList] = useState([
-		{label: 'Maria Jose Arita', value: 1},
-		{label: 'Fernando Valenzuela', value: 2}]
-	);
+	const [usuarioValue, setUsuarioValue] = useState(null);
+    const [numeropedidoValue, setNumeropedidoValue] = useState(null);
+
+	const [usuario, setIdUsuario] = useState("");
+    const [numeropedido, setNumeropedido] = useState("");
+
+	const [usuarioList, setUsuarioList] = useState([{label: 'Maria Jose Arita', value: 1},
+		{label: 'Fernando Valenzuela', value: 2}]);
+    const [detallepedidoList, setDetallepedidoList] = useState([]);
+
+	// useEffect(() => {
+	// 	BuscarUsuario();
+	// }, [setUsuarioList]);
+	//
+	// useEffect(() => {
+	// 	BuscarDetalles();
+	// }, [setDetallepedidoList]);
 
 	const isFocused= useIsFocused()
 	useEffect(() => {
 		if(isFocused){
-			BuscarPedidos();
+			BuscarDetalles();
 		}
 	}, [isFocused]);
 
-
-	const [pedidosList, setPedidosList] = useState([]);
-	const [detallePedidosList, setDetallePedidoList] = useState([]);
-
-	const BuscarPedidos = async () => {
-		try {
-			await Axios.get("/pedidos/pedidos/listar", {
+    const BuscarDetalles = async () =>{
+        try {
+			await Axios.get("/pedidos/detallepedidos/listar", {
 				headers: {
 					Authorization: "Bearer " + token,
 				},
@@ -48,12 +52,12 @@ const GuardarPedidosLlevar = ({navigation}) => {
 					console.log(json[1]);
 					json.forEach((element) => {
 						jsonitems.push({
-							label: element.NumeroPedido.toString(),
-							value: element.NumeroPedido.toString(),
+							label: element.idregistro.toString(),
+							value: element.idregistro.toString(),
 						});
 						console.log(typeof element.NumeroPedido.toString());
 					});
-					setPedidosList(jsonitems);
+					setDetallepedidoList(jsonitems);
 				})
 				.catch((error) => {
 					textoMensaje = error;
@@ -64,35 +68,63 @@ const GuardarPedidosLlevar = ({navigation}) => {
 			console.log(error);
 			Mensaje({titulo: "Error registro", msj: error});
 		}
-	};
-
-	const guardarPedidos = async () => {
-		if (!token) {
+    }
+    // const BuscarUsuario = async () =>{
+    //     try {
+	// 		await Axios.get("/pedidos/pedidoscancelados/listarUsuarios", {
+	// 			headers: {
+	// 				Authorization: "Bearer " + token,
+	// 			},
+	// 		})
+	// 			.then((data) => {
+	// 				const json = data.data;
+	// 				let jsonitems = [];
+	// 				console.log(json[1]);
+	// 				json.forEach((element) => {
+	// 					jsonitems.push({
+	// 						label: element.LoginUsuario.toString(),
+	// 						value: element.idregistro.toString(),
+	// 					});
+	//
+	// 				});
+	// 				setUsuarioList(jsonitems);
+	// 			})
+	// 			.catch((error) => {
+	// 				textoMensaje = error;
+	// 				Mensaje({titulo: "Error registro", msj: textoMensaje});
+	// 			});
+	// 	} catch (error) {
+	// 		textoMensaje = error;
+	// 		console.log(error);
+	// 		Mensaje({titulo: "Error registro", msj: error});
+	// 	}
+    // }
+    const GuardarPedido = async () =>{
+        if (!token) {
 			textoMensaje = "Debe iniciar sesion";
 			console.log(token);
 		} else {
 			console.log(token);
 			const bodyParameters = {
-				idpedido: idpedido,
-				idcliente: idcliente,
+				numeropedido: numeropedido,
+				usuario: usuario,
 			};
 			const config = {
 				headers: { Authorization: `Bearer ${token}` },
 			};
-			await Axios.post("/pedidos/pedidosllevar/guardar", bodyParameters, config)
+			await Axios.post("/pedidos/pedidoscancelados/guardar", bodyParameters, config)
 				.then((data) => {
 					const json = data.data;
 					if (json.errores.length == 0) {
-						console.log("Solicitud Realizada");
+						/* console.log("Solicitud Realizada"); */
 						Mensaje({
-							titulo: "Registro Pedidos Llevar",
-							msj: "Su registro fue guardado con exito",
+							titulo: "Registro Pedidos cancelados",
+							msj: "Su pedido fue guardado con exito",
 						});
-						setClientesValue(null);
-						setPedidosValue(null);
+						setUsuarioValue(null);
+						setNumeropedidoValue(null);
 					} else {
 						textoMensaje = "";
-						console.log(json.errores)
 						json.errores.forEach((element) => {
 							textoMensaje = element.mensaje;
 							Mensaje({ titulo: "Error en el registro", msj: textoMensaje });
@@ -101,12 +133,13 @@ const GuardarPedidosLlevar = ({navigation}) => {
 				})
 				.catch((error) => {
 					textoMensaje = error;
+					Mensaje({ titulo: "Error en el registro", msj: 'Ya existe un registro con esa llave primaria'});
 				});
 		}
-		// console.log(textoMensaje);
+
 	};
 
-	return (
+    return (
 		<View style={styles.container}>
 			<View style={styles.header}>
 				<TouchableOpacity onPress={() => navigation.navigate('Inicio')}>
@@ -123,26 +156,27 @@ const GuardarPedidosLlevar = ({navigation}) => {
 					showsHorizontalScrollIndicator={false}
 				>
 					<TouchableOpacity style={{ padding: 5, borderRadius: 100, backgroundColor: paletaDeColores.blue + '10', borderColor: paletaDeColores.blue, borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Listar'})
+						navigation.navigate('PedidosCancelados', { screen:'Listar'})
 					}}>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10, }}>Listar Pedidos Llevar</Text>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10, }}>Listar Pedidos cancelados</Text>
 					</TouchableOpacity>
 					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Editar'})
-					}} >
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Editar Pedidos Llevar</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Eliminar'})
-					}}>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Eliminar Pedidos Llevar</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Guardar'})
+						navigation.navigate('PedidosCancelados', { screen:'Guardar'})
 					}}
 					>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Agregar Pedidos Llevar</Text>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Agregar Pedidos cancelados</Text>
 					</TouchableOpacity>
+					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
+						navigation.navigate('PedidosCancelados', { screen:'Editar'})
+					}} >
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Editar Pedidos cancelados</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
+						navigation.navigate('PedidosCancelados', { screen:'Eliminar'})
+					}}>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Eliminar Pedidos cancelados</Text>
+					</TouchableOpacity>
+
 
 				</ScrollView>
 			</View>
@@ -164,7 +198,7 @@ const GuardarPedidosLlevar = ({navigation}) => {
 						fontWeight: '600',
 						letterSpacing: 1,
 					}}>
-						Registro de Pedidos Llevar
+						Registro de Pedidos cancelados
 					</Text>
 				</View>
 			</View>
@@ -179,13 +213,13 @@ const GuardarPedidosLlevar = ({navigation}) => {
 			<View style={{justifyContent: 'space-around', height: '80%',}}>
 				<View>
 					<Text style={styles.label}>
-						Id Pedido
+						Id Detalle
 					</Text>
 					<DropDownPicker
 						placeholder='Seleccione una opción'
 						zIndex={10}
 						onChangeValue={(value) => {
-							setIdpedido(value);
+						    setNumeropedido(value);
 						}}
 						placeholderStyle={{
 							color: paletaDeColores.backgroundMedium,
@@ -197,24 +231,24 @@ const GuardarPedidosLlevar = ({navigation}) => {
 						dropDownContainerStyle={{
 							borderWidth: 0,
 						}}
-						open={pedidosOpen}
-						value={pedidosValue}
-						items={pedidosList}
-						setOpen={setPedidosOpen}
-						setValue={setPedidosValue}
-						setItems={setPedidosList}
+						open={numeropedidoOpen}
+						value={numeropedidoValue}
+						items={detallepedidoList}
+						setOpen={setNumeropedidoOpen}
+						setValue={setNumeropedidoValue}
+						setItems={setDetallepedidoList}
 					/>
 				</View>
 				<View>
 					<Text style={styles.label}>
-						Id Cliente
+						Usuarios
 					</Text>
 					<DropDownPicker
 						placeholder='Seleccione una opción'
 						zIndex={1}
 						searchable={true}
 						onChangeValue={(value) => {
-							setIdcliente(value);
+							setIdUsuario(value);
 						}}
 						searchPlaceholder="Buscar..."
 						searchTextInputStyle={{
@@ -231,19 +265,19 @@ const GuardarPedidosLlevar = ({navigation}) => {
 						dropDownContainerStyle={{
 							borderWidth: 0,
 						}}
-						open={clientesOpen}
-						value={clientesValue}
-						items={clientesList}
-						setOpen={setClientesOpen}
-						setValue={setClientesValue}
-						setItems={setClientesList}
+						open={usuarioOpen}
+						value={usuarioValue}
+						items={usuarioList}
+						setOpen={setUsuarioOpen}
+						setValue={setUsuarioValue}
+						setItems={setUsuarioList}
 					/>
 
 				</View>
 				<View style={{width: '50%', alignSelf: 'center'}}>
 				<TouchableOpacity style={styles.botonGuardar}
 								  onPress={() => {
-									  guardarPedidos();
+									  GuardarPedido();
 								  }}>
 					<Ionicons name="save" style={{
 						fontSize: 24,
@@ -262,8 +296,7 @@ const GuardarPedidosLlevar = ({navigation}) => {
 		</View>
 	)
 }
-
-export default GuardarPedidosLlevar
+export default GuardarPedidosCancelados
 
 const styles = StyleSheet.create({
 	container: {
@@ -350,5 +383,4 @@ const styles = StyleSheet.create({
 		borderRadius: 10
 	}
 })
-
 

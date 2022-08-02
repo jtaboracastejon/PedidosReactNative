@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, StatusBar, TouchableOpacity} from 'react-native'
+import {View, Text, StyleSheet, StatusBar, TouchableOpacity, TextInput} from 'react-native'
 import React, {useState, useEffect, useContext} from 'react'
 import {paletaDeColores} from '../../styles/colores'
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -8,27 +8,26 @@ import Mensaje from "../../components/Mensaje";
 import {PedidosLlevarContext} from "../../context/pedidosLlevar/pedidosLlevarContext";
 import UsuarioContext from "../../context/UsuarioContext";
 
-const EditarPedidosLlevarForm = ({navigation}) => {
+const EditarPedidosEntregadosForm = ({navigation}) => {
 	let textoMensaje = "";
-  
 	const { token } = useContext(UsuarioContext);
-	const {idDetallePedido, setIdDetallePedido, idCliente, setIdCliente, idRegistro} = useContext(PedidosLlevarContext)
-
+	const {setIdDetalleEntregado,
+		setIdUsuarioEntregado,
+		setIdEntregaEntregado,
+	idDetalleEntregado, idUsuarioEntregado,
+	idEntregaEntregado: idEntregaEntregado} = useContext(PedidosLlevarContext)
 	const [pedidosOpen, setPedidosOpen] = useState(false);
 	const [clientesOpen, setClientesOpen] = useState(false);
-	const [pedidosValue, setPedidosValue] = useState(null);
-	const [clientesValue, setClientesValue] = useState(null);
 	const [idpedido, setIdpedido] = useState("");
-	const [idcliente, setIdcliente] = useState("");
 	const [clientesList, setClientesList] = useState([{label: "Maria Jose Arita", value: 1},
 		{label: 'Samantha Ruiz', value: 2}]);
 	const [pedidosList, setPedidosList] = useState([]);
+	const [identrega, setIdentrega] = useState("");
 
 	useEffect(() => {
 		BuscarPedidos();
 	}, [setPedidosList]);
 
-	console.log('Id registro '+ idRegistro)
 	const editarPedidosLlevar = async () => {
 		if (!token) {
 			textoMensaje = "Debe iniciar sesion";
@@ -36,14 +35,14 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 		} else {
 			console.log(token);
 			const bodyParameters = {
-				idpedido: idDetallePedido,
-				idcliente: idCliente,
+				usuario: idUsuarioEntregado,
+				identrega: idEntregaEntregado
 			};
 			const config = {
 				headers: { Authorization: `Bearer ${token}` },
 			};
 			await Axios.put(
-				"/pedidos/pedidosLlevar/editar?id=" + idRegistro,
+				"/pedidos/entregapedido/editar?id=" + idDetalleEntregado,
 				bodyParameters,
 				config
 			)
@@ -77,7 +76,7 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 
 	const BuscarPedidos = async () => {
 		try {
-			await Axios.get("/pedidos/pedidos/listar", {
+			await Axios.get("/pedidos/detallepedidos/listar", {
 				headers: {
 					Authorization: "Bearer " + token,
 				},
@@ -88,8 +87,8 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 					console.log(json[1]);
 					json.forEach((element) => {
 						jsonitems.push({
-							label: element.NumeroPedido.toString(),
-							value: element.NumeroPedido.toString(),
+							label: element.idregistro.toString(),
+							value: element.idregistro.toString(),
 						});
 						console.log(typeof element.NumeroPedido.toString());
 					});
@@ -105,11 +104,11 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 			Mensaje({titulo: "Error registro", msj: error});
 		}
 	};
-  
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
-				<TouchableOpacity onPress={() =>navigation.navigate('PedidosLlevar', { screen:'Editar'})}>
+				<TouchableOpacity onPress={() =>navigation.goBack()}>
 					<Entypo name="chevron-thin-left" style={styles.back}/>
 				</TouchableOpacity>
 			</View>
@@ -147,14 +146,11 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 			<View style={{justifyContent: 'space-around', height: '80%',}}>
 				<View>
 					<Text style={styles.label}>
-						Id Pedido
+						Id Detalle Pedido
 					</Text>
 					<DropDownPicker
 						placeholder='Seleccione una opción'
 						zIndex={10}
-						onChangeValue={(value) => {
-							setIdpedido(value);
-						}}
 						placeholderStyle={{
 							color: paletaDeColores.backgroundMedium,
 						}}
@@ -166,23 +162,23 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 							borderWidth: 0,
 						}}
 						open={pedidosOpen}
-						value={idDetallePedido.toString()}
+						value={idDetalleEntregado.toString()}
 						items={pedidosList}
 						setOpen={setPedidosOpen}
-						setValue={setIdDetallePedido}
+						setValue={setIdDetalleEntregado}
 						setItems={setPedidosList}
 					/>
 				</View>
 				<View>
 					<Text style={styles.label}>
-						Id Cliente
+						Usuario
 					</Text>
 					<DropDownPicker
 						placeholder='Seleccione una opción'
 						zIndex={1}
 						searchable={true}
 						onChangeValue={(value) => {
-							setIdcliente(value);
+							setIdUsuarioEntregado(value);
 						}}
 						searchPlaceholder="Buscar..."
 						searchTextInputStyle={{
@@ -200,13 +196,19 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 							borderWidth: 0,
 						}}
 						open={clientesOpen}
-						value={idCliente}
+						value={idUsuarioEntregado}
 						items={clientesList}
 						setOpen={setClientesOpen}
-						setValue={setIdCliente}
+						setValue={idUsuarioEntregado}
 						setItems={setClientesList}
 					/>
 
+				</View>
+				<View>
+					<Text style={styles.label}>
+						Id Entrega
+					</Text>
+					<TextInput style={styles.input} keyboardType={"numeric"} value={idEntregaEntregado.toString()} onChangeText={setIdEntregaEntregado} placeholder='e.j. 1234' selectionColor="#777777"></TextInput>
 				</View>
 				<View style={{width: '65%', alignSelf: 'center'}}>
 					<TouchableOpacity style={styles.botonEditar}
@@ -228,7 +230,7 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 	)
 }
 
-export default EditarPedidosLlevarForm
+export default EditarPedidosEntregadosForm
 
 const styles = StyleSheet.create({
 	container: {

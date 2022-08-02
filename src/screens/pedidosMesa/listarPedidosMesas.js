@@ -17,21 +17,19 @@ import Axios from "../../components/Axios";
 import UsuarioContext from "../../context/UsuarioContext";
 import {useIsFocused} from "@react-navigation/native";
 
-const ListarPedidosLlevar = ({navigation}) => {
+const ListarPedidosMesas = ({navigation}) => {
+
 	let textoMensaje = "";
-
 	const { token } = useContext(UsuarioContext);
-
 	const [lista, setLista] = useState([]);
 
 	useEffect(() => {
-		buscarPedidosLlevar();
+		buscarPedidosMesa();
 	}, [setLista]);
-
 	const isFocused= useIsFocused()
 	useEffect(() => {
 		if(isFocused){
-			buscarPedidosLlevar();
+			buscarPedidosMesa();
 		}
 	}, [isFocused]);
 
@@ -39,15 +37,14 @@ const ListarPedidosLlevar = ({navigation}) => {
 		setLista((prevLista) => {
 			return prevLista.filter((item) => item.idregistro.toString().indexOf(text.toString()) >= 0);
 		});
-
 		if (text == "") {
-			buscarPedidosLlevar();
+			buscarPedidosMesa();
 		}
 	}
 
-	const buscarPedidosLlevar = async () => {
+	const buscarPedidosMesa = async () => {
 		try {
-			await Axios.get("/pedidos/pedidosllevar/listar", {
+			await Axios.get("/pedidos/pedidosmesa/listar", {
 				headers: {
 					Authorization: "Bearer " + token,
 				},
@@ -91,25 +88,25 @@ const ListarPedidosLlevar = ({navigation}) => {
 					showsHorizontalScrollIndicator={false}
 				>
 					<TouchableOpacity style={{ padding: 5, borderRadius: 100, backgroundColor: paletaDeColores.blue + '10', borderColor: paletaDeColores.blue, borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Listar'})
+						navigation.navigate('PedidosMesa', { screen:'Listar'})
 					}}>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10, }}>Listar Pedidos Llevar</Text>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10, }}>Listar Pedidos Mesa</Text>
 					</TouchableOpacity>
 					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Editar'})
+						navigation.navigate('PedidosMesa', { screen:'Editar'})
 					}} >
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Editar Pedidos Llevar</Text>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Editar Pedidos Mesa</Text>
 					</TouchableOpacity>
 					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Eliminar'})
+						navigation.navigate('PedidosMesa', { screen:'Eliminar'})
 					}}>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Eliminar Pedidos Llevar</Text>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Eliminar Pedidos Mesa</Text>
 					</TouchableOpacity>
 					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Guardar'})
+						navigation.navigate('PedidosMesa', { screen:'Guardar'})
 					}}
 					>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Agregar Pedidos Llevar</Text>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Agregar Pedidos Mesa</Text>
 					</TouchableOpacity>
 
 				</ScrollView>
@@ -132,7 +129,7 @@ const ListarPedidosLlevar = ({navigation}) => {
 						fontWeight: '600',
 						letterSpacing: 1,
 					}}>
-						Lista de Pedidos Llevar
+						Lista de Pedidos Mesa
 					</Text>
 				</View>
 			</View>
@@ -152,8 +149,10 @@ const ListarPedidosLlevar = ({navigation}) => {
 						<View key={item.idregistro}>
 							<View style={styles.itemList}>
 								<Text>Id de Registro: {item.idregistro}</Text>
-								<Text>Id de Pedido {item.idpedido}</Text>
-								<Text>Id del Cliente {item.idcliente}</Text>
+								<Text>Id de Pedido: {item.idpedido}</Text>
+								<Text>Id de Mesa: {item.idmesa}</Text>
+								<Text>Cuenta: {item.cuenta}</Text>
+								<Text>Nombre de Cuenta: {item.nombrecuenta}</Text>
 							</View>
 						</View>
 					))}
@@ -164,7 +163,7 @@ const ListarPedidosLlevar = ({navigation}) => {
 	);
 };
 
-export default ListarPedidosLlevar;
+export default ListarPedidosMesas;
 
 const styles = StyleSheet.create({
 	container: {

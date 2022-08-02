@@ -5,39 +5,42 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import {Ionicons, Entypo} from '@expo/vector-icons';
 import Axios from "../../components/Axios";
 import Mensaje from "../../components/Mensaje";
+import text from "react-native-web/dist/exports/Text";
 import UsuarioContext from "../../context/UsuarioContext";
 import {useIsFocused} from "@react-navigation/native";
 
-const GuardarPedidosLlevar = ({navigation}) => {
-	let textoMensaje = "";
+const PedidosVentasGuardar = ({navigation}) => {
+    let textoMensaje = "";
+	const {token} = useContext(UsuarioContext);
+    
+    const [detallepedidoOpen, setdetallepedidoOpen] = useState(false);
+    const [facturaOpen, setfacturaOpen] = useState(false);
 
-	const { token } = useContext(UsuarioContext);
-	const [pedidosOpen, setPedidosOpen] = useState(false);
-	const [clientesOpen, setClientesOpen] = useState(false);
-	const [pedidosValue, setPedidosValue] = useState(null);
-	const [clientesValue, setClientesValue] = useState(null);
-	const [idpedido, setIdpedido] = useState("");
-	const [idcliente, setIdcliente] = useState("");
+    const [detallepedidoValue, setdetallepedidoValue] = useState(null);
+    const [facturaValue, setfacturaValue] = useState(null);
 
-	const [clientesList, setClientesList] = useState([
-		{label: 'Maria Jose Arita', value: 1},
-		{label: 'Fernando Valenzuela', value: 2}]
-	);
+    const [iddetallepedido, setiddetalle] = useState("");
+    const [idfactura, setidfactura] = useState("");
+
+	const [detallepedidoList, setdetallepedidoList] = useState([]);
+    const [pedidosList, setpedidosList] = useState([{label: 1, value:1}]);
+
+    // useEffect(() => {
+	// 	Buscardetallepedido();
+	// 	BuscarPedidos();
+	// }, [setdetallepedidoList]);
 
 	const isFocused= useIsFocused()
 	useEffect(() => {
 		if(isFocused){
+			Buscardetallepedido();
 			BuscarPedidos();
 		}
 	}, [isFocused]);
 
-
-	const [pedidosList, setPedidosList] = useState([]);
-	const [detallePedidosList, setDetallePedidoList] = useState([]);
-
-	const BuscarPedidos = async () => {
-		try {
-			await Axios.get("/pedidos/pedidos/listar", {
+    const Buscardetallepedido = async () =>{
+        try {
+			await Axios.get("/pedidos/detallepedidos/listar", {
 				headers: {
 					Authorization: "Bearer " + token,
 				},
@@ -45,15 +48,15 @@ const GuardarPedidosLlevar = ({navigation}) => {
 				.then((data) => {
 					const json = data.data;
 					let jsonitems = [];
-					console.log(json[1]);
+					console.log(json[1].NumeroPedido);
 					json.forEach((element) => {
 						jsonitems.push({
-							label: element.NumeroPedido.toString(),
-							value: element.NumeroPedido.toString(),
+							label: element.idregistro.toString(),
+							value: element.idregistro.toString(),
 						});
-						console.log(typeof element.NumeroPedido.toString());
+
 					});
-					setPedidosList(jsonitems);
+					setdetallepedidoList(jsonitems);
 				})
 				.catch((error) => {
 					textoMensaje = error;
@@ -64,49 +67,93 @@ const GuardarPedidosLlevar = ({navigation}) => {
 			console.log(error);
 			Mensaje({titulo: "Error registro", msj: error});
 		}
-	};
+    }
 
-	const guardarPedidos = async () => {
-		if (!token) {
+    const BuscarPedidos = async () =>{
+        try {
+			await Axios.get("/pedidos/pedidos/listar", {
+				headers: {
+					Authorization: "Bearer " + token,
+				},
+			})
+				.then((data) => {
+					const json = data.data;
+					let jsonitems = [];
+					console.log(json);
+					json.forEach((element) => {
+						jsonitems.push({
+							label: element.NumeroPedido.toString(),
+							value: element.NumeroPedido.toString(),
+						});
+
+					});
+					setpedidosList(jsonitems);
+				})
+				.catch((error) => {
+					textoMensaje = error;
+					Mensaje({titulo: "Error registro", msj: textoMensaje});
+				});
+		} catch (error) {
+			textoMensaje = error;
+			console.log(error);
+			Mensaje({titulo: "Error registro", msj: error});
+		}
+    }
+
+    const GuardarPedido = async () => {
+		console.log(iddetallepedido)
+		console.log(idfactura)
+		var textoMensaje = ""
+        if (!token) {
 			textoMensaje = "Debe iniciar sesion";
-			console.log(token);
+			//console.log(token);
 		} else {
-			console.log(token);
+			//console.log(token);
 			const bodyParameters = {
-				idpedido: idpedido,
-				idcliente: idcliente,
+				NumeroFactura: idfactura,
+				NumeroPedido: iddetallepedido,
 			};
 			const config = {
 				headers: { Authorization: `Bearer ${token}` },
 			};
-			await Axios.post("/pedidos/pedidosllevar/guardar", bodyParameters, config)
+			await Axios.post("/pedidos/pedidosyventas/guardar", bodyParameters, config)
 				.then((data) => {
 					const json = data.data;
+					// console.log(json)
 					if (json.errores.length == 0) {
 						console.log("Solicitud Realizada");
 						Mensaje({
-							titulo: "Registro Pedidos Llevar",
-							msj: "Su registro fue guardado con exito",
+							titulo: "Registro Pedidos Elaborados",
+							msj: "Su Pedido Elaborado fue guardado con exito",
 						});
-						setClientesValue(null);
-						setPedidosValue(null);
+						navigation.navigate('PedidosVentas', { screen:'Guardar'})
 					} else {
-						textoMensaje = "";
+						const json = data.data;
 						console.log(json.errores)
-						json.errores.forEach((element) => {
-							textoMensaje = element.mensaje;
-							Mensaje({ titulo: "Error en el registro", msj: textoMensaje });
-						});
+							Mensaje({
+								titulo: "No se pudo realizar la operacion",
+								msj: json.errores,
+							});
+
+
 					}
 				})
 				.catch((error) => {
 					textoMensaje = error;
+					//Mensaje({ titulo: "Error en el registro", msj: textoMensaje });
+					textoMensaje = "";
+					console.log(error);
+					// console.log(json1)
+					// 	json1.errores.forEach((element) => {
+					// 		textoMensaje += element.mensaje + ". ";
+					// 		Mensaje({ titulo: "Error en el registro", msj: textoMensaje });
+					// 	});
 				});
 		}
-		// console.log(textoMensaje);
-	};
+		console.log(textoMensaje);
+    }
 
-	return (
+    return (
 		<View style={styles.container}>
 			<View style={styles.header}>
 				<TouchableOpacity onPress={() => navigation.navigate('Inicio')}>
@@ -123,25 +170,15 @@ const GuardarPedidosLlevar = ({navigation}) => {
 					showsHorizontalScrollIndicator={false}
 				>
 					<TouchableOpacity style={{ padding: 5, borderRadius: 100, backgroundColor: paletaDeColores.blue + '10', borderColor: paletaDeColores.blue, borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Listar'})
+						navigation.navigate('PedidosVentas', { screen:'Listar'})
 					}}>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10, }}>Listar Pedidos Llevar</Text>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10, }}>Listar Pedidos Ventas</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Editar'})
-					}} >
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Editar Pedidos Llevar</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Eliminar'})
-					}}>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Eliminar Pedidos Llevar</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Guardar'})
+                    <TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
+						navigation.navigate('PedidosVentas', { screen:'Guardar'})
 					}}
 					>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Agregar Pedidos Llevar</Text>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Agregar Pedidos Ventas</Text>
 					</TouchableOpacity>
 
 				</ScrollView>
@@ -164,7 +201,7 @@ const GuardarPedidosLlevar = ({navigation}) => {
 						fontWeight: '600',
 						letterSpacing: 1,
 					}}>
-						Registro de Pedidos Llevar
+						Registro de Pedidos Ventas
 					</Text>
 				</View>
 			</View>
@@ -179,42 +216,14 @@ const GuardarPedidosLlevar = ({navigation}) => {
 			<View style={{justifyContent: 'space-around', height: '80%',}}>
 				<View>
 					<Text style={styles.label}>
-						Id Pedido
-					</Text>
-					<DropDownPicker
-						placeholder='Seleccione una opción'
-						zIndex={10}
-						onChangeValue={(value) => {
-							setIdpedido(value);
-						}}
-						placeholderStyle={{
-							color: paletaDeColores.backgroundMedium,
-						}}
-						style={{
-							backgroundColor: paletaDeColores.white,
-							borderWidth: 0,
-						}}
-						dropDownContainerStyle={{
-							borderWidth: 0,
-						}}
-						open={pedidosOpen}
-						value={pedidosValue}
-						items={pedidosList}
-						setOpen={setPedidosOpen}
-						setValue={setPedidosValue}
-						setItems={setPedidosList}
-					/>
-				</View>
-				<View>
-					<Text style={styles.label}>
-						Id Cliente
+						Numero Factura
 					</Text>
 					<DropDownPicker
 						placeholder='Seleccione una opción'
 						zIndex={1}
 						searchable={true}
 						onChangeValue={(value) => {
-							setIdcliente(value);
+							setidfactura(value);
 						}}
 						searchPlaceholder="Buscar..."
 						searchTextInputStyle={{
@@ -231,19 +240,47 @@ const GuardarPedidosLlevar = ({navigation}) => {
 						dropDownContainerStyle={{
 							borderWidth: 0,
 						}}
-						open={clientesOpen}
-						value={clientesValue}
-						items={clientesList}
-						setOpen={setClientesOpen}
-						setValue={setClientesValue}
-						setItems={setClientesList}
+					    open={facturaOpen}
+					    value={facturaValue}
+					    items={pedidosList}
+					    setOpen={setfacturaOpen}
+					    setValue={setfacturaValue}
+					    setItems={setpedidosList}
 					/>
 
+				</View>
+				<View>
+					<Text style={styles.label}>
+						Numero Pedido:
+					</Text>
+					<DropDownPicker
+						placeholder='Seleccione una opción'
+						zIndex={10}
+						onChangeValue={(value) => {
+							setiddetalle(value);
+						}}
+						placeholderStyle={{
+							color: paletaDeColores.backgroundMedium,
+						}}
+						style={{
+							backgroundColor: paletaDeColores.white,
+							borderWidth: 0,
+						}}
+						dropDownContainerStyle={{
+							borderWidth: 0,
+						}}
+						open={detallepedidoOpen}
+						value={detallepedidoValue}
+						items={detallepedidoList}
+						setOpen={setdetallepedidoOpen}
+						setValue={setdetallepedidoValue}
+						setItems={setdetallepedidoList}
+					/>
 				</View>
 				<View style={{width: '50%', alignSelf: 'center'}}>
 				<TouchableOpacity style={styles.botonGuardar}
 								  onPress={() => {
-									  guardarPedidos();
+									  GuardarPedido();
 								  }}>
 					<Ionicons name="save" style={{
 						fontSize: 24,
@@ -251,7 +288,7 @@ const GuardarPedidosLlevar = ({navigation}) => {
 						padding: 10,
 
 					}} />
-					<Text style={styles.botonTexto}>Guardar</Text>
+					<Text style={styles.botonTexto}>Guardar Pedido</Text>
 				</TouchableOpacity>
 				</View>
 
@@ -263,7 +300,7 @@ const GuardarPedidosLlevar = ({navigation}) => {
 	)
 }
 
-export default GuardarPedidosLlevar
+export default PedidosVentasGuardar
 
 const styles = StyleSheet.create({
 	container: {
@@ -350,5 +387,3 @@ const styles = StyleSheet.create({
 		borderRadius: 10
 	}
 })
-
-

@@ -9,26 +9,31 @@ import {PedidosLlevarContext} from "../../context/pedidosLlevar/pedidosLlevarCon
 import UsuarioContext from "../../context/UsuarioContext";
 
 const EditarPedidosLlevarForm = ({navigation}) => {
-	let textoMensaje = "";
-  
-	const { token } = useContext(UsuarioContext);
-	const {idDetallePedido, setIdDetallePedido, idCliente, setIdCliente, idRegistro} = useContext(PedidosLlevarContext)
 
+	let textoMensaje = "";
+	const { token } = useContext(UsuarioContext);
+	const {idRegistro} = useContext(PedidosLlevarContext)
 	const [pedidosOpen, setPedidosOpen] = useState(false);
 	const [clientesOpen, setClientesOpen] = useState(false);
 	const [pedidosValue, setPedidosValue] = useState(null);
 	const [clientesValue, setClientesValue] = useState(null);
 	const [idpedido, setIdpedido] = useState("");
 	const [idcliente, setIdcliente] = useState("");
-	const [clientesList, setClientesList] = useState([{label: "Maria Jose Arita", value: 1},
-		{label: 'Samantha Ruiz', value: 2}]);
+	const [clientesList, setClientesList] = useState([{label: 1, value: 1},
+		{label: 2, value: 2}]);
 	const [pedidosList, setPedidosList] = useState([]);
+
 
 	useEffect(() => {
 		BuscarPedidos();
 	}, [setPedidosList]);
 
-	console.log('Id registro '+ idRegistro)
+    const {
+		setnumeropedidocancelados,numeropedidocancelados,
+        setusuariocancelados,usuariocancelados,
+        setfechahoracancelados,fechahoracancelados
+	} = useContext(PedidosLlevarContext);
+
 	const editarPedidosLlevar = async () => {
 		if (!token) {
 			textoMensaje = "Debe iniciar sesion";
@@ -36,14 +41,14 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 		} else {
 			console.log(token);
 			const bodyParameters = {
-				idpedido: idDetallePedido,
-				idcliente: idCliente,
+				usuario: usuariocancelados,
+				fechahora: fechahoracancelados,
 			};
 			const config = {
 				headers: { Authorization: `Bearer ${token}` },
 			};
 			await Axios.put(
-				"/pedidos/pedidosLlevar/editar?id=" + idRegistro,
+				"/pedidos/pedidoscancelados/editar?id=" + numeropedidocancelados,
 				bodyParameters,
 				config
 			)
@@ -55,9 +60,7 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 							titulo: "Registro Pedidos Llevar",
 							msj: "Su registro fue editado con exito",
 						});
-						navigation.navigate('PedidosLlevar', { screen:'Editar'})
-
-
+						navigation.goBack();
 					} else {
 						textoMensaje = "";
 						json.errores.forEach((element) => {
@@ -105,11 +108,11 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 			Mensaje({titulo: "Error registro", msj: error});
 		}
 	};
-  
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
-				<TouchableOpacity onPress={() =>navigation.navigate('PedidosLlevar', { screen:'Editar'})}>
+				<TouchableOpacity onPress={() => navigation.goBack()}>
 					<Entypo name="chevron-thin-left" style={styles.back}/>
 				</TouchableOpacity>
 			</View>
@@ -166,10 +169,10 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 							borderWidth: 0,
 						}}
 						open={pedidosOpen}
-						value={idDetallePedido.toString()}
+						value={numeropedidocancelados.toString()}
 						items={pedidosList}
 						setOpen={setPedidosOpen}
-						setValue={setIdDetallePedido}
+						setValue={setnumeropedidocancelados}
 						setItems={setPedidosList}
 					/>
 				</View>
@@ -200,10 +203,10 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 							borderWidth: 0,
 						}}
 						open={clientesOpen}
-						value={idCliente}
+						value={usuariocancelados}
 						items={clientesList}
 						setOpen={setClientesOpen}
-						setValue={setIdCliente}
+						setValue={setusuariocancelados}
 						setItems={setClientesList}
 					/>
 
