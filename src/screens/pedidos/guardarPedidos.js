@@ -1,14 +1,15 @@
 import { View, Text, StyleSheet, StatusBar, TouchableOpacity, ScrollView } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import { paletaDeColores } from '../../styles/colores'
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Ionicons, Entypo } from '@expo/vector-icons';
 import Axios from "../../components/Axios";
 import Mensaje from "../../components/Mensaje";
+import UsuarioContext from "../../context/UsuarioContext";
 
 const GuardarPedidos = ({ navigation }) => {
 	let textoMensaje = "";
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTk0MjU4MDQsImV4cCI6MTY1OTQ1NTgwNH0.-ZY4ZwHCksefv3Tb6AGNcJc2G0wA-vGS92WmvHdhABU";
+	const { token } = useContext(UsuarioContext);
 
 	const [meserosOpen, setMeserosOpen] = useState(false);
 	const [estacionOpen, setEstacionOpen] = useState(false);
@@ -136,7 +137,12 @@ const GuardarPedidos = ({ navigation }) => {
 							titulo: "Registro Pedidos",
 							msj: "Su registro fue guardado con exito",
 						});
-						navigation.navigate("Listar");						
+						// navigation.navigate("Listar");
+						setMeserosValue(null);
+						setEstacionValue(null);
+						setModalidadValue(null);
+						setActivoValue(null);
+
 					} else {
 						console.log(json.errores);
 						textoMensaje = "";

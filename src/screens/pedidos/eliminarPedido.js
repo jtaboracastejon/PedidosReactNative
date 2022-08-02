@@ -18,10 +18,11 @@ import Axios from "../../components/Axios"
 
 import Checkbox from 'expo-checkbox';
 import { useIsFocused } from "@react-navigation/native";
+import UsuarioContext from "../../context/UsuarioContext";
 
 const EliminarPedidos = ({ navigation }) => {
     let textoMensaje = "";
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTk0MjU4MDQsImV4cCI6MTY1OTQ1NTgwNH0.-ZY4ZwHCksefv3Tb6AGNcJc2G0wA-vGS92WmvHdhABU";
+    const { token } = useContext(UsuarioContext);
     const [lista, setLista] = useState([]);
     const [filtro, setFiltro] = useState("");
 
@@ -33,20 +34,13 @@ const EliminarPedidos = ({ navigation }) => {
     }, [isFocused]);
 
     function changeHandler(text) {
-        setFiltro(text);
         if (text == "") {
             buscarPedidos();
         }
-    }
-
-    const onPressHandler = () => {
-        if (filtro == "") {
-            buscarPedidos();
-        }
         setLista((prevLista) => {
-            return prevLista.filter((item) => item.NumeroPedido == filtro);
+            return prevLista.filter((item) => item.NumeroPedido.toString().indexOf(text.toString()) >= 0);
         });
-    };
+    }
 
     const pressHandler = (key) => {
         const cambiarDecision = () => {
@@ -205,11 +199,6 @@ const EliminarPedidos = ({ navigation }) => {
 
                             ></TextInput>
                         </View>
-                        <TouchableOpacity
-                            onPress={onPressHandler}
-                        >
-                            <Text style={styles.item}>Filtrar</Text>
-                        </TouchableOpacity>
                     </View>
                     {/* DropDowns */}
                     <View>

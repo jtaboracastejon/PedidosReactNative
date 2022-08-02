@@ -23,8 +23,9 @@ function Pedidos() {
 			<Stack.Navigator screenOptions={{
 				headerShown: false
 			}}>
-				<Stack.Screen name="Listar" component={ListarPedidos} />
 				<Stack.Screen name="Guardar" component={GuardarPedidos} />
+				<Stack.Screen name="Listar" component={ListarPedidos} />
+
 				<Stack.Screen name="Editar" component={EditarPedidos} /> 
 				<Stack.Screen name="editarPedidosForm" component={EditarPedidosForm} /> 
 				<Stack.Screen name="Eliminar" component={EliminarPedido} /> 

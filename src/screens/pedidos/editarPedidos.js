@@ -20,13 +20,12 @@ import Mensaje from "../../components/Mensaje";
 import Axios from "../../components/Axios"
 
 import {PedidosContext} from "../../context/pedidos/pedidosContexto";
+import UsuarioContext from "../../context/UsuarioContext";
 
 const EditarPedidos = ({navigation}) => {
     let textoMensaje = "";
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTk0MjU4MDQsImV4cCI6MTY1OTQ1NTgwNH0.-ZY4ZwHCksefv3Tb6AGNcJc2G0wA-vGS92WmvHdhABU";
+	const { token } = useContext(UsuarioContext);
 	const [lista, setLista] = useState([]);
-	const [filtro, setFiltro] = useState("");
-
     const {
 		setNumeroPedidoC,
 		setIdmeseroC,
@@ -44,20 +43,15 @@ const EditarPedidos = ({navigation}) => {
 	}, [isFocused]);
 
 	function changeHandler(text) {
-		setFiltro(text);
 		if (text == "") {
 			buscarPedidos();
 		}
+		setLista((prevLista) => {
+			return prevLista.filter((item) => item.NumeroPedido.toString().indexOf(text.toString()) >= 0);
+		});
 	}
 
-	const onPressHandler = () => {
-		if (filtro == "") {
-			buscarPedidos();
-		}
-		setLista((prevLista) => {
-			return prevLista.filter((item) => item.NumeroPedido == filtro);
-		});
-	};
+
     
 	const pressHandler = (item) => {
 		setNumeroPedidoC(item.NumeroPedido);
@@ -178,11 +172,6 @@ const EditarPedidos = ({navigation}) => {
 
 							></TextInput>
 						</View>
-						<TouchableOpacity
-							onPress={onPressHandler}
-						>
-							<Text style={styles.item}>Filtrar</Text>
-						</TouchableOpacity>
 					</View>
 					{/* DropDowns */}
 					<View>

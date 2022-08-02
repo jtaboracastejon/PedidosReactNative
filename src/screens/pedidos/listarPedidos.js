@@ -17,12 +17,12 @@ import { Entypo, Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import { paletaDeColores } from "../../styles/colores";
 import Mensaje from "../../components/Mensaje";
 import Axios from "../../components/Axios"
+import UsuarioContext from "../../context/UsuarioContext";
 
 const ListarPedidos = ({ navigation }) => {
 	let textoMensaje = "";
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTk0MjU4MDQsImV4cCI6MTY1OTQ1NTgwNH0.-ZY4ZwHCksefv3Tb6AGNcJc2G0wA-vGS92WmvHdhABU";
+	const { token } = useContext(UsuarioContext);
 	const [lista, setLista] = useState([]);
-	const [filtro, setFiltro] = useState("");
 	const [isChecked, setChecked] = useState(false);
 
 	const isFocused = useIsFocused()
@@ -33,20 +33,13 @@ const ListarPedidos = ({ navigation }) => {
 	}, [isFocused]);
 
 	function changeHandler(text) {
-		setFiltro(text);
 		if (text == "") {
 			buscarPedidos();
 		}
-	}
-
-	const onPressHandler = () => {
-		if (filtro == "") {
-			buscarPedidos();
-		}
 		setLista((prevLista) => {
-			return prevLista.filter((item) => item.NumeroPedido == filtro);
+			return prevLista.filter((item) => item.NumeroPedido.toString().indexOf(text.toString()) >= 0);
 		});
-	};
+	}
 
 	const buscarPedidos = async () => {
 		try {
@@ -62,6 +55,8 @@ const ListarPedidos = ({ navigation }) => {
 						datas.nombreestacion = datas.estacione.nombre
 					});
 					setLista(data.data);
+					console.log('---------------')
+					console.log(data.data);
 
 				})
 				.catch((error) => {
@@ -157,11 +152,6 @@ const ListarPedidos = ({ navigation }) => {
 
 							></TextInput>
 						</View>
-						<TouchableOpacity
-							onPress={onPressHandler}
-						>
-							<Text style={styles.item}>Filtrar</Text>
-						</TouchableOpacity>
 					</View>
 					{/* DropDowns */}
 					<View>

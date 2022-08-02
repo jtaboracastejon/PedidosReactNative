@@ -7,6 +7,7 @@ import Axios from "../../components/Axios";
 import Mensaje from "../../components/Mensaje";
 
 import {PedidosContext} from "../../context/pedidos/pedidosContexto";
+import UsuarioContext from "../../context/UsuarioContext";
 
 const EditarPedidosForm = ({navigation}) => {
 
@@ -30,7 +31,7 @@ const EditarPedidosForm = ({navigation}) => {
     };
     console.log(PedidosSelect);
     let textoMensaje = "";
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTk0MjU4MDQsImV4cCI6MTY1OTQ1NTgwNH0.-ZY4ZwHCksefv3Tb6AGNcJc2G0wA-vGS92WmvHdhABU";
+	const { token } = useContext(UsuarioContext);
     const [meserosOpen, setMeserosOpen] = useState(false);
 	const [estacionOpen, setEstacionOpen] = useState(false);
 	const [activoOpen, setActivoOpen] = useState(false);
