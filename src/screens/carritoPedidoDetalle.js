@@ -160,7 +160,67 @@ const CarritoPedidoDetalle = ({ navigation }) => {
                 });
 
             /*Guardar Modalidad*/
-            if(modalidadValue){}
+            if(modalidadValue == 'ME'){
+                bodyParameters = {
+                    idpedido: ultimoPedido,
+                    idpedidomesa: idmesaValue,
+                    cuenta: cuentaValue,
+                    nombrecuenta: nombrecuentaValue
+    
+                };
+                await Axios.post("/pedidos/pedidosmesa/guardar", bodyParameters, config)
+                    .then((data) => {
+                        const json = data.data;
+                        if (json.errores.length == 0) {
+                            console.log("Solicitud Realizada");
+                            Mensaje({
+                                titulo: "Registro Pedidos Mesa",
+                                msj: "Su registro fue guardado con exito",
+                            });
+                        } else {
+                            textoMensaje = "";
+                            json.errores.forEach((element) => {
+                                textoMensaje = element.mensaje ;
+                                Mensaje({ titulo: "Error en el registro", msj: textoMensaje });
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        textoMensaje = error;
+                    });
+            }
+            else if(modalidadValue == 'LL'){
+                bodyParameters = {
+                    idpedido: ultimoPedido,
+                    idcliente: clientesValue,
+                };
+                const config = {
+                    headers: { Authorization: `Bearer ${token}` },
+                };
+                await Axios.post("/pedidos/pedidosllevar/guardar", bodyParameters, config)
+                    .then((data) => {
+                        const json = data.data;
+                        if (json.errores.length == 0) {
+                            console.log("Solicitud Realizada");
+                            Mensaje({
+                                titulo: "Registro Pedidos Llevar",
+                                msj: "Su registro fue guardado con exito",
+                            });
+                            setClientesValue(null);
+                            setPedidosValue(null);
+                        } else {
+                            textoMensaje = "";
+                            console.log(json.errores)
+                            json.errores.forEach((element) => {
+                                textoMensaje = element.mensaje;
+                                Mensaje({ titulo: "Error en el registro", msj: textoMensaje });
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        textoMensaje = error;
+                    });
+            }
         }
 
     };
@@ -257,6 +317,10 @@ const CarritoPedidoDetalle = ({ navigation }) => {
 
     const [modalidadOpen, setmodalidadOpen] = useState(false);
     const [modalidadValue, setmodalidadValue] = useState(null);
+
+    const [idmesaValue, setidmesaValue] = useState();
+    const [cuentaValue, setcuentaValue] = useState();
+    const [nombrecuentaValue, setnombrecuentaValue] = useState(null);
 
     const [modalidades, setmodalidades] = useState([
         { label: 'Mesa', value: 'ME' },
@@ -475,7 +539,7 @@ const CarritoPedidoDetalle = ({ navigation }) => {
                                     padding: 10
                                 }}>
                                 <Text style={styles.label}>No. Mesa</Text>
-                                <TextInput style={styles.input} placeholder='e.j. 3' selectionColor="#777777" keyboardType='numeric'></TextInput>
+                                <TextInput style={styles.input}  onChange={setidmesaValue} placeholder='e.j. 3' selectionColor="#777777" keyboardType='numeric'></TextInput>
                             </View>
                             <View style={
                                 {
@@ -483,7 +547,7 @@ const CarritoPedidoDetalle = ({ navigation }) => {
                                     padding: 10
                                 }}>
                                 <Text style={styles.label}>Cuenta</Text>
-                                <TextInput style={styles.input} placeholder='e.j. 1' selectionColor="#777777" keyboardType='numeric'></TextInput>
+                                <TextInput style={styles.input}  onChange={setcuentaValue} placeholder='e.j. 1' selectionColor="#777777" keyboardType='numeric'></TextInput>
                             </View>
                             <View style={
                                 {
@@ -491,7 +555,7 @@ const CarritoPedidoDetalle = ({ navigation }) => {
                                     padding: 10
                                 }}>
                                 <Text style={styles.label}>Nombre Cuenta</Text>
-                                <TextInput style={styles.input} placeholder='e.j. Javier' selectionColor="#777777" ></TextInput>
+                                <TextInput style={styles.input} onChange={setnombrecuentaValue}  placeholder='e.j. Javier' selectionColor="#777777" ></TextInput>
                             </View>
                         </View>
 
@@ -507,10 +571,7 @@ const CarritoPedidoDetalle = ({ navigation }) => {
                                 <DropDownPicker
                                     zIndex={1}
                                     placeholder='Seleccione una opción'
-                                    searchable={true}
-                                    onChangeValue={(value) => {
-                                        setIdcliente(value);
-                                    }}
+                                    searchable={true}                                    
                                     searchPlaceholder="Buscar..."
                                     searchTextInputStyle={{
                                         borderWidth: 1,
