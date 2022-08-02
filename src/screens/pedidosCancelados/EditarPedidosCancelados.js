@@ -17,10 +17,11 @@ import Mensaje from "../../components/Mensaje";
 import Axios from "../../components/Axios";
 import {PedidosLlevarContext} from "../../context/pedidosLlevar/pedidosLlevarContext";
 import {useIsFocused} from "@react-navigation/native";
+import UsuarioContext from "../../context/UsuarioContext";
 
 const EditarPedidosLlevar = ({navigation}) => {
 	let textoMensaje = "";
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTk0MDk5NDEsImV4cCI6MTY1OTQzOTk0MX0.rQRRU7xGI1H_gjbs4YIMhSEMCE5VWWpsMDEzb_Q20O0";
+	const { token } = useContext(UsuarioContext);
 	const [lista, setLista] = useState([]);
 	const [filtro, setFiltro] = useState("");
 	const {
@@ -35,26 +36,19 @@ const EditarPedidosLlevar = ({navigation}) => {
     const isFocused= useIsFocused()
     useEffect(() => {
         if(isFocused){
-        buscarPedidosLlevar();
+        buscarPedidosCancelados();
         }
         }, [isFocused]);
 
 
 	function changeHandler(text) {
-		setFiltro(text);
 		if (text == "") {
-			buscarPedidosLlevar();
-		}
-	}
-
-	const onPressHandler = () => {
-		if (filtro == "") {
-			buscarPedidosLlevar();
+			buscarPedidosCancelados();
 		}
 		setLista((prevLista) => {
-			return prevLista.filter((item) => item.numeropedido == filtro);
+			return prevLista.filter((item) => item.numeropedido.toString().indexOf(text.toString()) >= 0);
 		});
-	};
+	}
 
 	const pressHandler = (key) => {
 		console.log(key);
@@ -65,7 +59,7 @@ const EditarPedidosLlevar = ({navigation}) => {
 	};
 
 
-	const buscarPedidosLlevar = async () => {
+	const buscarPedidosCancelados = async () => {
 		try {
 			await Axios.get("/pedidos/pedidoscancelados/listar", {
 				headers: {
@@ -159,11 +153,7 @@ const EditarPedidosLlevar = ({navigation}) => {
 
 						></TextInput>
 					</View>
-					<TouchableOpacity
-						onPress={onPressHandler}
-					>
-						<Text style={styles.item}>Filtrar</Text>
-					</TouchableOpacity>
+
 				</View>
 				{/* DropDowns */}
 				<View>

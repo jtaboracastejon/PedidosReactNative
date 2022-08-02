@@ -7,7 +7,6 @@ import CarritoPedidoDetalle from './src/screens/carritoPedidoDetalle';
 import FormTemplate from './src/screens/formTemplate';
 
 import { Ionicons,MaterialCommunityIcons } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
 import UsuarioContext from './src/context/UsuarioContext';
 import Cargando from './src/components/Cargando';
 
@@ -97,8 +96,13 @@ const CustomizeSideMenu =({navigation})=>{
             <TouchableOpacity onPress={() => navigation.navigate('PedidosCancelados')}>
                 <View style={styles.sideMenuItem}>
                     <MaterialCommunityIcons name="archive-cancel" size={24} color="#0043F9" />
+                    <Text style={{
+                        width: '90%',
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        textAlign: 'center',
                     }}>Pedidos Cancelados</Text>
-                </View>
+            </View>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => navigation.navigate('PedidosMesa')}>

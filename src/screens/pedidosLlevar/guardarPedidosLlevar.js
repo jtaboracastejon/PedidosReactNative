@@ -19,8 +19,8 @@ const GuardarPedidosLlevar = ({navigation}) => {
 	const [idcliente, setIdcliente] = useState("");
 
 	const [clientesList, setClientesList] = useState([
-		{label: 1, value: 1},
-		{label: 2, value: 2}]
+		{label: 'Maria Jose Arita', value: 1},
+		{label: 'Fernando Valenzuela', value: 2}]
 	);
 
 	const isFocused= useIsFocused()

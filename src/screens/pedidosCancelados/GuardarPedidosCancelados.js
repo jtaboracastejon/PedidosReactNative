@@ -1,14 +1,16 @@
 import {View, Text, StyleSheet, StatusBar, TouchableOpacity, ScrollView} from 'react-native'
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import {paletaDeColores} from '../../styles/colores'
 import DropDownPicker from 'react-native-dropdown-picker';
 import {Ionicons, Entypo} from '@expo/vector-icons';
 import Axios from "../../components/Axios";
 import Mensaje from "../../components/Mensaje";
+import UsuarioContext from "../../context/UsuarioContext";
+import {useIsFocused} from "@react-navigation/native";
 
 const GuardarPedidosCancelados = ({navigation}) =>{
     let textoMensaje = "";
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTk0MDk5NDEsImV4cCI6MTY1OTQzOTk0MX0.rQRRU7xGI1H_gjbs4YIMhSEMCE5VWWpsMDEzb_Q20O0";
+	const { token } = useContext(UsuarioContext);
 	const [usuarioOpen, setUsuarioOpen] = useState(false);
 	const [numeropedidoOpen, setNumeropedidoOpen] = useState(false);
 
@@ -18,16 +20,24 @@ const GuardarPedidosCancelados = ({navigation}) =>{
 	const [usuario, setIdUsuario] = useState("");
     const [numeropedido, setNumeropedido] = useState("");
 
-	const [usuarioList, setUsuarioList] = useState([]);
+	const [usuarioList, setUsuarioList] = useState([{label: 'Maria Jose Arita', value: 1},
+		{label: 'Fernando Valenzuela', value: 2}]);
     const [detallepedidoList, setDetallepedidoList] = useState([]);
 
-	useEffect(() => {
-		BuscarUsuario();
-	}, [setUsuarioList]);
+	// useEffect(() => {
+	// 	BuscarUsuario();
+	// }, [setUsuarioList]);
+	//
+	// useEffect(() => {
+	// 	BuscarDetalles();
+	// }, [setDetallepedidoList]);
 
+	const isFocused= useIsFocused()
 	useEffect(() => {
-		BuscarDetalles();
-	}, [setDetallepedidoList]);
+		if(isFocused){
+			BuscarDetalles();
+		}
+	}, [isFocused]);
 
     const BuscarDetalles = async () =>{
         try {
@@ -59,36 +69,36 @@ const GuardarPedidosCancelados = ({navigation}) =>{
 			Mensaje({titulo: "Error registro", msj: error});
 		}
     }
-    const BuscarUsuario = async () =>{
-        try {
-			await Axios.get("/pedidos/pedidoscancelados/listarUsuarios", {
-				headers: {
-					Authorization: "Bearer " + token,
-				},
-			})
-				.then((data) => {
-					const json = data.data;
-					let jsonitems = [];
-					console.log(json[1]);
-					json.forEach((element) => {
-						jsonitems.push({
-							label: element.LoginUsuario.toString(),
-							value: element.idregistro.toString(),
-						});
-						
-					});
-					setUsuarioList(jsonitems);
-				})
-				.catch((error) => {
-					textoMensaje = error;
-					Mensaje({titulo: "Error registro", msj: textoMensaje});
-				});
-		} catch (error) {
-			textoMensaje = error;
-			console.log(error);
-			Mensaje({titulo: "Error registro", msj: error});
-		}
-    }
+    // const BuscarUsuario = async () =>{
+    //     try {
+	// 		await Axios.get("/pedidos/pedidoscancelados/listarUsuarios", {
+	// 			headers: {
+	// 				Authorization: "Bearer " + token,
+	// 			},
+	// 		})
+	// 			.then((data) => {
+	// 				const json = data.data;
+	// 				let jsonitems = [];
+	// 				console.log(json[1]);
+	// 				json.forEach((element) => {
+	// 					jsonitems.push({
+	// 						label: element.LoginUsuario.toString(),
+	// 						value: element.idregistro.toString(),
+	// 					});
+	//
+	// 				});
+	// 				setUsuarioList(jsonitems);
+	// 			})
+	// 			.catch((error) => {
+	// 				textoMensaje = error;
+	// 				Mensaje({titulo: "Error registro", msj: textoMensaje});
+	// 			});
+	// 	} catch (error) {
+	// 		textoMensaje = error;
+	// 		console.log(error);
+	// 		Mensaje({titulo: "Error registro", msj: error});
+	// 	}
+    // }
     const GuardarPedido = async () =>{
         if (!token) {
 			textoMensaje = "Debe iniciar sesion";
@@ -111,16 +121,19 @@ const GuardarPedidosCancelados = ({navigation}) =>{
 							titulo: "Registro Pedidos cancelados",
 							msj: "Su pedido fue guardado con exito",
 						});
+						setUsuarioValue(null);
+						setNumeropedidoValue(null);
 					} else {
 						textoMensaje = "";
 						json.errores.forEach((element) => {
-							textoMensaje += element.mensaje + ". ";
+							textoMensaje = element.mensaje;
 							Mensaje({ titulo: "Error en el registro", msj: textoMensaje });
 						});
 					}
 				})
 				.catch((error) => {
 					textoMensaje = error;
+					Mensaje({ titulo: "Error en el registro", msj: 'Ya existe un registro con esa llave primaria'});
 				});
 		}
 

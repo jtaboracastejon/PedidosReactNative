@@ -14,33 +14,33 @@ import {Entypo, Ionicons} from "@expo/vector-icons";
 import {paletaDeColores} from "../../styles/colores";
 import Mensaje from "../../components/Mensaje";
 import Axios from "../../components/Axios"
-
+import UsuarioContext from "../../context/UsuarioContext";
+import {useIsFocused} from "@react-navigation/native";
 
 const ListarPedidosCancelados =({navigation}) =>{
     let textoMensaje = "";
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHJlZ2lzdHJvIjoxLCJpYXQiOjE2NTk0MDk5NDEsImV4cCI6MTY1OTQzOTk0MX0.rQRRU7xGI1H_gjbs4YIMhSEMCE5VWWpsMDEzb_Q20O0";
+	const { token } = useContext(UsuarioContext);
 	const [lista, setLista] = useState([]);
-	const [filtro, setFiltro] = useState("");
 
     useEffect(() => {
 		buscarpedidosCancelados();
 	}, [setLista]);
 
+	const isFocused= useIsFocused()
+	useEffect(() => {
+		if(isFocused){
+			buscarpedidosCancelados();
+		}
+	}, [isFocused]);
+
 	function changeHandler(text) {
-		setFiltro(text);
 		if (text == "") {
 			buscarpedidosCancelados();
 		}
-	}
-
-	const onPressHandler = () => {
-		if (filtro == "") {
-			buscarpedidosCancelados();
-		}
 		setLista((prevLista) => {
-			return prevLista.filter((item) => item.numeropedido == filtro);
+			return prevLista.filter((item) => item.numeropedido.toString().indexOf(text.toString()) >= 0);
 		});
-	};
+	}
 
     const buscarpedidosCancelados = async () => {
 		try {
@@ -143,11 +143,6 @@ const ListarPedidosCancelados =({navigation}) =>{
 
 					></TextInput>
 				</View>
-				<TouchableOpacity
-					onPress={onPressHandler}
-				>
-					<Text style={styles.item}>Filtrar</Text>
-				</TouchableOpacity>
 			</View>
 			{/* DropDowns */}
 				<View>
