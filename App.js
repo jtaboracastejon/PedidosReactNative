@@ -5,10 +5,12 @@ import { createNativeStackNavigator, } from '@react-navigation/native-stack';
 import Inicio from './src/screens/Inicio';
 import CarritoPedidoDetalle from './src/screens/carritoPedidoDetalle';
 import FormTemplate from './src/screens/formTemplate';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons,MaterialCommunityIcons } from '@expo/vector-icons';
 // import SideMenu from './src/screens/sideMenu';
 import PedidosLlevar from "./src/screens/pedidosLlevar/pedidosLlevar";
 import EditarPedidosLlevarForm from "./src/screens/pedidosLlevar/editarPedidosLlevarForm";
+
+import PedidosCancelados from './src/screens/pedidosCancelados/pedidosCancelados';
 
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import {PedidosLlevarProvider} from "./src/context/pedidosLlevar/pedidosLlevarContext";
@@ -23,6 +25,7 @@ function SideMenu() {
             <Drawer.Screen name="Inicio" component={Inicio} />
             <Drawer.Screen name="FormTemplate" component={FormTemplate} />
             <Drawer.Screen name="PedidosLlevar" component={PedidosLlevar} />
+            <Drawer.Screen name="PedidosCancelados" component={PedidosCancelados} />
         </Drawer.Navigator>
     )
 }
@@ -35,7 +38,7 @@ const CustomizeSideMenu =({navigation})=>{
                 fontWeight: 'bold',
                 marginTop: 20,
                 marginLeft: 10,
-            }}>SIGRES </Text>
+            }}>SIGRES</Text>
             <Text style={{
                 fontSize: 13,
                 fontWeight: '400',
@@ -76,6 +79,18 @@ const CustomizeSideMenu =({navigation})=>{
                         textAlign: 'center',
 
                     }}>Pedidos Llevar</Text>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('PedidosCancelados')}>
+                <View style={styles.sideMenuItem}>
+                    <MaterialCommunityIcons name="archive-cancel" size={24} color="#0043F9" />
+                    <Text style={{
+                        width: '90%',
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+
+                    }}>Pedidos Cancelados</Text>
                 </View>
             </TouchableOpacity>
 
