@@ -110,6 +110,8 @@ const CustomizeSideMenu =({navigation})=>{
                         fontWeight: 'bold',
                         textAlign: 'center',
                          }}>Detalle Pedido</Text>
+                </View>
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('Pedidos')}>
                 <View style={styles.sideMenuItem}>
                     <FontAwesome5 name="box" size={24} color="#0043F9" />

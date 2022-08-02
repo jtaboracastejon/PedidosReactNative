@@ -126,6 +126,15 @@ const GuardarDetallePedido = ({ navigation }) => {
 							titulo: "Registro Detalle Pedido",
 							msj: "Su registro fue guardado con exito",
 						});
+						setPedidosValue(null)
+						setproductsValue(null);
+						setCantidad(null);
+						setNotas(null);
+						setsubproductsValue(null);
+						setCancelado(false);
+						setElaborado(false);
+						setEntregado(false);
+						setFacturado(false);
 					} else {
 						textoMensaje = "";
 						json.errores.forEach((element) => {
