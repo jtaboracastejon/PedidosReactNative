@@ -10,6 +10,7 @@ import {useIsFocused} from "@react-navigation/native";
 
 const GuardarPedidosLlevar = ({navigation}) => {
 	let textoMensaje = "";
+
 	const { token } = useContext(UsuarioContext);
 	const [pedidosOpen, setPedidosOpen] = useState(false);
 	const [clientesOpen, setClientesOpen] = useState(false);

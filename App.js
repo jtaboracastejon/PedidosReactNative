@@ -6,7 +6,7 @@ import Inicio from './src/screens/Inicio';
 import CarritoPedidoDetalle from './src/screens/carritoPedidoDetalle';
 import FormTemplate from './src/screens/formTemplate';
 
-import { Ionicons,MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons,MaterialCommunityIcons, FontAwesome5} from '@expo/vector-icons';
 import UsuarioContext from './src/context/UsuarioContext';
 import Cargando from './src/components/Cargando';
 
@@ -16,6 +16,8 @@ import PedidosMesa from "./src/screens/pedidosMesa/pedidosMesa";
 
 import PedidosCancelados from './src/screens/pedidosCancelados/pedidosCancelados';
 import PedidosElaborados from "./src/screens/pedidoselaborados/pedidoselaborados";
+
+import Pedidos from "./src/screens/pedidos/pedidos";
 
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import {PedidosLlevarProvider} from "./src/context/pedidosLlevar/pedidosLlevarContext";
@@ -33,6 +35,7 @@ function SideMenu() {
             <Drawer.Screen name="Inicio" component={Inicio} />
             <Drawer.Screen name="FormTemplate" component={FormTemplate} />
             <Drawer.Screen name="PedidosLlevar" component={PedidosLlevar} />
+            <Drawer.Screen name="Pedidos" component={Pedidos} />
             <Drawer.Screen name="PedidosCancelados" component={PedidosCancelados} />
             <Drawer.Screen name="PedidosElaborados" component={PedidosElaborados} />
             <Drawer.Screen name="PedidosMesa" component={PedidosMesa} />
@@ -66,7 +69,7 @@ const CustomizeSideMenu =({navigation})=>{
                         fontWeight: 'bold',
                         textAlign: 'center',
 
-                    }}>Pedidos</Text>
+                    }}>Inicio</Text>
                 </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('FormTemplate')}>
@@ -93,9 +96,23 @@ const CustomizeSideMenu =({navigation})=>{
                     }}>Pedidos Llevar</Text>
                 </View>
             </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => navigation.navigate('Pedidos')}>
+                <View style={styles.sideMenuItem}>
+                    <FontAwesome5 name="box" size={24} color="#0043F9" />
+                    <Text style={{
+                        width: '90%',
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+                         }}>Pedidos</Text>
+                            </View>
+            </TouchableOpacity>
+
             <TouchableOpacity onPress={() => navigation.navigate('PedidosCancelados')}>
                 <View style={styles.sideMenuItem}>
                     <MaterialCommunityIcons name="archive-cancel" size={24} color="#0043F9" />
+
                     <Text style={{
                         width: '90%',
                         fontSize: 16,

@@ -10,8 +10,10 @@ import UsuarioContext from "../../context/UsuarioContext";
 
 const EditarPedidosLlevarForm = ({navigation}) => {
 	let textoMensaje = "";
+  
 	const { token } = useContext(UsuarioContext);
 	const {idDetallePedido, setIdDetallePedido, idCliente, setIdCliente, idRegistro} = useContext(PedidosLlevarContext)
+
 	const [pedidosOpen, setPedidosOpen] = useState(false);
 	const [clientesOpen, setClientesOpen] = useState(false);
 	const [pedidosValue, setPedidosValue] = useState(null);
@@ -103,7 +105,7 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 			Mensaje({titulo: "Error registro", msj: error});
 		}
 	};
-
+  
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>

@@ -19,7 +19,9 @@ import {useIsFocused} from "@react-navigation/native";
 
 const ListarPedidosLlevar = ({navigation}) => {
 	let textoMensaje = "";
+
 	const { token } = useContext(UsuarioContext);
+
 	const [lista, setLista] = useState([]);
 
 	useEffect(() => {

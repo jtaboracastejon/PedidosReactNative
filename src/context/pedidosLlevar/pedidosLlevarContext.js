@@ -3,11 +3,15 @@ import React from "react";
 const PedidosLlevarContext = React.createContext();
 
 const PedidosLlevarProvider = ({ children }) => {
-	// Pedidos Llevar
+
+	const [NumeroPedido, setNumeroPedido] = React.useState("");
+    const [idmesero, setIdmesero] = React.useState("");
+	const [Estacion, setEstacion] = React.useState("");
+	const [activo, setActivo] = React.useState("");
+	const [modalidad, setModalidad] = React.useState("");
+	const [estado, setEstado] = React.useState("");
 	const [idRegistro, setIdRegistro] = React.useState("");
 	const [idCliente, setIdCliente] = React.useState("");
-
-	const [jsonDatos, setJsonDatos] = React.useState("");
 	const [numeropedidocancelados, setnumeropedidocancelados] = React.useState("");
 	const [usuariocancelados, setusuariocancelados] = React.useState("");
 	const [fechahoracancelados, setfechahoracancelados] = React.useState("");
@@ -31,7 +35,19 @@ const PedidosLlevarProvider = ({ children }) => {
 	const [idEntregaEntregado, setIdEntregaEntregado] = React.useState("");
 
 	return (
-		<PedidosLlevarContext.Provider value={{idDetallePedido, setIdDetallePedido, idPedido, setIdPedido, idCliente, setIdCliente, idRegistroMesa, setIdRegistroMesa,idRegistroElaborados, idUsuario, setIdUsuario, setIdRegistroElaborados, idRegistro, setIdRegistro, idMesa, setIdMesa, cuenta, setCuenta, nombreCuenta, setNombreCuenta, idPedidoMesa, setIdPedidoMesa, idDetalleEntregado, setIdDetalleEntregado, idUsuarioEntregado, setIdUsuarioEntregado, idEntregaEntregado, setIdEntregaEntregado,numeropedidocancelados, setnumeropedidocancelados,usuariocancelados, setusuariocancelados,fechahoracancelados, setfechahoracancelados}}>
+
+		<PedidosLlevarContext.Provider value={{idDetallePedido, setIdDetallePedido, idPedido, 
+    setIdPedido, idCliente, setIdCliente, idRegistroMesa, setIdRegistroMesa,idRegistroElaborados, 
+    idUsuario, setIdUsuario, setIdRegistroElaborados, idRegistro, setIdRegistro, idMesa, setIdMesa, 
+    cuenta, setCuenta, nombreCuenta, setNombreCuenta, idPedidoMesa, setIdPedidoMesa, idDetalleEntregado,
+    setIdDetalleEntregado, idUsuarioEntregado, setIdUsuarioEntregado, idEntregaEntregado, setIdEntregaEntregado,
+    numeropedidocancelados, setnumeropedidocancelados,usuariocancelados, setusuariocancelados,fechahoracancelados, 
+    setfechahoracancelados, NumeroPedido, setNumeroPedido,
+            idmesero, setIdmesero,
+            Estacion, setEstacion,
+            activo, setActivo,
+            modalidad, setModalidad,
+            estado, setEstado,}}>
 			{children}
 		</PedidosLlevarContext.Provider>
 	)

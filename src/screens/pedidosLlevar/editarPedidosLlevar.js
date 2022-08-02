@@ -22,6 +22,7 @@ import UsuarioContext from "../../context/UsuarioContext";
 const EditarPedidosLlevar = ({navigation}) => {
 	const isFocused= useIsFocused()
 	let textoMensaje = "";
+  
 	const { token } = useContext(UsuarioContext);
 
 	const [lista, setLista] = useState([]);
