@@ -16,12 +16,17 @@ const PedidosLlevarProvider = ({ children }) => {
 	const [cuenta, setCuenta] = React.useState("");
 	const [nombreCuenta, setNombreCuenta] = React.useState("");
 
+	// Pedidos Elaborados
 	const [idUsuario, setIdUsuario] = React.useState("");
 	const [idPedido, setIdPedido] = React.useState("");
 
+	// Pedidos Entregados
+	const [idDetalleEntregado, setIdDetalleEntregado] = React.useState("");
+	const [idUsuarioEntregado, setIdUsuarioEntregado] = React.useState("");
+	const [idEntregaEntregado, setIdEntregaEntregado] = React.useState("");
 
 	return (
-		<PedidosLlevarContext.Provider value={{idDetallePedido, setIdDetallePedido, idPedido, setIdPedido, idCliente, setIdCliente, idRegistroMesa, setIdRegistroMesa,idRegistroElaborados, idUsuario, setIdUsuario, setIdRegistroElaborados, idRegistro, setIdRegistro, idMesa, setIdMesa, cuenta, setCuenta, nombreCuenta, setNombreCuenta, idPedidoMesa, setIdPedidoMesa}}>
+		<PedidosLlevarContext.Provider value={{idDetallePedido, setIdDetallePedido, idPedido, setIdPedido, idCliente, setIdCliente, idRegistroMesa, setIdRegistroMesa,idRegistroElaborados, idUsuario, setIdUsuario, setIdRegistroElaborados, idRegistro, setIdRegistro, idMesa, setIdMesa, cuenta, setCuenta, nombreCuenta, setNombreCuenta, idPedidoMesa, setIdPedidoMesa, idDetalleEntregado, setIdDetalleEntregado, idUsuarioEntregado, setIdUsuarioEntregado, idEntregaEntregado, setIdEntregaEntregado}}>
 			{children}
 		</PedidosLlevarContext.Provider>
 	)
