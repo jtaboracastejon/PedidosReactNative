@@ -1,21 +1,32 @@
 import { View, Text, ScrollView, TouchableOpacity, Image, StyleSheet, LogBox, TextInput } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect,useContext } from 'react'
 import { Items } from '../database/database'
 import { paletaDeColores } from '../styles/colores'
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import UsuarioContext from '../context/UsuarioContext'
+import Axios from "../components/Axios";
+import Mensaje from "../components/Mensaje";
 
 import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 const CarritoPedidoDetalle = ({ navigation }) => {
+    let textoMensaje = "";
+    const { token, usuario } = useContext(UsuarioContext);
+
     const [product, setProduct] = useState()
     const [total, setTotal] = useState(null)
+
+    const [idmesero, setIdmesero] = useState(usuario.idregistro.toString());
+    const [Estacion, setEstacion] = useState("1");
+    const [activo, setActivo] = useState("1");
+    const [estado, setEstado] = useState("NNN");
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             getDataFromDb()
             LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-            
+
         })
         return unsubscribe
     }, [navigation])
@@ -29,7 +40,7 @@ const CarritoPedidoDetalle = ({ navigation }) => {
         if (items) {
             Items.forEach(data => {
                 if (items.includes(data.codigo)) {
-                    data.cantidad=1
+                    data.cantidad = 1
                     productData.push(data)
                     return
                 }
@@ -67,21 +78,105 @@ const CarritoPedidoDetalle = ({ navigation }) => {
             }
         }
     }
-    
 
-    /* const addQty = async (id) => {
-        let itemArray = await AsyncStorage.getItem('cart')
-        itemArray = JSON.parse(itemArray)
-        let newArray = product;
-        if (itemArray) {
-            var index = newArray.map(function(item) {return item.codigo; }).indexOf(id);
-            newArray[index].cantidad=newArray[index].cantidad+1
-            
-            setProduct(newArray)
-            console.log(product[index].Nombre,product[index].cantidad)
-            
+    //Guardar Pedido
+    const guardarPedido = async () => {
+        if (!token) {
+            textoMensaje = "Debe iniciar sesion";
+            //console.log(token);
+        } else {
+            //console.log(token);
+            var bodyParameters = {
+                idmesero: idmesero,
+                Estacion: estacionValue,
+                activo: activo,
+                modalidad: modalidadValue,
+                estado: estado,
+            };
+            const config = {
+                headers: { Authorization: `Bearer ${token}` },
+            };
+            let ultimoPedido;
+            await Axios.post("/pedidos/pedidos/guardar", bodyParameters, config)
+                .then((data) => {
+                    const json = data.data;
+                    if (json.errores.length == 0) {
+                        ultimoPedido = json.ultimoIdPedido;
+                        console.log("Pedido Guardado");
+                    } else {
+                        console.log(json.errores);
+                        textoMensaje = "";
+                        json.errores.forEach((element) => {
+                            textoMensaje = element
+                            Mensaje({ titulo: "Error en el registro", msj: textoMensaje });
+                        });
+                    }
+                })
+                .catch((error) => {
+                    textoMensaje = error;
+                });
+            var productosAGuadar = [
+            ];
+            product.forEach(data=>{
+                productosAGuadar.push({
+
+                    NumeroPedido: ultimoPedido,
+                    CodigoProducto: data.codigo,
+                    Cantidad: "1",
+                    Cancelado: "0",
+                    Elaborado: "0",
+                    Entregado: "0",
+                    Facturado: "0"
+
+                })
+            })
+
+
+            // console.log(productosAGuadar)
+            // console.log(product)
+            /* Detalle Pedido */
+            await Axios.post("/pedidos/detallepedidos/guardarbulk", productosAGuadar, config)
+                .then((data) => {
+                    const json = data.data;
+                    if (json.errores.length == 0) {
+                        console.log("Solicitud Realizada");
+                        Mensaje({
+                            titulo: "Registro Pedidos",
+                            msj: "Su registro fue guardado con exito",
+                        });
+                        AsyncStorage.removeItem('cart')
+                        navigation.navigate("Inicio");
+                    } else {
+                        console.log(json.errores);
+                        textoMensaje = "";
+                        json.errores.forEach((element) => {
+                            textoMensaje = element
+                            Mensaje({ titulo: "Error en el registro", msj: textoMensaje });
+                        });
+                    }
+                })
+                .catch((error) => {
+                    textoMensaje = error;
+                });
+
+            /*Guardar Modalidad*/
+            if(modalidadValue){}
         }
-    } */
+
+    };
+
+
+
+    /*  const addQty = async (id) => {
+		 let newArray = product;
+		 var index = newArray.map(function (item) { return item.codigo; }).indexOf(id);
+		 newArray[index].cantidad = newArray[index].cantidad + 1
+
+		 // setProduct(newArray)
+		 setProduct({ ...product, [index]: newArray[index] })
+		 console.log(product[index].Nombre, product[index].cantidad)
+
+	 } */
 
     const renderProducts = (data, index) => {
         return (
@@ -137,7 +232,7 @@ const CarritoPedidoDetalle = ({ navigation }) => {
                                 borderColor: paletaDeColores.backgroundMedium,
                                 opacity: 0.5,
                             }}>
-                                <TouchableOpacity onPress={() => addQty(data.codigo)}>
+                                <TouchableOpacity /* onPress={() => addQty(data.codigo)} */>
                                     <MaterialCommunityIcons name="plus" style={{
                                         fontSize: 16,
                                         color: paletaDeColores.backgroundDark
@@ -169,13 +264,21 @@ const CarritoPedidoDetalle = ({ navigation }) => {
         { label: 'Domicio', value: 'DO' }
     ]);
 
+    const [estacionOpen, setestacionOpen] = useState(false);
+    const [estacionValue, setestacionValue] = useState(null);
+
+    const [estaciones, setestaciones] = useState([
+        { label: 'Estacion1', value: 1 },
+        { label: 'Estacion2', value: 2 },
+    ]);
+
     const [clientesOpen, setClientesOpen] = useState(false);
-	const [clientesValue, setClientesValue] = useState(null);
-	const [clientesList, setClientesList] = useState([{label: 'Maria', value: 1},
-		{label: 'Juan', value: 2}]);
+    const [clientesValue, setClientesValue] = useState(null);
+    const [clientesList, setClientesList] = useState([{ label: 'Maria', value: 1 },
+        { label: 'Juan', value: 2 }]);
 
     return (
-        
+
         <View style={{
             flex: 1,
             backgroundColor: paletaDeColores.white
@@ -315,6 +418,30 @@ const CarritoPedidoDetalle = ({ navigation }) => {
                         </View>
                     </View>
                 </View>
+                {/* Estaciones */}
+                <View style={{ borderRadius: 100, margin: 20, borderColor: paletaDeColores.blue, borderWidth: 1 }}>
+                    <DropDownPicker
+                        dropDownDirection="TOP"
+                        placeholder='Seleccione una estacion'
+                        placeholderStyle={{
+                            color: paletaDeColores.backgroundMedium,
+                        }}
+                        style={{
+                            backgroundColor: paletaDeColores.white,
+                            borderWidth: 0,
+                            borderRadius: 100
+                        }}
+                        dropDownContainerStyle={{
+                            borderWidth: 0,
+                        }}
+                        open={estacionOpen}
+                        value={estacionValue}
+                        items={estaciones}
+                        setOpen={setestacionOpen}
+                        setValue={setestacionValue}
+                        setItems={setestaciones}
+                    />
+                </View>
                 {/* Modalidad */}
                 <View style={{ borderRadius: 100, margin: 20, borderColor: paletaDeColores.blue, borderWidth: 1 }}>
                     <DropDownPicker
@@ -377,7 +504,7 @@ const CarritoPedidoDetalle = ({ navigation }) => {
                                 <Text style={styles.label}>
                                     Cliente
                                 </Text>
-                                <DropDownPicker                                    
+                                <DropDownPicker
                                     zIndex={1}
                                     placeholder='Seleccione una opción'
                                     searchable={true}
@@ -414,7 +541,7 @@ const CarritoPedidoDetalle = ({ navigation }) => {
                     <TouchableOpacity
                         style={styles.botonGuardarPedido}
                         onPress={() => {
-                            editarPedidosLlevar();
+                            guardarPedido();
                         }}>
                         <FontAwesome5 name="cash-register" style={{
                             fontSize: 24,

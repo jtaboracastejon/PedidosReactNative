@@ -8,6 +8,7 @@ import { Entypo, FontAwesome } from '@expo/vector-icons';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import ProductCard from '../components/ProductCard';
+
 const Inicio = ({ navigation }) => {
     const [products, setProducts] = useState([])
     const [itemsOnCart, setitemsOnCart] = useState('0')

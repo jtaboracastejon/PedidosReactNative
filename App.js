@@ -25,6 +25,7 @@ import {PedidosLlevarProvider} from "./src/context/pedidosLlevar/pedidosLlevarCo
 import UsuarioState from "./src/context/UsuarioState";
 import DetallePedido from './src/screens/detallePedido/detallePedido';
 import PedidosEntregados from "./src/screens/pedidosEntregados/pedidosEntregados";
+import PerfilUsuario from "./src/screens/usuario/perfilUsuario";
 
 const Drawer = createDrawerNavigator();
 function SideMenu() {
@@ -185,7 +186,8 @@ function MyTabs() {
         <Tab.Navigator screenOptions={{
             headerShown: false
         }}>
-            <Tab.Screen name="Inicio" component={SideMenu} />
+            <Tab.Screen name="InicioApp" component={SideMenu} />
+            <Tab.Screen name="Perfil Usuario" component={PerfilUsuario} />
 
         </Tab.Navigator>
     );

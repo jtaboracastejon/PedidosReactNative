@@ -60,12 +60,12 @@ const UsuarioState = (props) => {
 					const json = data.data;
 					console.log(json);
 					if (json.errores.length == 0) {
-						usuario = json.datos.usuario.LoginUsuario;
+						usuario = json.datos.usuario;
 						token = json.datos.token;
 						await AsyncStorage.setItem('toke_almacenado', String(token));
 						const u = JSON.stringify(usuario);
 						await AsyncStorage.setItem('usuario_almacenado', u);
-						textoMensaje = 'Bienvenido ' + usuario;
+						textoMensaje = 'Bienvenido ' + usuario.LoginUsuario;
 					}
 					else {
 						textoMensaje = '';
