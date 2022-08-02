@@ -5,14 +5,19 @@ import { createNativeStackNavigator, } from '@react-navigation/native-stack';
 import Inicio from './src/screens/Inicio';
 import CarritoPedidoDetalle from './src/screens/carritoPedidoDetalle';
 import FormTemplate from './src/screens/formTemplate';
+
+import { Ionicons,MaterialCommunityIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import UsuarioContext from './src/context/UsuarioContext';
 import Cargando from './src/components/Cargando';
+
 import PedidosLlevar from "./src/screens/pedidosLlevar/pedidosLlevar";
 import Login from "./src/screens/Login";
 import PedidosMesa from "./src/screens/pedidosMesa/pedidosMesa";
 
+import PedidosCancelados from './src/screens/pedidosCancelados/pedidosCancelados';
 import PedidosElaborados from "./src/screens/pedidoselaborados/pedidoselaborados";
+
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import {PedidosLlevarProvider} from "./src/context/pedidosLlevar/pedidosLlevarContext";
 import UsuarioState from "./src/context/UsuarioState";
@@ -29,9 +34,11 @@ function SideMenu() {
             <Drawer.Screen name="Inicio" component={Inicio} />
             <Drawer.Screen name="FormTemplate" component={FormTemplate} />
             <Drawer.Screen name="PedidosLlevar" component={PedidosLlevar} />
+            <Drawer.Screen name="PedidosCancelados" component={PedidosCancelados} />
             <Drawer.Screen name="PedidosElaborados" component={PedidosElaborados} />
             <Drawer.Screen name="PedidosMesa" component={PedidosMesa} />
             <Drawer.Screen name="PedidosEntregados" component={PedidosEntregados} />
+
         </Drawer.Navigator>
     )
 }
@@ -44,7 +51,7 @@ const CustomizeSideMenu =({navigation})=>{
                 fontWeight: 'bold',
                 marginTop: 20,
                 marginLeft: 10,
-            }}>SIGRES </Text>
+            }}>SIGRES</Text>
             <Text style={{
                 fontSize: 13,
                 fontWeight: '400',
@@ -87,15 +94,22 @@ const CustomizeSideMenu =({navigation})=>{
                     }}>Pedidos Llevar</Text>
                 </View>
             </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('PedidosCancelados')}>
+                <View style={styles.sideMenuItem}>
+                    <MaterialCommunityIcons name="archive-cancel" size={24} color="#0043F9" />
+                    }}>Pedidos Cancelados</Text>
+                </View>
+            </TouchableOpacity>
+
             <TouchableOpacity onPress={() => navigation.navigate('PedidosMesa')}>
                 <View style={styles.sideMenuItem}>
                     <Ionicons name="bookmark" size={24} color="#0043F9" />
+
                     <Text style={{
                         width: '90%',
                         fontSize: 16,
                         fontWeight: 'bold',
                         textAlign: 'center',
-
                     }}>Pedidos Mesa</Text>
                 </View>
             </TouchableOpacity>
@@ -120,7 +134,6 @@ const CustomizeSideMenu =({navigation})=>{
                         fontSize: 16,
                         fontWeight: 'bold',
                         textAlign: 'center',
-
                     }}>Pedidos Entregados</Text>
                 </View>
             </TouchableOpacity>
