@@ -26,7 +26,9 @@ const EditarPedidosLlevar = ({navigation}) => {
 
 	const [lista, setLista] = useState([]);
 	const {
-		setIdRegistro
+		setIdRegistro,
+		setIdDetallePedido,
+		setIdCliente
 	} = useContext(PedidosLlevarContext);
 
 	useEffect(() => {
@@ -46,11 +48,11 @@ const EditarPedidosLlevar = ({navigation}) => {
 
 
 
-	const pressHandler = async (key) =>{
-		console.log(key);
-		setIdRegistro(key);
+	const pressHandler = async (item) =>{
+		setIdDetallePedido(item.idpedido);
+		setIdCliente(item.idcliente);
+		setIdRegistro(item.idregistro);
 		navigation.navigate('PedidosLlevar', { screen:'editarPedidosLlevarForm'});
-		buscarPedidosLlevar();
 	}
 
 
@@ -156,7 +158,7 @@ const EditarPedidosLlevar = ({navigation}) => {
 					{lista.map((item) => (
 						<View key={item.idregistro}>
 							<TouchableOpacity style={styles.itemList}
-											  onPress={async ()=>pressHandler(item.idregistro, item.idpedido, item.idcliente)}>
+											  onPress={async ()=>pressHandler(item)}>
 								<Text>Id de Registro: {item.idregistro}</Text>
 								<Text>Id de Pedido {item.idpedido}</Text>
 								<Text>Id del Cliente {item.idcliente}</Text>

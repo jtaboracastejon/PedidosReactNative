@@ -13,10 +13,7 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 
 	let textoMensaje = "";
 	const {token} = useContext(UsuarioContext);
-	const {idRegistroElaborados} = useContext(PedidosLlevarContext)
-
-
-
+	const {idRegistroElaborados, idUsuario, setIdUsuario} = useContext(PedidosLlevarContext)
 
 	const [iddetallepedido, setiddetalle] = useState("");
 
@@ -25,12 +22,12 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 
 	const [usuarioValue, setusuarioValue] = useState(null);
 	const [detallepedidoList, setdetallepedidoList] = useState([]);
-	const [usuariosList, setusuariosList] = useState([{label: 1, value:1}]);
+	const [usuariosList, setusuariosList] = useState([{label: 'Maria Fernanda Gonzales', value:1}, {label: 'Carlos Manuel Arita', value:5}, {label: 'Luisa Hernandez', value:3}]);
 
 	const isFocused= useIsFocused()
 	useEffect(() => {
 		if(isFocused){
-			// BuscarPedidos();
+
 		}
 	}, [isFocused]);
 
@@ -176,10 +173,10 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 							borderWidth: 0,
 						}}
 						open={usuarioOpen}
-						value={usuarioValue}
+						value={idUsuario}
 						items={usuariosList}
 						setOpen={setusuarioOpen}
-						setValue={setusuarioValue}
+						setValue={setIdUsuario}
 						setItems={setusuariosList}
 					/>
 

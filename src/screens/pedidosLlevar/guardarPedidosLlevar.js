@@ -8,6 +8,7 @@ import Mensaje from "../../components/Mensaje";
 import UsuarioContext from "../../context/UsuarioContext";
 
 const GuardarPedidosLlevar = ({navigation}) => {
+	console.log("Pedidos Varias Veces");
 	let textoMensaje = "";
 	const { token } = useContext(UsuarioContext);
 	const [pedidosOpen, setPedidosOpen] = useState(false);
@@ -24,11 +25,6 @@ const GuardarPedidosLlevar = ({navigation}) => {
 
 	const [pedidosList, setPedidosList] = useState([]);
 	const [detallePedidosList, setDetallePedidoList] = useState([]);
-
-
-	useEffect(() => {
-		BuscarPedidos();
-	}, [setPedidosList]);
 
 	const BuscarPedidos = async () => {
 		try {
@@ -85,8 +81,9 @@ const GuardarPedidosLlevar = ({navigation}) => {
 						});
 					} else {
 						textoMensaje = "";
+						console.log(json.errores)
 						json.errores.forEach((element) => {
-							textoMensaje += element.mensaje + ". ";
+							textoMensaje = element.mensaje;
 							Mensaje({ titulo: "Error en el registro", msj: textoMensaje });
 						});
 					}
@@ -95,7 +92,7 @@ const GuardarPedidosLlevar = ({navigation}) => {
 					textoMensaje = error;
 				});
 		}
-		console.log(textoMensaje);
+		// console.log(textoMensaje);
 	};
 
 	return (

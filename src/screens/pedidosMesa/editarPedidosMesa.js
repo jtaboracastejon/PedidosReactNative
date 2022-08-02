@@ -26,7 +26,11 @@ const EditarPedidosMesa = ({navigation}) => {
 	const [lista, setLista] = useState([]);
 	const [filtro, setFiltro] = useState("");
 	const {
-		setIdRegistroMesa
+		setIdRegistroMesa,
+		setIdPedidoMesa,
+		setIdMesa,
+		setCuenta,
+		setNombreCuenta
 	} = useContext(PedidosLlevarContext);
 
 	useEffect(() => {
@@ -46,9 +50,13 @@ const EditarPedidosMesa = ({navigation}) => {
 		}
 	}
 
-	const pressHandler = (key) => {
-		console.log(key);
-		setIdRegistroMesa(key);
+	const pressHandler = (item) => {
+		console.log(item)
+		setIdRegistroMesa(item.idregistro);
+		setCuenta(item.cuenta);
+		setIdMesa(item.idmesa);
+		setNombreCuenta(item.nombrecuenta);
+		setIdPedidoMesa(item.idpedido);
 		navigation.navigate('PedidosMesa', { screen:'EditarPedidosMesaForm'});
 	};
 
@@ -153,7 +161,7 @@ const EditarPedidosMesa = ({navigation}) => {
 				<View>
 					{lista.map((item) => (
 						<View key={item.idregistro}>
-							<TouchableOpacity style={styles.itemList} onPress={()=>pressHandler(item.idregistro, item.idpedido, item.idcliente)}>
+							<TouchableOpacity style={styles.itemList} onPress={()=>pressHandler(item)}>
 								<Text>Id de Registro: {item.idregistro}</Text>
 								<Text>Id de Pedido: {item.idpedido}</Text>
 								<Text>Id de Mesa: {item.idmesa}</Text>

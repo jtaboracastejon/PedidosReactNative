@@ -9,25 +9,24 @@ import {PedidosLlevarContext} from "../../context/pedidosLlevar/pedidosLlevarCon
 import UsuarioContext from "../../context/UsuarioContext";
 
 const EditarPedidosLlevarForm = ({navigation}) => {
-
 	let textoMensaje = "";
 	const { token } = useContext(UsuarioContext);
-	const {idRegistro} = useContext(PedidosLlevarContext)
+	const {idDetallePedido, setIdDetallePedido, idCliente, setIdCliente, idRegistro} = useContext(PedidosLlevarContext)
 	const [pedidosOpen, setPedidosOpen] = useState(false);
 	const [clientesOpen, setClientesOpen] = useState(false);
 	const [pedidosValue, setPedidosValue] = useState(null);
 	const [clientesValue, setClientesValue] = useState(null);
 	const [idpedido, setIdpedido] = useState("");
 	const [idcliente, setIdcliente] = useState("");
-	const [clientesList, setClientesList] = useState([{label: 1, value: 1},
-		{label: 2, value: 2}]);
+	const [clientesList, setClientesList] = useState([{label: "Maria Jose Arita", value: 1},
+		{label: 'Samantha Ruiz', value: 2}]);
 	const [pedidosList, setPedidosList] = useState([]);
-
 
 	useEffect(() => {
 		BuscarPedidos();
 	}, [setPedidosList]);
 
+	console.log('Id registro '+ idRegistro)
 	const editarPedidosLlevar = async () => {
 		if (!token) {
 			textoMensaje = "Debe iniciar sesion";
@@ -35,13 +34,12 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 		} else {
 			console.log(token);
 			const bodyParameters = {
-				idpedido: idpedido,
-				idcliente: idcliente,
+				idpedido: idDetallePedido,
+				idcliente: idCliente,
 			};
 			const config = {
 				headers: { Authorization: `Bearer ${token}` },
 			};
-			console.log(idcliente, idpedido, idRegistro);
 			await Axios.put(
 				"/pedidos/pedidosLlevar/editar?id=" + idRegistro,
 				bodyParameters,
@@ -106,42 +104,6 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 		}
 	};
 
-	const guardarPedidos = async () => {
-		if (!token) {
-			textoMensaje = "Debe iniciar sesion";
-			console.log(token);
-		} else {
-			console.log(token);
-			const bodyParameters = {
-				idpedido: idpedido,
-				idcliente: idcliente,
-			};
-			const config = {
-				headers: { Authorization: `Bearer ${token}` },
-			};
-			await Axios.post("/pedidos/pedidosllevar/guardar", bodyParameters, config)
-				.then((data) => {
-					const json = data.data;
-					if (json.errores.length == 0) {
-						console.log("Solicitud Realizada");
-						Mensaje({
-							titulo: "Registro Pedidos Llevar",
-							msj: "Su registro fue guardado con exito",
-						});
-					} else {
-						textoMensaje = "";
-						json.errores.forEach((element) => {
-							textoMensaje += element.mensaje + ". ";
-							Mensaje({ titulo: "Error en el registro", msj: textoMensaje });
-						});
-					}
-				})
-				.catch((error) => {
-					textoMensaje = error;
-				});
-		}
-		console.log(textoMensaje);
-	};
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
@@ -202,10 +164,10 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 							borderWidth: 0,
 						}}
 						open={pedidosOpen}
-						value={pedidosValue}
+						value={idDetallePedido.toString()}
 						items={pedidosList}
 						setOpen={setPedidosOpen}
-						setValue={setPedidosValue}
+						setValue={setIdDetallePedido}
 						setItems={setPedidosList}
 					/>
 				</View>
@@ -236,10 +198,10 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 							borderWidth: 0,
 						}}
 						open={clientesOpen}
-						value={clientesValue}
+						value={idCliente}
 						items={clientesList}
 						setOpen={setClientesOpen}
-						setValue={setClientesValue}
+						setValue={setIdCliente}
 						setItems={setClientesList}
 					/>
 

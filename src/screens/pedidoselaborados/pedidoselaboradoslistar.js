@@ -67,10 +67,6 @@ const PedidosElaboradosListar = ({navigation}) =>{
 		}
 	};
 
-
-
-
-
     return (
 		<TouchableWithoutFeedback
 			onPress={() => {

@@ -12,19 +12,20 @@ const EditarPedidosMesaForm = ({navigation}) => {
 
 	let textoMensaje = "";
 	const { token } = useContext(UsuarioContext);
-	const {idRegistroMesa} = useContext(PedidosLlevarContext)
 	const [pedidosOpen, setPedidosOpen] = useState(false);
 	const [clientesOpen, setClientesOpen] = useState(false);
 	const [pedidosValue, setPedidosValue] = useState(null);
 	const [clientesValue, setClientesValue] = useState(null);
 	const [clientesList, setClientesList] = useState([{label: 1, value: 1},
 		{label: 2, value: 2}]);
+	const {
+		idRegistroMesa,
+		setIdPedidoMesa, idPedidoMesa,
+		idMesa, setIdMesa,
+		cuenta, setCuenta,
+		nombreCuenta, setNombreCuenta
+	} = useContext(PedidosLlevarContext);
 	const [pedidosList, setPedidosList] = useState([]);
-	const [idpedido, setIdpedido] = useState("");
-	const [idmesa, setIdMesa] = useState("");
-	const [cuenta, setCuenta] = useState("");
-	const [nombrecuenta, setNombrecuenta] = useState("");
-
 
 	useEffect(() => {
 		BuscarPedidos();
@@ -40,15 +41,14 @@ const EditarPedidosMesaForm = ({navigation}) => {
 		} else {
 			console.log(token);
 			const bodyParameters = {
-				idpedido: idpedido,
-				idpedidomesa: idmesa,
+				idpedido: idPedidoMesa,
+				idpedidomesa: idPedidoMesa,
 				cuenta: cuenta,
-				nombrecuenta: nombrecuenta
+				nombrecuenta: nombreCuenta
 			};
 			const config = {
 				headers: { Authorization: `Bearer ${token}` },
 			};
-			console.log(idpedido, idRegistroMesa);
 			await Axios.put(
 				"/pedidos/pedidosmesa/editar?id=" + idRegistroMesa,
 				bodyParameters,
@@ -111,42 +111,6 @@ const EditarPedidosMesaForm = ({navigation}) => {
 		}
 	};
 
-	const guardarPedidos = async () => {
-		if (!token) {
-			textoMensaje = "Debe iniciar sesion";
-			console.log(token);
-		} else {
-			console.log(token);
-			const bodyParameters = {
-				idpedido: idpedido,
-				idcliente: idcliente,
-			};
-			const config = {
-				headers: { Authorization: `Bearer ${token}` },
-			};
-			await Axios.post("/pedidos/pedidosllevar/guardar", bodyParameters, config)
-				.then((data) => {
-					const json = data.data;
-					if (json.errores.length == 0) {
-						console.log("Solicitud Realizada");
-						Mensaje({
-							titulo: "Registro Pedidos Llevar",
-							msj: "Su registro fue guardado con exito",
-						});
-					} else {
-						textoMensaje = "";
-						json.errores.forEach((element) => {
-							textoMensaje += element.mensaje + ". ";
-							Mensaje({ titulo: "Error en el registro", msj: textoMensaje });
-						});
-					}
-				})
-				.catch((error) => {
-					textoMensaje = error;
-				});
-		}
-		console.log(textoMensaje);
-	};
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
@@ -193,9 +157,9 @@ const EditarPedidosMesaForm = ({navigation}) => {
 					<DropDownPicker
 						placeholder='Seleccione una opción'
 						zIndex={10}
-						onChangeValue={(value) => {
-							setIdpedido(value);
-						}}
+						// onChangeValue={(value) => {
+						// 	setIdpedido(value);
+						// }}
 						placeholderStyle={{
 							color: paletaDeColores.backgroundMedium,
 						}}
@@ -207,24 +171,24 @@ const EditarPedidosMesaForm = ({navigation}) => {
 							borderWidth: 0,
 						}}
 						open={pedidosOpen}
-						value={pedidosValue}
+						value={idPedidoMesa.toString()}
 						items={pedidosList}
 						setOpen={setPedidosOpen}
-						setValue={setPedidosValue}
+						setValue={setIdPedidoMesa}
 						setItems={setPedidosList}
 					/>
 				</View>
 				<View>
 					<Text style={styles.label}>Id Mesa</Text>
-					<TextInput style={styles.input} onChangeText={setIdMesa} keyboardType={'numeric'} placeholder='e.j. 1234' selectionColor="#777777"></TextInput>
+					<TextInput style={styles.input} onChangeText={setIdMesa} value={idMesa.toString()} keyboardType={'numeric'} placeholder='e.j. 1234' selectionColor="#777777"></TextInput>
 				</View>
 				<View>
 					<Text style={styles.label}>Cuenta</Text>
-					<TextInput style={styles.input} onChangeText={setCuenta}  keyboardType={'numeric'} placeholder='e.j. 1234' selectionColor="#777777"></TextInput>
+					<TextInput style={styles.input} onChangeText={setCuenta} value={cuenta.toString()} keyboardType={'numeric'} placeholder='e.j. 1234' selectionColor="#777777"></TextInput>
 				</View>
 				<View>
 					<Text style={styles.label}>Nombre</Text>
-					<TextInput style={styles.input} onChangeText={setNombrecuenta} keyboardType={'numeric'} placeholder='e.j. Mario' selectionColor="#777777"></TextInput>
+					<TextInput style={styles.input} onChangeText={setNombreCuenta} value={nombreCuenta} keyboardType={'numeric'} placeholder='e.j. Mario' selectionColor="#777777"></TextInput>
 				</View>
 				<View style={{width: '65%', alignSelf: 'center'}}>
 					<TouchableOpacity style={styles.botonEditar}

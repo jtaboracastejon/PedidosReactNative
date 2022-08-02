@@ -25,7 +25,7 @@ const EditarPedidosElaborados = ({navigation}) => {
 	const { token } = useContext(UsuarioContext);
 	const [lista, setLista] = useState([]);
 	const {
-		setIdRegistroElaborados
+		setIdRegistroElaborados, setIdUsuario
 	} = useContext(PedidosLlevarContext);
 
 	useEffect(() => {
@@ -43,14 +43,12 @@ const EditarPedidosElaborados = ({navigation}) => {
 		}
 	}
 
-
-
-	const pressHandler = async (key) =>{
-		console.log(key);
-		setIdRegistroElaborados(key);
+	const pressHandler = async (item) =>{
+		console.log(item);
+		setIdRegistroElaborados(item.iddetallepedido);
+		setIdUsuario(item.idusuario);
 		navigation.navigate('PedidosElaborados', { screen:'EditarForm'});
 	}
-
 
 	const buscarPedidosElaborados = async () => {
 		try {
@@ -154,7 +152,7 @@ const EditarPedidosElaborados = ({navigation}) => {
 					{lista.map((item) => (
 						<View key={item.iddetallepedido}>
 							<TouchableOpacity style={styles.itemList}
-											  onPress={async ()=>pressHandler(item.iddetallepedido, item.idusuario)}>
+											  onPress={async ()=>pressHandler(item)}>
 								<Text>Id de Detalle Pedido: {item.iddetallepedido}</Text>
 								<Text>Id de Usuario: {item.idusuario}</Text>
 								<Text>Fecha Hora: {item.fechahora}</Text>
