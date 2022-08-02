@@ -5,10 +5,12 @@ import { createNativeStackNavigator, } from '@react-navigation/native-stack';
 import Inicio from './src/screens/Inicio';
 import CarritoPedidoDetalle from './src/screens/carritoPedidoDetalle';
 import FormTemplate from './src/screens/formTemplate';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons,FontAwesome5 } from '@expo/vector-icons';
 // import SideMenu from './src/screens/sideMenu';
 import PedidosLlevar from "./src/screens/pedidosLlevar/pedidosLlevar";
 import EditarPedidosLlevarForm from "./src/screens/pedidosLlevar/editarPedidosLlevarForm";
+
+import Pedidos from "./src/screens/pedidos/pedidos";
 
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import {PedidosLlevarProvider} from "./src/context/pedidosLlevar/pedidosLlevarContext";
@@ -23,6 +25,7 @@ function SideMenu() {
             <Drawer.Screen name="Inicio" component={Inicio} />
             <Drawer.Screen name="FormTemplate" component={FormTemplate} />
             <Drawer.Screen name="PedidosLlevar" component={PedidosLlevar} />
+            <Drawer.Screen name="Pedidos" component={Pedidos} />
         </Drawer.Navigator>
     )
 }
@@ -51,7 +54,7 @@ const CustomizeSideMenu =({navigation})=>{
                         fontWeight: 'bold',
                         textAlign: 'center',
 
-                    }}>Pedidos</Text>
+                    }}>Inicio</Text>
                 </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('FormTemplate')}>
@@ -76,6 +79,18 @@ const CustomizeSideMenu =({navigation})=>{
                         textAlign: 'center',
 
                     }}>Pedidos Llevar</Text>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('Pedidos')}>
+                <View style={styles.sideMenuItem}>
+                    <FontAwesome5 name="box" size={24} color="#0043F9" />
+                    <Text style={{
+                        width: '90%',
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+
+                    }}>Pedidos</Text>
                 </View>
             </TouchableOpacity>
 
