@@ -4,14 +4,25 @@ import { Items } from '../database/database'
 import { paletaDeColores } from '../styles/colores'
 import { Entypo, FontAwesome } from '@expo/vector-icons';
 
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import ProductCard from '../components/ProductCard';
 const Inicio = ({ navigation }) => {
     const [products, setProducts] = useState([])
+    const [itemsOnCart, setitemsOnCart] = useState('0')
+
+    const getDataFromCart = async () => {
+        let items = await AsyncStorage.getItem('cart')
+        items = JSON.parse(items)
+        setitemsOnCart(items.length)
+    }
 
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             getDataFromDb()
+            getDataFromCart()
         })
         return unsubscribe
     }, [navigation])
@@ -44,6 +55,7 @@ const Inicio = ({ navigation }) => {
                         <Entypo name="menu" style={styles.menu} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => navigation.navigate('CarritoPedidoDetalle')}>
+                        <Text style={{bottom:0, backgroundColor:paletaDeColores.blue+10, borderWidth:1,borderColor:paletaDeColores.blue,borderRadius:100,position: 'absolute', fontWeight:'800', fontSize:12,padding:2 }}>{itemsOnCart}</Text>
                         <Entypo name="shopping-cart" style={styles.shoppingCart} />
                     </TouchableOpacity>
                 </View>
@@ -66,7 +78,7 @@ const Inicio = ({ navigation }) => {
                 <View style={styles.categoryContainer}>
                     <View style={styles.category}>
                         <Text style={styles.categoryText}>Productos</Text>
-                        <Text style={styles.categoryQty}>41</Text>
+                        <Text style={styles.categoryQty}>{products.length}</Text>
                     </View>
                 </View>
                 <View style={{
