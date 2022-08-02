@@ -78,7 +78,7 @@ const GuardarPedidosEntregados = ({navigation}) => {
 			const config = {
 				headers: {Authorization: `Bearer ${token}`},
 			};
-			await Axios.post("/pedidos/entregapedido/guardarr", bodyParameters, config)
+			await Axios.post("/pedidos/entregapedido/guardar", bodyParameters, config)
 				.then((data) => {
 					const json = data.data;
 					if (json.errores.length == 0) {
@@ -87,20 +87,24 @@ const GuardarPedidosEntregados = ({navigation}) => {
 							titulo: "Registro Pedidos Llevar",
 							msj: "Su registro fue guardado con exito",
 						});
+						setPedidosValue(null);
+						setClientesValue(null);
+						setIdentrega(null);
 					} else {
-						textoMensaje = "";
-						console.log(json.errores)
 						json.errores.forEach((element) => {
 							textoMensaje = element.mensaje;
 							Mensaje({titulo: "Error en el registro", msj: textoMensaje});
 						});
+
 					}
 				})
 				.catch((error) => {
 					textoMensaje = error;
+					console.log(error)
+					Mensaje({titulo: "Error en el registro", msj: 'Ya existe un campo con ese id'});
 				});
 		}
-		// console.log(textoMensaje);
+
 	};
 
 	return (
@@ -271,7 +275,7 @@ const GuardarPedidosEntregados = ({navigation}) => {
 					<Text style={styles.label}>
 						Id Entrega
 					</Text>
-					<TextInput style={styles.input} keyboardType={"numeric"} onChangeText={setIdentrega} placeholder='e.j. 1234' selectionColor="#777777"></TextInput>
+					<TextInput style={styles.input} keyboardType={"numeric"} onChangeText={setIdentrega} value={identrega} placeholder='e.j. 1234' selectionColor="#777777"></TextInput>
 				</View>
 				<View style={{width: '50%', alignSelf: 'center'}}>
 					<TouchableOpacity style={styles.botonGuardar}

@@ -82,6 +82,7 @@ const PedidosElaboradosGuardar = ({navigation}) => {
 						//console.log(typeof element.NumeroPedido.toString());
 					});
 					setusuariosList(jsonitems);
+
 				})
 				.catch((error) => {
 					textoMensaje = error;
@@ -120,7 +121,8 @@ const PedidosElaboradosGuardar = ({navigation}) => {
 							titulo: "Registro Pedidos Elaborados",
 							msj: "Su Pedido Elaborado fue guardado con exito",
 						});
-						navigation.navigate('PedidosElaborados', { screen:'Guardar'})
+						setdetallepedidoValue(null);
+						setusuarioValue(null);
 					} else {
 						const json = data.data;
 						console.log(json.errores)

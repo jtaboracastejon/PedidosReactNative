@@ -83,10 +83,15 @@ const GuardarPedidosMesa = ({navigation}) => {
 							titulo: "Registro Pedidos Mesa",
 							msj: "Su registro fue guardado con exito",
 						});
+						setPedidosValue(null);
+						setNombrecuenta(null);
+						setIdMesa(null);
+						setCuenta(null);
+						setNombrecuenta(null);
 					} else {
 						textoMensaje = "";
 						json.errores.forEach((element) => {
-							textoMensaje += element.mensaje + ". ";
+							textoMensaje = element.mensaje ;
 							Mensaje({ titulo: "Error en el registro", msj: textoMensaje });
 						});
 					}
@@ -199,15 +204,15 @@ const GuardarPedidosMesa = ({navigation}) => {
 				</View>
 				<View>
 					<Text style={styles.label}>Id Mesa</Text>
-					<TextInput style={styles.input} onChangeText={setIdMesa} keyboardType={'numeric'} placeholder='e.j. 1234' selectionColor="#777777"></TextInput>
+					<TextInput style={styles.input} onChangeText={setIdMesa} value={idmesa} keyboardType={'numeric'} placeholder='e.j. 1234' selectionColor="#777777"></TextInput>
 				</View>
 				<View>
 					<Text style={styles.label}>Cuenta</Text>
-					<TextInput style={styles.input} onChangeText={setCuenta}  keyboardType={'numeric'} placeholder='e.j. 1234' selectionColor="#777777"></TextInput>
+					<TextInput style={styles.input} onChangeText={setCuenta} value={cuenta} keyboardType={'numeric'} placeholder='e.j. 1234' selectionColor="#777777"></TextInput>
 				</View>
 				<View>
 					<Text style={styles.label}>Nombre</Text>
-					<TextInput style={styles.input} onChangeText={setNombrecuenta} keyboardType={'numeric'} placeholder='e.j. Mario' selectionColor="#777777"></TextInput>
+					<TextInput style={styles.input} onChangeText={setNombrecuenta} value={nombrecuenta} keyboardType={'numeric'} placeholder='e.j. Mario' selectionColor="#777777"></TextInput>
 				</View>
 				<View style={{width: '50%', alignSelf: 'center'}}>
 				<TouchableOpacity style={styles.botonGuardar}

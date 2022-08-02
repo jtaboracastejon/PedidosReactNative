@@ -6,9 +6,9 @@ import {Ionicons, Entypo} from '@expo/vector-icons';
 import Axios from "../../components/Axios";
 import Mensaje from "../../components/Mensaje";
 import UsuarioContext from "../../context/UsuarioContext";
+import {useIsFocused} from "@react-navigation/native";
 
 const GuardarPedidosLlevar = ({navigation}) => {
-	console.log("Pedidos Varias Veces");
 	let textoMensaje = "";
 	const { token } = useContext(UsuarioContext);
 	const [pedidosOpen, setPedidosOpen] = useState(false);
@@ -22,6 +22,14 @@ const GuardarPedidosLlevar = ({navigation}) => {
 		{label: 1, value: 1},
 		{label: 2, value: 2}]
 	);
+
+	const isFocused= useIsFocused()
+	useEffect(() => {
+		if(isFocused){
+			BuscarPedidos();
+		}
+	}, [isFocused]);
+
 
 	const [pedidosList, setPedidosList] = useState([]);
 	const [detallePedidosList, setDetallePedidoList] = useState([]);
@@ -79,6 +87,8 @@ const GuardarPedidosLlevar = ({navigation}) => {
 							titulo: "Registro Pedidos Llevar",
 							msj: "Su registro fue guardado con exito",
 						});
+						setClientesValue(null);
+						setPedidosValue(null);
 					} else {
 						textoMensaje = "";
 						console.log(json.errores)
