@@ -1,10 +1,11 @@
-import { View, Text, ScrollView, TouchableOpacity, Image, StyleSheet } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, Image, StyleSheet, LogBox, TextInput } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { Items } from '../database/database'
 import { paletaDeColores } from '../styles/colores'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const CarritoPedidoDetalle = ({ navigation }) => {
     const [product, setProduct] = useState()
@@ -13,6 +14,8 @@ const CarritoPedidoDetalle = ({ navigation }) => {
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             getDataFromDb()
+            LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+            
         })
         return unsubscribe
     }, [navigation])
@@ -21,11 +24,12 @@ const CarritoPedidoDetalle = ({ navigation }) => {
     const getDataFromDb = async () => {
         let items = await AsyncStorage.getItem('cart')
         items = JSON.parse(items)
-        console.log(items)
+        // console.log(items)
         let productData = []
         if (items) {
             Items.forEach(data => {
                 if (items.includes(data.codigo)) {
+                    data.cantidad=1
                     productData.push(data)
                     return
                 }
@@ -63,6 +67,21 @@ const CarritoPedidoDetalle = ({ navigation }) => {
             }
         }
     }
+    
+
+    /* const addQty = async (id) => {
+        let itemArray = await AsyncStorage.getItem('cart')
+        itemArray = JSON.parse(itemArray)
+        let newArray = product;
+        if (itemArray) {
+            var index = newArray.map(function(item) {return item.codigo; }).indexOf(id);
+            newArray[index].cantidad=newArray[index].cantidad+1
+            
+            setProduct(newArray)
+            console.log(product[index].Nombre,product[index].cantidad)
+            
+        }
+    } */
 
     const renderProducts = (data, index) => {
         return (
@@ -108,7 +127,7 @@ const CarritoPedidoDetalle = ({ navigation }) => {
                                 }} />
                             </View>
                             <Text>
-                                1
+                                {data.cantidad}
                             </Text>
                             <View style={{
                                 borderRadius: 100,
@@ -118,13 +137,15 @@ const CarritoPedidoDetalle = ({ navigation }) => {
                                 borderColor: paletaDeColores.backgroundMedium,
                                 opacity: 0.5,
                             }}>
-                                <MaterialCommunityIcons name="plus" style={{
-                                    fontSize: 16,
-                                    color: paletaDeColores.backgroundDark
-                                }} />
+                                <TouchableOpacity onPress={() => addQty(data.codigo)}>
+                                    <MaterialCommunityIcons name="plus" style={{
+                                        fontSize: 16,
+                                        color: paletaDeColores.backgroundDark
+                                    }} />
+                                </TouchableOpacity>
                             </View>
                         </View>
-                        <TouchableOpacity onPress={() => removeItemFromCart(data.id)}>
+                        <TouchableOpacity onPress={() => removeItemFromCart(data.codigo)}>
                             <MaterialCommunityIcons name="delete-outline" style={{
                                 fontSize: 16,
                                 color: paletaDeColores.backgroundDark,
@@ -139,7 +160,22 @@ const CarritoPedidoDetalle = ({ navigation }) => {
         )
     }
 
+    const [modalidadOpen, setmodalidadOpen] = useState(false);
+    const [modalidadValue, setmodalidadValue] = useState(null);
+
+    const [modalidades, setmodalidades] = useState([
+        { label: 'Mesa', value: 'ME' },
+        { label: 'Llevar', value: 'LL' },
+        { label: 'Domicio', value: 'DO' }
+    ]);
+
+    const [clientesOpen, setClientesOpen] = useState(false);
+	const [clientesValue, setClientesValue] = useState(null);
+	const [clientesList, setClientesList] = useState([{label: 'Maria', value: 1},
+		{label: 'Juan', value: 2}]);
+
     return (
+        
         <View style={{
             flex: 1,
             backgroundColor: paletaDeColores.white
@@ -192,7 +228,7 @@ const CarritoPedidoDetalle = ({ navigation }) => {
                     <View style={{
                         paddingHorizontal: 16,
                         marginTop: 40,
-                        marginBottom: 80,
+                        marginBottom: 20,
 
                     }}>
                         <Text style={{
@@ -233,7 +269,7 @@ const CarritoPedidoDetalle = ({ navigation }) => {
                             flexDirection: 'row',
                             alignItems: 'center',
                             justifyContent: 'space-between',
-                            marginBottom: 20,
+                            marginBottom: 10,
                         }}>
                             <Text style={{
                                 fontSize: 12,
@@ -279,6 +315,115 @@ const CarritoPedidoDetalle = ({ navigation }) => {
                         </View>
                     </View>
                 </View>
+                {/* Modalidad */}
+                <View style={{ borderRadius: 100, margin: 20, borderColor: paletaDeColores.blue, borderWidth: 1 }}>
+                    <DropDownPicker
+                        dropDownDirection="TOP"
+                        placeholder='Seleccione una opción'
+                        placeholderStyle={{
+                            color: paletaDeColores.backgroundMedium,
+                        }}
+                        style={{
+                            backgroundColor: paletaDeColores.white,
+                            borderWidth: 0,
+                            borderRadius: 100
+                        }}
+                        dropDownContainerStyle={{
+                            borderWidth: 0,
+                        }}
+                        open={modalidadOpen}
+                        value={modalidadValue}
+                        items={modalidades}
+                        setOpen={setmodalidadOpen}
+                        setValue={setmodalidadValue}
+                        setItems={setmodalidades}
+                    />
+                </View>
+                {
+                    modalidadValue === 'ME' ?
+                        <View>
+                            <View style={
+                                {
+                                    flexDirection: 'column',
+                                    padding: 10
+                                }}>
+                                <Text style={styles.label}>No. Mesa</Text>
+                                <TextInput style={styles.input} placeholder='e.j. 3' selectionColor="#777777" keyboardType='numeric'></TextInput>
+                            </View>
+                            <View style={
+                                {
+                                    flexDirection: 'column',
+                                    padding: 10
+                                }}>
+                                <Text style={styles.label}>Cuenta</Text>
+                                <TextInput style={styles.input} placeholder='e.j. 1' selectionColor="#777777" keyboardType='numeric'></TextInput>
+                            </View>
+                            <View style={
+                                {
+                                    flexDirection: 'column',
+                                    padding: 10
+                                }}>
+                                <Text style={styles.label}>Nombre Cuenta</Text>
+                                <TextInput style={styles.input} placeholder='e.j. Javier' selectionColor="#777777" ></TextInput>
+                            </View>
+                        </View>
+
+                        : modalidadValue === 'LL' ?
+                            <View style={
+                                {
+                                    flexDirection: 'column',
+                                    padding: 10
+                                }}>
+                                <Text style={styles.label}>
+                                    Cliente
+                                </Text>
+                                <DropDownPicker                                    
+                                    zIndex={1}
+                                    placeholder='Seleccione una opción'
+                                    searchable={true}
+                                    onChangeValue={(value) => {
+                                        setIdcliente(value);
+                                    }}
+                                    searchPlaceholder="Buscar..."
+                                    searchTextInputStyle={{
+                                        borderWidth: 1,
+                                        borderColor: paletaDeColores.backgroundMedium,
+                                    }}
+                                    placeholderStyle={{
+                                        color: paletaDeColores.backgroundMedium,
+                                    }}
+                                    style={{
+                                        backgroundColor: paletaDeColores.backgroundLight,
+                                        borderWidth: 0,
+                                    }}
+                                    dropDownContainerStyle={{
+                                        borderWidth: 0,
+                                    }}
+                                    open={clientesOpen}
+                                    value={clientesValue}
+                                    items={clientesList}
+                                    setOpen={setClientesOpen}
+                                    setValue={setClientesValue}
+                                    setItems={setClientesList}
+                                />
+
+                            </View>
+                            : null
+                }
+                <View style={{ width: '65%', alignSelf: 'center' }}>
+                    <TouchableOpacity
+                        style={styles.botonGuardarPedido}
+                        onPress={() => {
+                            editarPedidosLlevar();
+                        }}>
+                        <FontAwesome5 name="cash-register" style={{
+                            fontSize: 24,
+                            color: paletaDeColores.white,
+                            padding: 10,
+                        }} />
+                        <Text style={styles.botonTexto}>Procesar Pedido</Text>
+                    </TouchableOpacity>
+                </View>
             </ScrollView>
         </View>
     )
@@ -309,7 +454,7 @@ const styles = StyleSheet.create({
         height: '100%',
         resizeMode: 'contain'
     },
-    contenedorProducto:{
+    contenedorProducto: {
         flex: 1,
         height: "100%",
         justifyContent: 'space-around',
@@ -332,5 +477,35 @@ const styles = StyleSheet.create({
         fontWeight: '400',
         maxWidth: '85%',
         marginRight: 4,
+    },
+    botonGuardarPedido: {
+        flexDirection: 'row',
+        padding: 6,
+        borderRadius: 100,
+        borderColor: 'white',
+        backgroundColor: paletaDeColores.blue,
+        borderWidth: 1,
+        alignItems: 'center',
+        marginBottom: 20,
+        justifyContent: 'center',
+    },
+    botonTexto: {
+        color: paletaDeColores.white,
+        fontWeight: '600',
+        fontSize: 16,
+        textAlign: 'center'
+    },
+    label: {
+        fontSize: 14,
+        backgroundColor: paletaDeColores.white,
+        textAlign: 'left',
+        marginBottom: 8,
+        marginHorizontal: 10,
+
+    },
+    input: {
+        backgroundColor: paletaDeColores.backgroundLight,
+        borderRadius: 10,
+        padding: 10,
     }
 })

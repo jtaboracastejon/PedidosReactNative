@@ -68,6 +68,9 @@ const styles = StyleSheet.create({
     {
         width: '48%',
         marginVertical: 14,
+        borderWidth: 1,
+        borderRadius: 10,
+        borderColor: paletaDeColores.backgroundLight,
     },
     cardBackground:{
         width: '100%',
@@ -82,24 +85,28 @@ const styles = StyleSheet.create({
     imageCard:{        
         width: '80%',
         height: '80%',
-        resizeMode: 'contain',    
+        resizeMode: 'contain',   
     },
     cartTitle: {
         fontSize: 14,
         color: paletaDeColores.black,
         fontWeight: '600',
         marginBottom: 2,
+        
+        marginLeft: 10,
     },
     cardInfoContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
+        justifyContent: 'space-between',
+        alignItems: 'center',    
+        marginTop: 8,
+        marginLeft: 10,
     },
     cardInfoTitle:{
         fontSize: 18,
     },
     cardInfoButton:{
         backgroundColor: paletaDeColores.green,
-        borderRadius: 3,
+        borderBottomRightRadius: 10,
     }
 })

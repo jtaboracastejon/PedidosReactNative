@@ -7,6 +7,7 @@ import CarritoPedidoDetalle from './src/screens/carritoPedidoDetalle';
 import FormTemplate from './src/screens/formTemplate';
 
 import { Ionicons,MaterialCommunityIcons, FontAwesome5} from '@expo/vector-icons';
+
 import UsuarioContext from './src/context/UsuarioContext';
 import Cargando from './src/components/Cargando';
 
@@ -21,7 +22,9 @@ import Pedidos from "./src/screens/pedidos/pedidos";
 
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import {PedidosLlevarProvider} from "./src/context/pedidosLlevar/pedidosLlevarContext";
+
 import UsuarioState from "./src/context/UsuarioState";
+import DetallePedido from './src/screens/detallePedido/detallePedido';
 import PedidosEntregados from "./src/screens/pedidosEntregados/pedidosEntregados";
 
 const Drawer = createDrawerNavigator();
@@ -35,11 +38,13 @@ function SideMenu() {
             <Drawer.Screen name="Inicio" component={Inicio} />
             <Drawer.Screen name="FormTemplate" component={FormTemplate} />
             <Drawer.Screen name="PedidosLlevar" component={PedidosLlevar} />
+            <Drawer.Screen name="DetallePedido" component={DetallePedido} />
             <Drawer.Screen name="Pedidos" component={Pedidos} />
             <Drawer.Screen name="PedidosCancelados" component={PedidosCancelados} />
             <Drawer.Screen name="PedidosElaborados" component={PedidosElaborados} />
             <Drawer.Screen name="PedidosMesa" component={PedidosMesa} />
             <Drawer.Screen name="PedidosEntregados" component={PedidosEntregados} />
+
 
         </Drawer.Navigator>
     )
@@ -96,7 +101,15 @@ const CustomizeSideMenu =({navigation})=>{
                     }}>Pedidos Llevar</Text>
                 </View>
             </TouchableOpacity>
-
+            <TouchableOpacity onPress={() => navigation.navigate('DetallePedido')}>
+                <View style={styles.sideMenuItem}>
+                    <FontAwesome5 name="boxes" size={24} color="#0043F9" />
+                    <Text style={{
+                        width: '90%',
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+                         }}>Detalle Pedido</Text>
             <TouchableOpacity onPress={() => navigation.navigate('Pedidos')}>
                 <View style={styles.sideMenuItem}>
                     <FontAwesome5 name="box" size={24} color="#0043F9" />
@@ -143,7 +156,6 @@ const CustomizeSideMenu =({navigation})=>{
                         fontSize: 16,
                         fontWeight: 'bold',
                         textAlign: 'center',
-
                     }}>Pedidos Elaborados</Text>
                 </View>
             </TouchableOpacity>

@@ -5,7 +5,5 @@ const Axios = axios.create({
 	timeout: 10000,
 	headers: {'Content-Type': 'application/json'}
 });
-//Axios.defaults.baseURL= 'http://www.desofiw.xyz:3002/api';
-//Axios.defaults.headers.post["Content-Type"]= "application/json";
 
 export default Axios;
