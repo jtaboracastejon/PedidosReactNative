@@ -29,7 +29,7 @@ const Inicio = ({ navigation }) => {
 
     function cambiarBusqueda(text) {
 		setProducts((prevProducts) => {
-			return prevProducts.filter((item) => item.Nombre.toLowerCase().indexOf(text.toLowerCase()) >= 0);
+        return prevProducts.filter((item) => item.Nombre.toLowerCase().indexOf(text.toLowerCase()) >= 0);
 		});
 		if (text == "") {
 			getDataFromDb()

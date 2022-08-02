@@ -17,43 +17,42 @@ import Axios from "../../components/Axios";
 import UsuarioContext from "../../context/UsuarioContext";
 import {useIsFocused} from "@react-navigation/native";
 
-const ListarPedidosLlevar = ({navigation}) => {
+const ListarPedidosEntregados = ({navigation}) => {
 	let textoMensaje = "";
-
 	const { token } = useContext(UsuarioContext);
-
 	const [lista, setLista] = useState([]);
 
-	useEffect(() => {
-		buscarPedidosLlevar();
-	}, [setLista]);
+	// useEffect(() => {
+	// 	buscarPedidosLlevar();
+	// }, [setLista]);
 
 	const isFocused= useIsFocused()
 	useEffect(() => {
 		if(isFocused){
-			buscarPedidosLlevar();
+			buscarPedidosEntregados();
 		}
 	}, [isFocused]);
 
 	function changeHandler(text) {
 		setLista((prevLista) => {
-			return prevLista.filter((item) => item.idregistro.toString().indexOf(text.toString()) >= 0);
+			return prevLista.filter((item) => item.iddetalle_pedido.toString().indexOf(text.toString()) >= 0);
 		});
 
 		if (text == "") {
-			buscarPedidosLlevar();
+			buscarPedidosEntregados();
 		}
 	}
 
-	const buscarPedidosLlevar = async () => {
+	const buscarPedidosEntregados = async () => {
 		try {
-			await Axios.get("/pedidos/pedidosllevar/listar", {
+			await Axios.get("/pedidos/entregapedido/listar", {
 				headers: {
 					Authorization: "Bearer " + token,
 				},
 			})
 				.then((data) => {
 					setLista(data.data);
+					console.log(lista);
 
 				})
 
@@ -91,25 +90,25 @@ const ListarPedidosLlevar = ({navigation}) => {
 					showsHorizontalScrollIndicator={false}
 				>
 					<TouchableOpacity style={{ padding: 5, borderRadius: 100, backgroundColor: paletaDeColores.blue + '10', borderColor: paletaDeColores.blue, borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Listar'})
+						navigation.navigate('PedidosEntregados', { screen:'Listar'})
 					}}>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10, }}>Listar Pedidos Llevar</Text>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10, }}>Listar Pedidos Entregados</Text>
 					</TouchableOpacity>
 					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Editar'})
+						navigation.navigate('PedidosEntregados', { screen:'Editar'})
 					}} >
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Editar Pedidos Llevar</Text>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Editar Pedidos Entregados</Text>
 					</TouchableOpacity>
 					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Eliminar'})
+						navigation.navigate('PedidosEntregados', { screen:'Eliminar'})
 					}}>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Eliminar Pedidos Llevar</Text>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Eliminar Pedidos Entregados</Text>
 					</TouchableOpacity>
 					<TouchableOpacity style={{ padding: 5, borderRadius: 100, borderColor: 'coral', borderWidth: 1, marginHorizontal: 10 }} onPress={() => {
-						navigation.navigate('PedidosLlevar', { screen:'Guardar'})
+						navigation.navigate('PedidosEntregados', { screen:'Guardar'})
 					}}
 					>
-						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Agregar Pedidos Llevar</Text>
+						<Text style={{ color: paletaDeColores.black, marginHorizontal: 10 }}>Agregar Pedidos Entregados</Text>
 					</TouchableOpacity>
 
 				</ScrollView>
@@ -132,7 +131,7 @@ const ListarPedidosLlevar = ({navigation}) => {
 						fontWeight: '600',
 						letterSpacing: 1,
 					}}>
-						Lista de Pedidos Llevar
+						Lista de Pedidos Entregados
 					</Text>
 				</View>
 			</View>
@@ -149,11 +148,12 @@ const ListarPedidosLlevar = ({navigation}) => {
 			{/* DropDowns */}
 				<View>
 					{lista.map((item) => (
-						<View key={item.idregistro}>
+						<View key={item.iddetalle_pedido}>
 							<View style={styles.itemList}>
-								<Text>Id de Registro: {item.idregistro}</Text>
-								<Text>Id de Pedido {item.idpedido}</Text>
-								<Text>Id del Cliente {item.idcliente}</Text>
+								<Text>Detalle Pedido: {item.iddetalle_pedido}</Text>
+								<Text>Usuario {item.usuario}</Text>
+								<Text>Fecha Hora: {item.fechahora}</Text>
+								<Text>Id Entrega: {item.identrega}</Text>
 							</View>
 						</View>
 					))}
@@ -164,7 +164,7 @@ const ListarPedidosLlevar = ({navigation}) => {
 	);
 };
 
-export default ListarPedidosLlevar;
+export default ListarPedidosEntregados;
 
 const styles = StyleSheet.create({
 	container: {

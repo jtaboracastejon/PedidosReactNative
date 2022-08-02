@@ -6,44 +6,46 @@ import {Ionicons, Entypo} from '@expo/vector-icons';
 import Axios from "../../components/Axios";
 import Mensaje from "../../components/Mensaje";
 import {PedidosLlevarContext} from "../../context/pedidosLlevar/pedidosLlevarContext";
+import {useIsFocused} from "@react-navigation/native";
 import UsuarioContext from "../../context/UsuarioContext";
 
 const EditarPedidosLlevarForm = ({navigation}) => {
+
 	let textoMensaje = "";
-  
-	const { token } = useContext(UsuarioContext);
-	const {idDetallePedido, setIdDetallePedido, idCliente, setIdCliente, idRegistro} = useContext(PedidosLlevarContext)
+	const {token} = useContext(UsuarioContext);
+	const {idRegistroElaborados, idUsuario, setIdUsuario} = useContext(PedidosLlevarContext)
 
-	const [pedidosOpen, setPedidosOpen] = useState(false);
-	const [clientesOpen, setClientesOpen] = useState(false);
-	const [pedidosValue, setPedidosValue] = useState(null);
-	const [clientesValue, setClientesValue] = useState(null);
-	const [idpedido, setIdpedido] = useState("");
-	const [idcliente, setIdcliente] = useState("");
-	const [clientesList, setClientesList] = useState([{label: "Maria Jose Arita", value: 1},
-		{label: 'Samantha Ruiz', value: 2}]);
-	const [pedidosList, setPedidosList] = useState([]);
+	const [iddetallepedido, setiddetalle] = useState("");
 
+	const [usuarioOpen, setusuarioOpen] = useState(false);
+	const [idusuario, setidusuario] = useState("");
+
+	const [usuarioValue, setusuarioValue] = useState(null);
+	const [detallepedidoList, setdetallepedidoList] = useState([]);
+	const [usuariosList, setusuariosList] = useState([{label: 'Maria Fernanda Gonzales', value:1}, {label: 'Carlos Manuel Arita', value:5}, {label: 'Luisa Hernandez', value:3}]);
+
+	const isFocused= useIsFocused()
 	useEffect(() => {
-		BuscarPedidos();
-	}, [setPedidosList]);
+		if(isFocused){
 
-	console.log('Id registro '+ idRegistro)
+		}
+	}, [isFocused]);
+
 	const editarPedidosLlevar = async () => {
+		console.log(idRegistroElaborados)
 		if (!token) {
 			textoMensaje = "Debe iniciar sesion";
 			console.log(token);
 		} else {
 			console.log(token);
 			const bodyParameters = {
-				idpedido: idDetallePedido,
-				idcliente: idCliente,
+				idusuario: idusuario,
 			};
 			const config = {
 				headers: { Authorization: `Bearer ${token}` },
 			};
 			await Axios.put(
-				"/pedidos/pedidosLlevar/editar?id=" + idRegistro,
+				"/pedidos/pedidoselaborados/editar?id=" + idRegistroElaborados,
 				bodyParameters,
 				config
 			)
@@ -52,10 +54,10 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 					if (json.errores.length == 0) {
 						console.log("Solicitud Realizada");
 						Mensaje({
-							titulo: "Registro Pedidos Llevar",
+							titulo: "Registro Pedidos Elaborados",
 							msj: "Su registro fue editado con exito",
 						});
-						navigation.navigate('PedidosLlevar', { screen:'Editar'})
+						navigation.navigate('PedidosElaborados', { screen:'Editar'})
 
 
 					} else {
@@ -75,41 +77,40 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 	};
 
 
-	const BuscarPedidos = async () => {
-		try {
-			await Axios.get("/pedidos/pedidos/listar", {
-				headers: {
-					Authorization: "Bearer " + token,
-				},
-			})
-				.then((data) => {
-					const json = data.data;
-					let jsonitems = [];
-					console.log(json[1]);
-					json.forEach((element) => {
-						jsonitems.push({
-							label: element.NumeroPedido.toString(),
-							value: element.NumeroPedido.toString(),
-						});
-						console.log(typeof element.NumeroPedido.toString());
-					});
-					setPedidosList(jsonitems);
-				})
-				.catch((error) => {
-					textoMensaje = error;
-					Mensaje({titulo: "Error registro", msj: textoMensaje});
-				});
-		} catch (error) {
-			textoMensaje = error;
-			console.log(error);
-			Mensaje({titulo: "Error registro", msj: error});
-		}
-	};
-  
+	// const BuscarPedidos = async () => {
+	// 	try {
+	// 		await Axios.get("/pedidos/detallepedidos/listar", {
+	// 			headers: {
+	// 				Authorization: "Bearer " + token,
+	// 			},
+	// 		})
+	// 			.then((data) => {
+	// 				const json = data.data;
+	// 				let jsonitems = [];
+	// 				console.log(json[1]);
+	// 				json.forEach((element) => {
+	// 					jsonitems.push({
+	// 						label: element.idregistro.toString(),
+	// 						value: element.idregistro.toString(),
+	// 					});
+	// 				});
+	// 				setdetallepedidoList(jsonitems);
+	// 			})
+	// 			.catch((error) => {
+	// 				textoMensaje = error;
+	// 				Mensaje({titulo: "Error registro", msj: textoMensaje});
+	// 			});
+	// 	} catch (error) {
+	// 		textoMensaje = error;
+	// 		console.log(error);
+	// 		Mensaje({titulo: "Error registro", msj: error});
+	// 	}
+	// };
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
-				<TouchableOpacity onPress={() =>navigation.navigate('PedidosLlevar', { screen:'Editar'})}>
+				<TouchableOpacity onPress={() =>navigation.navigate('PedidosElaborados', { screen:'Editar'})}>
 					<Entypo name="chevron-thin-left" style={styles.back}/>
 				</TouchableOpacity>
 			</View>
@@ -132,7 +133,7 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 						fontWeight: '600',
 						letterSpacing: 1,
 					}}>
-						Editar Pedidos Llevar
+						Editar Pedidos Elaborados
 					</Text>
 				</View>
 			</View>
@@ -147,42 +148,14 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 			<View style={{justifyContent: 'space-around', height: '80%',}}>
 				<View>
 					<Text style={styles.label}>
-						Id Pedido
-					</Text>
-					<DropDownPicker
-						placeholder='Seleccione una opción'
-						zIndex={10}
-						onChangeValue={(value) => {
-							setIdpedido(value);
-						}}
-						placeholderStyle={{
-							color: paletaDeColores.backgroundMedium,
-						}}
-						style={{
-							backgroundColor: paletaDeColores.white,
-							borderWidth: 0,
-						}}
-						dropDownContainerStyle={{
-							borderWidth: 0,
-						}}
-						open={pedidosOpen}
-						value={idDetallePedido.toString()}
-						items={pedidosList}
-						setOpen={setPedidosOpen}
-						setValue={setIdDetallePedido}
-						setItems={setPedidosList}
-					/>
-				</View>
-				<View>
-					<Text style={styles.label}>
-						Id Cliente
+						Usuario
 					</Text>
 					<DropDownPicker
 						placeholder='Seleccione una opción'
 						zIndex={1}
 						searchable={true}
 						onChangeValue={(value) => {
-							setIdcliente(value);
+							setidusuario(value);
 						}}
 						searchPlaceholder="Buscar..."
 						searchTextInputStyle={{
@@ -199,15 +172,17 @@ const EditarPedidosLlevarForm = ({navigation}) => {
 						dropDownContainerStyle={{
 							borderWidth: 0,
 						}}
-						open={clientesOpen}
-						value={idCliente}
-						items={clientesList}
-						setOpen={setClientesOpen}
-						setValue={setIdCliente}
-						setItems={setClientesList}
+						open={usuarioOpen}
+						value={idUsuario}
+						items={usuariosList}
+						setOpen={setusuarioOpen}
+						setValue={setIdUsuario}
+						setItems={setusuariosList}
 					/>
 
 				</View>
+
+
 				<View style={{width: '65%', alignSelf: 'center'}}>
 					<TouchableOpacity style={styles.botonEditar}
 									  onPress={() => {
