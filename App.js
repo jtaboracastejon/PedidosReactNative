@@ -5,7 +5,7 @@ import { createNativeStackNavigator, } from '@react-navigation/native-stack';
 import Inicio from './src/screens/Inicio';
 import CarritoPedidoDetalle from './src/screens/carritoPedidoDetalle';
 import FormTemplate from './src/screens/formTemplate';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import UsuarioContext from './src/context/UsuarioContext';
 import Cargando from './src/components/Cargando';
 import PedidosLlevar from "./src/screens/pedidosLlevar/pedidosLlevar";
@@ -13,7 +13,9 @@ import Login from "./src/screens/Login";
 
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import {PedidosLlevarProvider} from "./src/context/pedidosLlevar/pedidosLlevarContext";
+
 import UsuarioState from "./src/context/UsuarioState";
+import DetallePedido from './src/screens/detallePedido/detallePedido';
 
 const Drawer = createDrawerNavigator();
 function SideMenu() {
@@ -26,6 +28,7 @@ function SideMenu() {
             <Drawer.Screen name="Inicio" component={Inicio} />
             <Drawer.Screen name="FormTemplate" component={FormTemplate} />
             <Drawer.Screen name="PedidosLlevar" component={PedidosLlevar} />
+            <Drawer.Screen name="DetallePedido" component={DetallePedido} />
         </Drawer.Navigator>
     )
 }
@@ -79,6 +82,18 @@ const CustomizeSideMenu =({navigation})=>{
                         textAlign: 'center',
 
                     }}>Pedidos Llevar</Text>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('DetallePedido')}>
+                <View style={styles.sideMenuItem}>
+                    <FontAwesome5 name="boxes" size={24} color="#0043F9" />
+                    <Text style={{
+                        width: '90%',
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+
+                    }}>Detalle Pedido</Text>
                 </View>
             </TouchableOpacity>
         </DrawerContentScrollView>
